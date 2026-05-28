@@ -8,6 +8,7 @@ import CasesSection from '@/components/CasesSection'
 import VoiceCarousel from '@/components/VoiceCarousel'
 import AreaSection from '@/components/AreaSection'
 import FAQSection from '@/components/FAQSection'
+import ContactForm from '@/components/ContactForm'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 
@@ -25,6 +26,10 @@ export default function Home() {
         <VoiceCarousel />
         <AreaSection />
         <FAQSection />
+        {/* スピード見積フォーム — FixedCTA の「見積もり」ボタンがスクロールする先 */}
+        <section id="speed-estimate" className="scroll-mt-20">
+          <ContactForm />
+        </section>
       </main>
       <Footer />
       <FixedCTA />
