@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#0f1f3d"/>
+  <rect width="64" height="64" rx="12" fill="url(#bg)"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a2f5a"/>
+      <stop offset="100%" stop-color="#0f1f3d"/>
+    </linearGradient>
+  </defs>
+  <!-- Water heater body -->
+  <rect x="18" y="14" width="28" height="36" rx="4" fill="none" stroke="#4db6e4" stroke-width="2.5"/>
+  <!-- Dial circle -->
+  <circle cx="32" cy="32" r="9" fill="none" stroke="#4db6e4" stroke-width="2"/>
+  <!-- Flame -->
+  <path d="M32 25 Q30 28 32 30 Q34 28 32 25Z" fill="#4db6e4"/>
+  <!-- Pipes top -->
+  <line x1="24" y1="14" x2="24" y2="8" stroke="#4db6e4" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="40" y1="14" x2="40" y2="8" stroke="#4db6e4" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Base pipe -->
+  <line x1="32" y1="50" x2="32" y2="56" stroke="#4db6e4" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="24" y1="56" x2="40" y2="56" stroke="#4db6e4" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

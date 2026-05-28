@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="60%" stop-color="#0f1f3d"/>
+      <stop offset="100%" stop-color="#1a2f5a"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4db6e4"/>
+      <stop offset="100%" stop-color="#7dcff0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="1100" cy="100" r="200" fill="#4db6e4" opacity="0.05"/>
+  <circle cx="150" cy="550" r="150" fill="#4db6e4" opacity="0.04"/>
+
+  <!-- Left accent bar -->
+  <rect x="60" y="60" width="6" height="510" rx="3" fill="url(#accentGrad)"/>
+
+  <!-- Company badge -->
+  <rect x="86" y="60" width="280" height="36" rx="18" fill="#4db6e4" opacity="0.15" stroke="#4db6e4" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="226" y="83" font-family="sans-serif" font-size="16" font-weight="700" fill="#7dcff0" text-anchor="middle">横浜市・川崎市・厚木市・海老名市対応</text>
+
+  <!-- Main headline -->
+  <text x="86" y="200" font-family="sans-serif" font-size="62" font-weight="900" fill="white">給湯器交換・販売</text>
+  <text x="86" y="278" font-family="sans-serif" font-size="52" font-weight="900" fill="white">なら宝宮設備へ</text>
+
+  <!-- Sub text -->
+  <text x="86" y="340" font-family="sans-serif" font-size="24" fill="#b8c4d0">自社施工・最短即日対応・適正価格</text>
+  <text x="86" y="374" font-family="sans-serif" font-size="22" fill="#8a9aaa">リンナイ・ノーリツ・パロマ対応</text>
+
+  <!-- Phone number -->
+  <rect x="86" y="410" width="430" height="74" rx="12" fill="#e85d2a"/>
+  <text x="136" y="440" font-family="sans-serif" font-size="14" font-weight="700" fill="white" opacity="0.9">📞 お急ぎの方はすぐにお電話を</text>
+  <text x="136" y="470" font-family="sans-serif" font-size="32" font-weight="900" fill="white">046-205-4558</text>
+
+  <!-- Badges -->
+  <rect x="86" y="510" width="120" height="36" rx="18" fill="#4db6e4" opacity="0.2" stroke="#4db6e4" stroke-width="1"/>
+  <text x="146" y="533" font-family="sans-serif" font-size="14" font-weight="700" fill="#4db6e4" text-anchor="middle">最短即日対応</text>
+
+  <rect x="220" y="510" width="100" height="36" rx="18" fill="#4db6e4" opacity="0.2" stroke="#4db6e4" stroke-width="1"/>
+  <text x="270" y="533" font-family="sans-serif" font-size="14" font-weight="700" fill="#4db6e4" text-anchor="middle">自社施工</text>
+
+  <rect x="334" y="510" width="120" height="36" rx="18" fill="#4db6e4" opacity="0.2" stroke="#4db6e4" stroke-width="1"/>
+  <text x="394" y="533" font-family="sans-serif" font-size="14" font-weight="700" fill="#4db6e4" text-anchor="middle">見積もり無料</text>
+
+  <!-- Right side - water heater illustration -->
+  <g transform="translate(820, 120)">
+    <rect x="60" y="30" width="200" height="300" rx="20" fill="none" stroke="#4db6e4" stroke-width="4" opacity="0.5"/>
+    <circle cx="160" cy="180" r="60" fill="none" stroke="#4db6e4" stroke-width="3" opacity="0.4"/>
+    <circle cx="160" cy="180" r="35" fill="none" stroke="#4db6e4" stroke-width="2" opacity="0.3"/>
+    <rect x="120" y="45" width="40" height="25" rx="4" fill="none" stroke="#4db6e4" stroke-width="2.5" opacity="0.4"/>
+    <circle cx="110" cy="290" r="12" fill="none" stroke="#4db6e4" stroke-width="2.5" opacity="0.4"/>
+    <circle cx="210" cy="290" r="12" fill="none" stroke="#4db6e4" stroke-width="2.5" opacity="0.4"/>
+    <line x1="160" y1="330" x2="160" y2="380" stroke="#4db6e4" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+    <line x1="110" y1="380" x2="210" y2="380" stroke="#4db6e4" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+    <line x1="60" y1="30" x2="30" y2="5" stroke="#4db6e4" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+    <line x1="260" y1="30" x2="290" y2="5" stroke="#4db6e4" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+  </g>
+
+  <!-- Domain -->
+  <text x="1140" y="610" font-family="sans-serif" font-size="18" fill="#4a5568" text-anchor="end">houmiya-boiler.com</text>
+</svg>
