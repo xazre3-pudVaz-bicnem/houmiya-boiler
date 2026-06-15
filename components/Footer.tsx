@@ -188,6 +188,7 @@ export default function Footer() {
                 ['営業時間', siteConfig.hours],
                 ['対応エリア', siteConfig.areas.join('・')],
                 ['電話番号', siteConfig.phone],
+                ['メール', siteConfig.contactEmail],
               ].map(([label, value]) => (
                 <div key={label} className="flex gap-2">
                   <dt className="text-gray-600 flex-shrink-0 w-16">{label}：</dt>

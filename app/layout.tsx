@@ -82,6 +82,7 @@ const localBusinessSchema = {
   logo: 'https://www.houmiya-boiler.com/logo.png',
   image: 'https://www.houmiya-boiler.com/logo.png',
   telephone: '+81-46-205-4558',
+  email: 'homiya@houmiyasetubi.com',
   address: {
     '@type': 'PostalAddress',
     streetAddress: '温水西1-4-39',

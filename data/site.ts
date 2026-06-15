@@ -4,6 +4,7 @@ export const siteConfig = {
   tagline: '横浜・川崎・厚木・海老名の給湯器交換専門',
   phone: '046-205-4558',
   phoneHref: 'tel:046-205-4558',
+  contactEmail: 'homiya@houmiyasetubi.com',
   lineUrl: 'https://line.me/ti/p/XXXXXXXXXX',
   estimateUrl: '/estimate',
   address: '神奈川県厚木市温水西1-4-39',
