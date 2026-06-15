@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import {
+  Flame, Building2, DoorOpen, Leaf, ThermometerSun, Droplet,
+  RefreshCw, ShieldCheck, Wrench, PhoneCall,
+} from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import ProductCard from '@/components/ProductCard'
 import EstimateForm from '@/components/EstimateForm'
-import { productsData, getProductsByMaker, constructionFeeItems, additionalFeeItems, formatPrice } from '@/data/products'
+import { getProductsByMaker, constructionFeeItems, additionalFeeItems, formatPrice } from '@/data/products'
 import { casesData } from '@/data/cases'
 import { guidesData } from '@/data/guides'
 import { areasData } from '@/data/areas'
@@ -23,33 +27,42 @@ const makerInfo = [
   {
     slug: 'rinnai',
     name: 'リンナイ',
+    nameEn: 'Rinnai',
     tagline: '国内No.1シェアの信頼ブランド',
-    color: '#E60012',
+    accentColor: 'border-red-200',
     discountLabel: '最大80%OFF',
+    discountColor: 'bg-red-600',
+    productCount: 6,
   },
   {
     slug: 'noritz',
     name: 'ノーリツ',
+    nameEn: 'NORITZ',
     tagline: 'エコジョーズで省エネ給湯',
-    color: '#003087',
+    accentColor: 'border-blue-200',
     discountLabel: '最大79%OFF',
+    discountColor: 'bg-blue-700',
+    productCount: 6,
   },
   {
     slug: 'paloma',
     name: 'パロマ',
+    nameEn: 'Paloma',
     tagline: 'コスパ抜群のスタンダードモデル',
-    color: '#1A5276',
-    discountLabel: '最大79%OFF',
+    accentColor: 'border-indigo-200',
+    discountLabel: '最大84%OFF',
+    discountColor: 'bg-indigo-700',
+    productCount: 6,
   },
 ]
 
 const categoryLinks = [
-  { href: '/category/gas-furo', label: 'ガスふろ給湯器', icon: '🛁' },
-  { href: '/category/ps-standard', label: 'PS標準設置型', icon: '🏢' },
-  { href: '/category/ps-door', label: 'PS扉内設置型', icon: '🚪' },
-  { href: '/category/eco-jaws', label: 'エコジョーズ', icon: '🌿' },
-  { href: '/category/warm-water-heating', label: '暖房付き給湯器', icon: '🔥' },
-  { href: '/category/gas-kyuto', label: '給湯専用', icon: '💧' },
+  { href: '/category/gas-furo', label: 'ガスふろ給湯器', desc: '追い焚き機能付き', Icon: Flame },
+  { href: '/category/ps-standard', label: 'PS標準設置型', desc: 'マンション向け', Icon: Building2 },
+  { href: '/category/ps-door', label: 'PS扉内設置型', desc: 'パイプスペース扉内', Icon: DoorOpen },
+  { href: '/category/eco-jaws', label: 'エコジョーズ', desc: '省エネ・省コスト', Icon: Leaf },
+  { href: '/category/warm-water-heating', label: '暖房付き給湯器', desc: '床暖房・浴室暖房対応', Icon: ThermometerSun },
+  { href: '/category/gas-kyuto', label: '給湯専用', desc: '給湯のみシンプルタイプ', Icon: Droplet },
 ]
 
 const specialExchangeLinks = [
@@ -123,21 +136,25 @@ export default function Home() {
                 <Link
                   key={m.slug}
                   href={`/${m.slug}`}
-                  className="group border-2 border-gray-200 hover:border-brand-400 rounded-xl p-6 flex flex-col items-center text-center transition-all hover:shadow-lg bg-white"
+                  className={`group border-2 ${m.accentColor} hover:border-brand-400 rounded-xl p-6 flex flex-col bg-white transition-all hover:shadow-lg`}
                 >
-                  <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center text-white font-black text-xl mb-3 shadow-md"
-                    style={{ backgroundColor: m.color }}
-                  >
-                    {m.name[0]}
+                  {/* テキストロゴ */}
+                  <div className="mb-3">
+                    <div className="text-2xl font-black tracking-tight text-gray-900 leading-none">{m.nameEn}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{m.name}</div>
                   </div>
-                  <div className="font-black text-xl text-gray-900 mb-1">{m.name}</div>
-                  <div className="text-sm text-gray-500 mb-3">{m.tagline}</div>
-                  <div className="bg-red-600 text-white font-black text-sm px-4 py-1.5 rounded-full mb-4">
-                    {m.discountLabel}
+                  <div className="text-sm text-gray-500 mb-3 leading-snug">{m.tagline}</div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className={`${m.discountColor} text-white font-black text-xs px-3 py-1 rounded`}>
+                      {m.discountLabel}
+                    </span>
+                    <span className="text-xs text-gray-500">{m.productCount}機種掲載</span>
                   </div>
-                  <div className="text-brand-700 font-bold text-sm group-hover:underline">
-                    商品一覧を見る →
+                  <div className="mt-auto text-brand-700 font-bold text-sm group-hover:underline flex items-center gap-1">
+                    商品一覧を見る
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
                 </Link>
               ))}
@@ -150,7 +167,7 @@ export default function Home() {
         ═══════════════════════════════════ */}
         <section className="py-8 bg-yellow-50 border-y-2 border-yellow-300">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <div className="text-yellow-700 font-black text-sm uppercase tracking-wider mb-2">✨ 完全無料</div>
+            <div className="text-yellow-700 font-black text-sm uppercase tracking-wider mb-2">完全無料</div>
             <h2 className="text-2xl font-black text-gray-900 mb-2">
               給湯器の写真を送るだけで即日お見積り
             </h2>
@@ -298,8 +315,13 @@ export default function Home() {
                   href={cat.href}
                   className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-4 hover:border-brand-400 hover:shadow-md transition-all group"
                 >
-                  <span className="text-2xl">{cat.icon}</span>
-                  <span className="font-bold text-gray-800 text-sm group-hover:text-brand-700">{cat.label}</span>
+                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-blue-50 rounded-lg text-brand-700 group-hover:bg-brand-700 group-hover:text-white transition-colors">
+                    <cat.Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-800 text-sm group-hover:text-brand-700 leading-tight">{cat.label}</div>
+                    <div className="text-[11px] text-gray-400 mt-0.5">{cat.desc}</div>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -318,9 +340,11 @@ export default function Home() {
                 <Link
                   key={s.label}
                   href={s.href}
-                  className="border border-orange-200 bg-orange-50 rounded-xl p-6 hover:border-orange-400 hover:shadow-md transition-all text-center group"
+                  className="border border-orange-200 bg-orange-50 rounded-xl p-6 hover:border-orange-400 hover:shadow-md transition-all group"
                 >
-                  <div className="text-3xl mb-3">🔄</div>
+                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-3">
+                    <RefreshCw className="w-5 h-5 text-orange-600" />
+                  </div>
                   <div className="font-black text-gray-900 text-base mb-1">{s.label}</div>
                   <div className="text-gray-500 text-sm">{s.desc}</div>
                   <div className="mt-4 text-brand-700 font-bold text-sm group-hover:underline">詳しく見る →</div>
@@ -367,7 +391,7 @@ export default function Home() {
               <div>
                 <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大79%OFF</span>
                 <h2 className="text-2xl font-black text-gray-900">パロマ ガスふろ給湯器</h2>
-                <p className="text-gray-500 text-sm mt-1">壁掛型 / FH-Eシリーズ / 工事費込み価格</p>
+                <p className="text-gray-500 text-sm mt-1">壁掛型 / FH シリーズ / 工事費込み価格</p>
               </div>
               <Link href="/paloma" className="text-brand-700 text-sm font-bold hover:underline hidden sm:block">
                 パロマ全商品を見る →
@@ -394,7 +418,7 @@ export default function Home() {
             <h2 className="text-2xl font-black text-gray-900 mb-8 text-center">キャンペーン・補助金情報</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-xl border-2 border-yellow-300 p-6">
-                <div className="text-yellow-600 font-black text-sm mb-2">📸 写真送付特典</div>
+                <div className="text-yellow-600 font-black text-sm mb-2">写真送付特典</div>
                 <h3 className="font-black text-lg text-gray-900 mb-2">給湯器の写真を送って特別割引</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   お問い合わせ時に現在の給湯器の写真と型番ラベルの写真をお送りいただくと、
@@ -406,7 +430,7 @@ export default function Home() {
                 </Link>
               </div>
               <div className="bg-white rounded-xl border-2 border-green-300 p-6">
-                <div className="text-green-600 font-black text-sm mb-2">💰 省エネ補助金</div>
+                <div className="text-green-600 font-black text-sm mb-2">省エネ補助金</div>
                 <h3 className="font-black text-lg text-gray-900 mb-2">給湯器交換で補助金が受けられる場合があります</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   エコジョーズなどの省エネ給湯器への交換で、国や自治体の補助金制度が
@@ -478,7 +502,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="font-bold text-yellow-800 text-sm mb-2">⚠️ 追加費用が発生する可能性があるケース</div>
+                  <div className="font-bold text-yellow-800 text-sm mb-2">追加費用が発生する可能性があるケース</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                     {additionalFeeItems.map((item) => (
                       <div key={item} className="text-xs text-yellow-700">・{item}</div>
@@ -503,18 +527,24 @@ export default function Home() {
               {siteConfig.warrantyNote}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-                <div className="text-4xl mb-3">🛡️</div>
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                  <ShieldCheck className="w-5 h-5 text-blue-700" />
+                </div>
                 <h3 className="font-black text-gray-900 mb-2">メーカー保証</h3>
-                <p className="text-sm text-gray-600">各メーカーの標準保証1年が付属します。延長保証については機種によって異なります。</p>
+                <p className="text-sm text-gray-600">各メーカーの標準保証が付属します。延長保証については機種によって異なります。</p>
               </div>
-              <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-                <div className="text-4xl mb-3">🔧</div>
+              <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                  <Wrench className="w-5 h-5 text-green-700" />
+                </div>
                 <h3 className="font-black text-gray-900 mb-2">工事保証</h3>
                 <p className="text-sm text-gray-600">施工部分の不具合は弊社が責任をもって対応。工事後のトラブルはお気軽にご連絡ください。</p>
               </div>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
-                <div className="text-4xl mb-3">📞</div>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mb-3">
+                  <PhoneCall className="w-5 h-5 text-yellow-700" />
+                </div>
                 <h3 className="font-black text-gray-900 mb-2">アフターサポート</h3>
                 <p className="text-sm text-gray-600">施工後のご相談も電話・LINEで承ります。地元密着だからこそできる迅速なアフター対応。</p>
               </div>

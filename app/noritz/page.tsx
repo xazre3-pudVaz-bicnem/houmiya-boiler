@@ -112,7 +112,7 @@ export default function NoritzPage() {
                   ))}
                 </div>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="font-bold text-yellow-800 text-sm mb-2">⚠️ 追加費用が発生するケース</div>
+                  <div className="font-bold text-yellow-800 text-sm mb-2">追加費用が発生するケース</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                     {additionalFeeItems.map((item) => (
                       <div key={item} className="text-xs text-yellow-700">・{item}</div>

@@ -133,7 +133,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               </div>
             ) : (
               <div className="text-center py-16">
-                <div className="text-gray-400 text-5xl mb-4">🔍</div>
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803 7.5 7.5 0 0015.803 15.803z" /></svg>
+                </div>
                 <div className="text-gray-500 text-lg font-bold mb-2">この設置タイプは要見積もりです</div>
                 <p className="text-gray-400 text-sm mb-6">
                   設置タイプ・メーカー・号数に合わせた最適な機種をご提案します。

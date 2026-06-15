@@ -52,7 +52,7 @@ export default function VoicePage() {
                   <p className="text-gray-600 text-sm leading-relaxed mb-4">&ldquo;{v.body}&rdquo;</p>
                   <div className="flex items-center justify-between">
                     <div className="flex gap-2">
-                      <span className="bg-brand-800 text-sky-light text-xs font-bold px-2.5 py-1 rounded-lg">📍 {v.area}</span>
+                      <span className="bg-brand-800 text-sky-light text-xs font-bold px-2.5 py-1 rounded-lg">{v.area}</span>
                       <span className="bg-slate-100 text-brand-700 text-xs font-medium px-2.5 py-1 rounded-lg">{v.building}</span>
                     </div>
                     <span className="text-gray-400 text-xs">{v.name}</span>

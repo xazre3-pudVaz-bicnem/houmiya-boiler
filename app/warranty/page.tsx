@@ -33,22 +33,34 @@ export default function WarrantyPage() {
         <section className="py-12 bg-gray-50">
           <div className="max-w-5xl mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-              <div className="bg-white border border-blue-200 rounded-xl p-6 text-center">
-                <div className="text-4xl mb-3">🛡️</div>
+              <div className="bg-white border border-blue-200 rounded-xl p-6">
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                </div>
                 <h2 className="font-black text-gray-900 text-lg mb-2">メーカー保証</h2>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  各メーカーの標準保証（1年）が付属します。部品の製造不良や初期不良に対してメーカーが対応します。
+                  各メーカーの標準保証が付属します。部品の製造不良や初期不良に対してメーカーが対応します。
                 </p>
               </div>
-              <div className="bg-white border border-green-200 rounded-xl p-6 text-center">
-                <div className="text-4xl mb-3">🔧</div>
+              <div className="bg-white border border-green-200 rounded-xl p-6">
+                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                  </svg>
+                </div>
                 <h2 className="font-black text-gray-900 text-lg mb-2">工事保証</h2>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   弊社施工部分（配管接続・リモコン取付など）の不具合については、弊社が責任をもって対応いたします。
                 </p>
               </div>
-              <div className="bg-white border border-yellow-200 rounded-xl p-6 text-center">
-                <div className="text-4xl mb-3">📞</div>
+              <div className="bg-white border border-yellow-200 rounded-xl p-6">
+                <div className="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                  </svg>
+                </div>
                 <h2 className="font-black text-gray-900 text-lg mb-2">アフターサポート</h2>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   施工後のご相談も電話・LINEで承ります。給湯器の使い方・エラーコードのご相談も対応します。
@@ -101,7 +113,7 @@ export default function WarrantyPage() {
 
             {/* 保証対象外ケース */}
             <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
-              <h3 className="font-black text-gray-900 mb-4">⚠️ 保証対象外となるケース</h3>
+              <h3 className="font-black text-gray-900 mb-4">保証対象外となるケース</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
                   'お客様による誤った操作・取り扱いによる故障',
