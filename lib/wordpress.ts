@@ -1,18 +1,18 @@
-const WP_API_BASE = 'https://wp.houmiya-boiler.com/wp-json/wp/v2'
+// Xserver が /wp-json/ パスへのサーバーサイドアクセスを 403 でブロックするため、
+// ?rest_route= 形式（WordPress デフォルトパーマリンク URL）を使用する。
+const WP_BASE = 'https://wp.houmiya-boiler.com'
+const WP_REST = `${WP_BASE}/?rest_route=/wp/v2`
 
-// Xserver は User-Agent なしのリクエストをブロックする場合があるため必須
 const BASE_HEADERS = {
   Accept: 'application/json',
   'User-Agent': 'Mozilla/5.0 (compatible; HoumiyaBoilerBot/1.0; +https://www.houmiya-boiler.com)',
 }
 
-// no-store: ブログ一覧・詳細ページ用（毎リクエスト最新を取得）
 const NO_STORE: RequestInit = {
   cache: 'no-store',
   headers: BASE_HEADERS,
 }
 
-// revalidate 60s: トップページ最新記事用（ホームページを dynamic にしない）
 const REVALIDATE_60: RequestInit = {
   next: { revalidate: 60 },
   headers: BASE_HEADERS,
@@ -87,7 +87,7 @@ export function formatDate(dateStr: string): string {
  * ブログ一覧ページ用。no-store で毎回最新を取得。
  */
 export async function getPosts(perPage = 12): Promise<WPPost[]> {
-  const url = `${WP_API_BASE}/posts?_embed&per_page=${perPage}&orderby=date&order=desc`
+  const url = `${WP_REST}/posts&_embed&per_page=${perPage}&orderby=date&order=desc`
   try {
     const res = await fetch(url, NO_STORE)
     const contentType = res.headers.get('content-type') ?? ''
@@ -97,7 +97,7 @@ export async function getPosts(perPage = 12): Promise<WPPost[]> {
     }
     if (!contentType.includes('application/json')) {
       const text = await res.text()
-      console.error(`[WP API] getPosts wrong content-type: ${contentType} | body: ${text.slice(0, 300)}`)
+      console.error(`[WP API] getPosts wrong content-type: ${contentType} | body: ${text.slice(0, 200)}`)
       return []
     }
     const data = (await res.json()) as WPPost[]
@@ -113,17 +113,17 @@ export async function getPosts(perPage = 12): Promise<WPPost[]> {
  * ブログ詳細ページ用。no-store で毎回最新を取得。
  */
 export async function getPostBySlug(slug: string): Promise<WPPost | null> {
-  const url = `${WP_API_BASE}/posts?slug=${encodeURIComponent(slug)}&_embed`
+  const url = `${WP_REST}/posts&slug=${encodeURIComponent(slug)}&_embed`
   try {
     const res = await fetch(url, NO_STORE)
     if (!res.ok) {
-      console.error(`[WP API] getPostBySlug failed: HTTP ${res.status} ${res.statusText}`)
+      console.error(`[WP API] getPostBySlug HTTP ${res.status} ${res.statusText}`)
       return null
     }
     const posts = (await res.json()) as WPPost[]
     return posts[0] ?? null
   } catch (err) {
-    console.error('[WP API] getPostBySlug network error:', err)
+    console.error('[WP API] getPostBySlug error:', err)
     return null
   }
 }
@@ -132,16 +132,16 @@ export async function getPostBySlug(slug: string): Promise<WPPost | null> {
  * トップページ最新記事用。60秒 revalidate でホームの静的性能を維持。
  */
 export async function getLatestPosts(limit = 3): Promise<WPPost[]> {
-  const url = `${WP_API_BASE}/posts?_embed&per_page=${limit}&orderby=date&order=desc`
+  const url = `${WP_REST}/posts&_embed&per_page=${limit}&orderby=date&order=desc`
   try {
     const res = await fetch(url, REVALIDATE_60)
     if (!res.ok) {
-      console.error(`[WP API] getLatestPosts failed: HTTP ${res.status} ${res.statusText}`)
+      console.error(`[WP API] getLatestPosts HTTP ${res.status} ${res.statusText}`)
       return []
     }
     return (await res.json()) as WPPost[]
   } catch (err) {
-    console.error('[WP API] getLatestPosts network error:', err)
+    console.error('[WP API] getLatestPosts error:', err)
     return []
   }
 }
@@ -150,17 +150,17 @@ export async function getLatestPosts(limit = 3): Promise<WPPost[]> {
  * サイトマップ生成用。
  */
 export async function fetchAllPostSlugs(): Promise<string[]> {
-  const url = `${WP_API_BASE}/posts?per_page=100&_fields=slug&orderby=date&order=desc`
+  const url = `${WP_REST}/posts&per_page=100&_fields=slug&orderby=date&order=desc`
   try {
     const res = await fetch(url, NO_STORE)
     if (!res.ok) {
-      console.error(`[WP API] fetchAllPostSlugs failed: HTTP ${res.status} ${res.statusText}`)
+      console.error(`[WP API] fetchAllPostSlugs HTTP ${res.status} ${res.statusText}`)
       return []
     }
     const posts = (await res.json()) as Array<{ slug: string }>
     return posts.map((p) => p.slug)
   } catch (err) {
-    console.error('[WP API] fetchAllPostSlugs network error:', err)
+    console.error('[WP API] fetchAllPostSlugs error:', err)
     return []
   }
 }
