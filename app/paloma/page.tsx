@@ -10,7 +10,7 @@ import { siteConfig } from '@/data/site'
 export const metadata: Metadata = {
   title: 'パロマ給湯器の交換・販売｜横浜・川崎・厚木・海老名｜宝宮設備',
   description:
-    'パロマ給湯器の交換・販売なら株式会社宝宮設備。FH-Eシリーズを最大79%OFFの工事費込み価格でご提供。横浜市・川崎市・厚木市・海老名市対応。無料見積もり受付中。',
+    'パロマ給湯器の交換・販売なら株式会社宝宮設備。FH-Eシリーズを最大84%OFFの工事費込み価格でご提供。横浜市・川崎市・厚木市・海老名市対応。無料見積もり受付中。',
 }
 
 const products = getProductsByMaker('paloma')
@@ -32,11 +32,11 @@ export default function PalomaPage() {
             </div>
             <h1 className="text-3xl md:text-4xl font-black mb-3">パロマ ガスふろ給湯器</h1>
             <p className="text-indigo-100 text-base mb-4">
-              コストパフォーマンスに優れたパロマ給湯器を最大79%OFFの工事費込み価格でご提供。<br />
+              コストパフォーマンスに優れたパロマ給湯器を最大84%OFFの工事費込み価格でご提供。<br />
               横浜市・川崎市・厚木市・海老名市に自社施工で対応。
             </p>
             <div className="flex flex-wrap gap-3">
-              <div className="bg-white/20 rounded-lg px-4 py-2 text-sm font-bold">最大79%OFF</div>
+              <div className="bg-white/20 rounded-lg px-4 py-2 text-sm font-bold">最大84%OFF</div>
               <div className="bg-white/20 rounded-lg px-4 py-2 text-sm font-bold">工事費込み価格</div>
               <div className="bg-white/20 rounded-lg px-4 py-2 text-sm font-bold">自社施工</div>
             </div>
@@ -59,7 +59,7 @@ export default function PalomaPage() {
         <section className="py-12 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">
             <div className="mb-6">
-              <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大79%OFF</span>
+              <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大84%OFF</span>
               <h2 className="text-2xl font-black text-gray-900">パロマ FH-Eシリーズ【オートタイプ】</h2>
               <p className="text-gray-500 text-sm mt-1">自動湯はり・自動追い焚き対応 / 壁掛屋外型</p>
             </div>
@@ -74,7 +74,7 @@ export default function PalomaPage() {
         <section className="py-12 bg-white">
           <div className="max-w-6xl mx-auto px-4">
             <div className="mb-6">
-              <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大79%OFF</span>
+              <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大84%OFF</span>
               <h2 className="text-2xl font-black text-gray-900">パロマ FH-Eシリーズ【フルオートタイプ】</h2>
               <p className="text-gray-500 text-sm mt-1">自動湯はり・自動追い焚き・自動保温まで全自動 / 壁掛屋外型</p>
             </div>

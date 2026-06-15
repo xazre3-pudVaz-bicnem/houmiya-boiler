@@ -1,265 +1,602 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
-import { productDetails } from '@/data/productDetails'
-import { productListings } from '@/data/productListing'
-
-type Props = { params: { id: string } }
+import ProductCard from '@/components/ProductCard'
+import {
+  productsData,
+  getProductBySlug,
+  getProductsByMaker,
+  constructionFeeItems,
+  additionalFeeItems,
+  formatPrice,
+} from '@/data/products'
+import { siteConfig } from '@/data/site'
 
 export function generateStaticParams() {
-  return Object.keys(productDetails).map((id) => ({ id }))
+  return productsData.map((p) => ({ id: p.slug }))
 }
 
-export function generateMetadata({ params }: Props) {
-  const product = productDetails[params.id]
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const product = getProductBySlug(id)
   if (!product) return {}
   return {
-    title: `${product.name} | 宝宮設備`,
-    description: product.description,
+    title: `${product.model}の給湯器交換価格｜${product.makerLabel}${product.capacity}号${product.typeLabel}｜株式会社宝宮設備`,
+    description: `${product.makerLabel} ${product.model}の給湯器交換なら株式会社宝宮設備。横浜市・川崎市・厚木市・海老名市対応。本体・リモコン・標準工事費込みの税込価格${formatPrice(product.totalInTax)}円を掲載。無料見積もり受付中。`,
+    alternates: {
+      canonical: `${siteConfig.baseUrl}${product.detailUrl}`,
+    },
   }
 }
 
-export default function ProductDetailPage({ params }: Props) {
-  const product = productDetails[params.id]
+const makerPageMap = {
+  rinnai: '/rinnai',
+  noritz: '/noritz',
+  paloma: '/paloma',
+} as const
+
+const makerColorMap = {
+  rinnai: { bg: 'bg-red-600', text: 'text-red-700', light: 'bg-red-50 border-red-200' },
+  noritz: { bg: 'bg-blue-700', text: 'text-blue-700', light: 'bg-blue-50 border-blue-200' },
+  paloma: { bg: 'bg-indigo-700', text: 'text-indigo-700', light: 'bg-indigo-50 border-indigo-200' },
+}
+
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const product = getProductBySlug(id)
   if (!product) notFound()
 
-  const related = productListings
-    .filter((p) => p.maker === product.maker && p.id !== product.id)
-    .slice(0, 3)
+  const color = makerColorMap[product.maker]
+  const makerPage = makerPageMap[product.maker]
+
+  // 同シリーズの全商品
+  const seriesProducts = getProductsByMaker(product.maker)
+  const seriesAuto = seriesProducts.filter((p) => p.type === 'auto')
+  const seriesFullAuto = seriesProducts.filter((p) => p.type === 'full-auto')
+
+  // 関連商品（同メーカー・別機種、最大3件）
+  const related = seriesProducts.filter((p) => p.slug !== product.slug).slice(0, 3)
+
+  const faqs = [
+    {
+      q: `${product.model}はどの号数を選べばいいですか？`,
+      a: `${product.capacity}号は${product.capacity === 16 ? '1〜2人の少人数世帯' : product.capacity === 20 ? '2〜4人の標準世帯' : '4人以上の大家族や同時使用が多い世帯'}に適しています。迷う場合は無料見積もりで現地確認後にアドバイスいたします。`,
+    },
+    {
+      q: 'オートとフルオートの違いは？',
+      a: 'オートは自動湯はり・自動追い焚きに対応。フルオートはこれらに加え、設定温度の自動保温・自動足し湯まで全自動で行います。フルオートのほうが利便性は高いですが、価格も少し上がります。',
+    },
+    {
+      q: '標準取付費に含まれる作業は何ですか？',
+      a: '既存給湯器の撤去・処分、新規給湯器の取付、リモコン取付、給水・給湯・ガス管の接続、配管保温、試運転、使用説明がすべて含まれます。別途費用が発生するのは、配管延長・高所作業・特殊設置環境などの場合です。',
+    },
+    {
+      q: '工事当日に追加費用が発生することはありますか？',
+      a: '標準的な交換工事では追加費用は発生しません。ただし、配管が著しく劣化していたり、設置環境が特殊な場合は事前にお見積もりで説明します。事前確認なしに追加費用を請求することはありません。',
+    },
+    {
+      q: '見積もりから工事まで何日かかりますか？',
+      a: '写真をお送りいただくか、現地確認後に最短即日でお見積もりをご提示します。工事日程はご都合に合わせて調整可能です。最短で翌日工事にも対応しています。',
+    },
+  ]
 
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main className="pt-[100px]">
 
-        {/* Breadcrumb */}
-        <div className="border-b border-slate-200 bg-slate-50">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8 py-3">
-            <nav className="flex items-center gap-1.5 text-xs text-slate-400">
-              <Link href="/" className="hover:text-brand-900 transition-colors">トップ</Link>
-              <span>/</span>
-              <Link href="/products" className="hover:text-brand-900 transition-colors">商品一覧</Link>
-              <span>/</span>
-              <span className="text-slate-600 truncate max-w-[200px]">{product.modelNumber}</span>
+        {/* パンくずリスト */}
+        <div className="bg-gray-50 border-b border-gray-200">
+          <div className="max-w-6xl mx-auto px-4 py-3">
+            <nav className="flex items-center gap-1.5 text-xs text-gray-400 flex-wrap">
+              <Link href="/" className="hover:text-gray-700 transition-colors">トップ</Link>
+              <span>›</span>
+              <Link href={makerPage} className="hover:text-gray-700 transition-colors">{product.makerLabel}給湯器</Link>
+              <span>›</span>
+              <span className="text-gray-600 truncate">{product.model}</span>
             </nav>
           </div>
         </div>
 
-        {/* Main product section */}
-        <section className="bg-white py-12 md:py-16">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        {/* メイン商品セクション */}
+        <section className="bg-white py-10 md:py-14">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
 
-              {/* Left: Product image */}
+              {/* 左：商品画像 */}
               <div>
-                <div className="relative bg-slate-50 rounded-sm overflow-hidden" style={{ aspectRatio: '4/3' }}>
+                <div className="relative bg-gray-50 rounded-xl overflow-hidden aspect-[4/3]">
                   <Image
-                    src={product.imageSrc}
-                    alt={product.name}
+                    src={product.image}
+                    alt={`${product.makerLabel} ${product.model} ${product.typeLabel} ${product.capacity}号`}
                     fill
                     className="object-contain p-8"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     priority
                   />
-                  {/* Warranty badge */}
-                  <div className="absolute top-4 left-4 w-20 h-20 bg-orange-500 text-white rounded-full flex flex-col items-center justify-center text-center shadow-lg z-10">
-                    <span className="text-[9px] font-bold">安心</span>
-                    <span className="text-sm font-black leading-none">{product.warranty.replace('保証', '')}</span>
-                    <span className="text-[9px] font-bold">保証</span>
+                  <div className="absolute top-3 left-3 bg-red-600 text-white rounded-full w-16 h-16 flex flex-col items-center justify-center text-center shadow-lg">
+                    <span className="text-[9px] font-bold">最大</span>
+                    <span className="text-lg font-black leading-none">{product.discountRate}%</span>
+                    <span className="text-[9px] font-bold">OFF</span>
+                  </div>
+                  {(product.popular || product.recommended) && (
+                    <div className="absolute top-3 right-3">
+                      {product.recommended
+                        ? <span className="bg-red-600 text-white text-xs font-black px-3 py-1 rounded shadow">おすすめ</span>
+                        : <span className="bg-yellow-400 text-gray-900 text-xs font-black px-3 py-1 rounded shadow">人気</span>}
+                    </div>
+                  )}
+                </div>
+                <p className="text-gray-400 text-[10px] mt-2 text-center">※画像は代表例です。実際の商品と若干異なる場合があります。</p>
+              </div>
+
+              {/* 右：商品情報・料金内訳 */}
+              <div>
+                <div className={`inline-block text-xs font-black px-3 py-1 rounded mb-3 ${color.bg} text-white`}>
+                  {product.makerEn}
+                </div>
+                <div className="text-xs text-gray-500 mb-1">{product.series}シリーズ / {product.installationLabel}</div>
+                <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-1 leading-tight">
+                  {product.model}
+                </h1>
+                <div className="flex items-center gap-2 mb-5">
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${color.light}`}>{product.capacity}号</span>
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${color.light}`}>{product.typeLabel}</span>
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full border border-gray-200 bg-gray-50">{product.installationLabel}</span>
+                </div>
+
+                {/* 料金内訳ボックス */}
+                <div className="border-2 border-gray-200 rounded-xl overflow-hidden mb-4">
+                  <div className="bg-gray-900 text-white p-4">
+                    <div className="text-sm font-bold text-gray-300 mb-0.5">工事費込み税込価格</div>
+                    <div className="text-4xl font-black text-white">
+                      {formatPrice(product.totalInTax)}<span className="text-2xl">円</span>
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">税抜合計 {formatPrice(product.totalExTax)}円</div>
+                  </div>
+                  <div className="p-5 space-y-3">
+                    {/* 定価 */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500">メーカー希望小売価格</span>
+                      <span className="text-sm text-gray-400 line-through">{formatPrice(product.listPrice)}円</span>
+                    </div>
+                    {/* 割引 */}
+                    <div className="flex items-center justify-between bg-red-50 -mx-5 px-5 py-2">
+                      <span className="text-sm font-black text-red-600">{product.discountRate}%OFF</span>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500">本体特価</div>
+                        <div className="text-xl font-black text-red-600">{formatPrice(product.salePrice)}円</div>
+                      </div>
+                    </div>
+                    <div className="border-t border-gray-100" />
+                    {/* リモコン */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm text-gray-700">リモコンセット</div>
+                        <div className="text-xs text-gray-400">{product.remoteModel}</div>
+                      </div>
+                      <span className="text-sm font-bold text-gray-800">{formatPrice(product.remoteSalePrice)}円</span>
+                    </div>
+                    {/* 工事費 */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm text-gray-700">標準取付費</div>
+                        <div className="text-xs text-gray-400">処分費込み</div>
+                      </div>
+                      <span className="text-sm font-bold text-gray-800">{formatPrice(product.constructionFee)}円</span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-3">
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>税抜合計</span>
+                        <span>{formatPrice(product.totalExTax)}円</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-black text-gray-900">工事費込み税込価格</span>
+                        <span className="text-2xl font-black text-red-600">{formatPrice(product.totalInTax)}円</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-blue-50 px-5 py-3 text-xs text-blue-700">
+                    ※本体・リモコン・標準取付費はすべて税抜表示。税込合計に消費税10%を加算済み。
                   </div>
                 </div>
 
-                {/* Image notice */}
-                <p className="text-slate-400 text-[11px] mt-2 text-center">
-                  ※画像は代表例です。実際の商品と若干異なる場合があります。
-                </p>
-              </div>
-
-              {/* Right: Product info */}
-              <div>
-                {/* Maker */}
-                <div className="text-brand-800 font-black text-2xl tracking-widest mb-2">{product.makerEn}</div>
-                {/* Name */}
-                <h1 className="text-xl md:text-2xl font-black text-brand-900 mb-2 leading-snug">{product.name}</h1>
-                {/* Model number */}
-                <div className="font-mono text-slate-400 text-sm mb-4">{product.modelNumber}</div>
-
-                {/* Feature tags */}
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {product.eco && (
-                    <span className="bg-sky text-white text-xs font-black px-3 py-1">エコジョーズ</span>
-                  )}
-                  {product.heating && (
-                    <span className="bg-orange-100 text-orange-600 text-xs font-black px-3 py-1">暖房付き</span>
-                  )}
-                  <span className="bg-brand-50 text-brand-800 text-xs font-bold px-3 py-1">{product.type}</span>
-                  <span className="bg-slate-100 text-slate-600 text-xs px-3 py-1">{product.installType}</span>
+                {/* 保証 */}
+                <div className="flex items-center gap-2 mb-5 text-sm text-gray-600">
+                  <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+                  {product.warranty}対応 / メーカー保証付き
                 </div>
 
-                {/* Campaign notice */}
-                <div className="bg-red-50 border border-red-200 text-red-700 text-xs font-bold px-4 py-3 mb-5 flex items-start gap-2">
-                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                  工事代金込みのコミコミ価格です。工事当日現金払いで3,000円お値引きいたします。
-                </div>
-
-                {/* Variants table */}
-                <div className="border border-slate-200 mb-3 overflow-x-auto">
-                  <table className="w-full text-sm min-w-[460px]">
-                    <thead>
-                      <tr className="bg-slate-100">
-                        <th className="px-3 py-2.5 text-left font-bold text-slate-600 text-xs border-r border-slate-200">機種</th>
-                        <th className="px-3 py-2.5 text-left font-bold text-slate-600 text-xs border-r border-slate-200">号数</th>
-                        <th className="px-3 py-2.5 text-left font-bold text-slate-600 text-xs border-r border-slate-200">型番</th>
-                        <th className="px-3 py-2.5 text-left font-bold text-slate-600 text-xs border-r border-slate-200">リモコン</th>
-                        <th className="px-3 py-2.5 text-right font-bold text-slate-500 text-xs border-r border-slate-200">定価</th>
-                        <th className="px-3 py-2.5 text-right font-bold text-coral-600 text-xs">当社価格</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {product.variants.map((v, i) => (
-                        <tr key={i} className={`border-t border-slate-100 ${i === 0 ? 'bg-orange-50' : 'bg-white hover:bg-slate-50'}`}>
-                          <td className="px-3 py-3 text-slate-700 text-xs border-r border-slate-100">{v.type}</td>
-                          <td className="px-3 py-3 font-black text-brand-900 border-r border-slate-100">{v.size}</td>
-                          <td className="px-3 py-3 font-mono text-slate-600 text-xs border-r border-slate-100">{v.modelNumber}</td>
-                          <td className="px-3 py-3 text-slate-500 text-xs border-r border-slate-100">{v.remote}</td>
-                          <td className="px-3 py-3 text-right text-slate-400 text-xs line-through border-r border-slate-100">¥{v.listPrice.toLocaleString()}</td>
-                          <td className="px-3 py-3 text-right font-black text-coral-600">¥{v.salePrice.toLocaleString()}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-slate-400 text-[11px] mb-6">※ 上記価格はすべて税込・標準工事費込みのコミコミ価格です</p>
-
-                {/* CTA */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <a
-                    href="tel:046-205-4558"
-                    className="flex items-center justify-center gap-2 bg-coral-600 hover:bg-coral-700 text-white font-black text-base px-6 py-4 transition-colors flex-1 active:scale-[0.98]"
-                  >
-                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                    </svg>
-                    お見積もり依頼
-                  </a>
-                  <a
-                    href="https://line.me/ti/p/XXXXXXXXXX"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-[#00B900] hover:bg-[#009a00] text-white font-black text-base px-6 py-4 transition-colors flex-1 active:scale-[0.98]"
-                  >
-                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.07 9.437-6.975C23.176 14.393 24 12.458 24 10.314" />
-                    </svg>
-                    LINEで無料相談
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features */}
-        {product.features.length > 0 && (
-          <section className="bg-orange-50 py-12">
-            <div className="max-w-6xl mx-auto px-6 lg:px-8">
-              <h2 className="text-xl font-black text-brand-900 mb-6 pb-3 border-b border-orange-200">主な特徴</h2>
-              <ul className="space-y-4">
-                {product.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-5 h-5 bg-orange-500 text-white rounded-full flex items-center justify-center mt-0.5">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    <span className="text-slate-700 text-sm leading-relaxed">{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
-
-        {/* Specs */}
-        <section className="bg-white py-12">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8">
-            <h2 className="text-xl font-black text-brand-900 mb-6 pb-3 border-b border-slate-200">仕様</h2>
-            <div className="border border-slate-200 overflow-hidden">
-              <table className="w-full text-sm">
-                <tbody>
-                  {product.specs.map((spec, i) => (
-                    <tr key={i} className={`border-t border-slate-100 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
-                      <th className="px-5 py-3.5 text-left font-bold text-slate-600 w-1/3 border-r border-slate-200">{spec.label}</th>
-                      <td className="px-5 py-3.5 text-slate-700">{spec.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* Related products */}
-        {related.length > 0 && (
-          <section className="bg-slate-50 py-12">
-            <div className="max-w-6xl mx-auto px-6 lg:px-8">
-              <h2 className="text-xl font-black text-brand-900 mb-8 pb-3 border-b border-slate-200">
-                {product.makerEn} の他の商品
-              </h2>
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {related.map((p) => (
+                {/* CTAボタン */}
+                <div className="space-y-3">
                   <Link
-                    key={p.id}
-                    href={p.href}
-                    className="bg-white border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all group"
+                    href={`/estimate?product=${product.slug}`}
+                    className="flex items-center justify-center gap-2 w-full bg-red-600 hover:bg-red-700 text-white font-black text-base py-4 rounded-lg transition-colors shadow-lg"
                   >
-                    <div className="relative h-32 bg-slate-50 mb-4 overflow-hidden">
-                      <Image
-                        src={p.imageSrc}
-                        alt={p.name}
-                        fill
-                        className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                      />
-                    </div>
-                    <div className="text-[11px] font-black text-brand-700 tracking-wider mb-1">{p.makerEn}</div>
-                    <div className="text-xs font-mono text-slate-400 mb-1">{p.modelNumber}</div>
-                    <div className="text-sm font-bold text-brand-900 leading-snug mb-3">{p.name}</div>
-                    <div className="text-coral-600 font-black">¥{p.salePrice.toLocaleString()}</div>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+                    この商品で無料見積もり
                   </Link>
+                  <div className="grid grid-cols-2 gap-3">
+                    <a
+                      href={siteConfig.lineUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-1.5 bg-[#00B900] hover:bg-[#009a00] text-white font-bold text-sm py-3 rounded-lg transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.07 9.437-6.975C23.176 14.393 24 12.458 24 10.314" /></svg>
+                      LINEで写真相談
+                    </a>
+                    <a
+                      href={siteConfig.phoneHref}
+                      className="flex items-center justify-center gap-1.5 border-2 border-gray-300 text-gray-700 font-bold text-sm py-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                      電話で相談
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* シリーズ料金比較表 */}
+        <section className="py-12 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-2">
+              {product.makerLabel} {product.series} シリーズ 料金一覧
+            </h2>
+            <p className="text-gray-500 text-sm mb-6">すべて工事費込み税込価格（リモコン・標準取付費含む）</p>
+
+            {/* オートタイプ */}
+            {seriesAuto.length > 0 && (
+              <div className="mb-6">
+                <div className={`text-xs font-black text-white px-3 py-1.5 inline-block rounded-t-lg ${color.bg}`}>
+                  オートタイプ
+                </div>
+                <div className="bg-white border border-gray-200 rounded-b-xl rounded-tr-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm min-w-[600px]">
+                      <thead className="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 border-r border-gray-100">号数</th>
+                          <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 border-r border-gray-100">型番</th>
+                          <th className="px-4 py-3 text-right text-xs font-bold text-gray-400 border-r border-gray-100">メーカー希望小売価格</th>
+                          <th className="px-4 py-3 text-center text-xs font-bold text-red-600 border-r border-gray-100">割引</th>
+                          <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 border-r border-gray-100">本体特価</th>
+                          <th className="px-4 py-3 text-right text-xs font-bold text-gray-900">工事費込み税込</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {seriesAuto.map((p, i) => (
+                          <tr
+                            key={p.id}
+                            className={`border-t border-gray-100 ${p.slug === product.slug ? 'bg-yellow-50' : i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                          >
+                            <td className="px-4 py-3 font-black text-gray-900 border-r border-gray-100">
+                              {p.capacity}号
+                              {p.slug === product.slug && <span className="ml-1 text-[10px] bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded font-black">選択中</span>}
+                            </td>
+                            <td className="px-4 py-3 text-gray-600 text-xs border-r border-gray-100">
+                              <Link href={p.detailUrl} className={`hover:underline ${color.text}`}>{p.model}</Link>
+                            </td>
+                            <td className="px-4 py-3 text-right text-gray-400 text-xs line-through border-r border-gray-100">{formatPrice(p.listPrice)}円</td>
+                            <td className="px-4 py-3 text-center border-r border-gray-100">
+                              <span className="text-red-600 font-black text-xs">{p.discountRate}%OFF</span>
+                            </td>
+                            <td className="px-4 py-3 text-right font-bold text-gray-800 border-r border-gray-100">{formatPrice(p.salePrice)}円</td>
+                            <td className="px-4 py-3 text-right font-black text-red-600">{formatPrice(p.totalInTax)}円</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* フルオートタイプ */}
+            {seriesFullAuto.length > 0 && (
+              <div>
+                <div className={`text-xs font-black text-white px-3 py-1.5 inline-block rounded-t-lg ${color.bg}`}>
+                  フルオートタイプ
+                </div>
+                <div className="bg-white border border-gray-200 rounded-b-xl rounded-tr-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm min-w-[600px]">
+                      <thead className="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 border-r border-gray-100">号数</th>
+                          <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 border-r border-gray-100">型番</th>
+                          <th className="px-4 py-3 text-right text-xs font-bold text-gray-400 border-r border-gray-100">メーカー希望小売価格</th>
+                          <th className="px-4 py-3 text-center text-xs font-bold text-red-600 border-r border-gray-100">割引</th>
+                          <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 border-r border-gray-100">本体特価</th>
+                          <th className="px-4 py-3 text-right text-xs font-bold text-gray-900">工事費込み税込</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {seriesFullAuto.map((p, i) => (
+                          <tr
+                            key={p.id}
+                            className={`border-t border-gray-100 ${p.slug === product.slug ? 'bg-yellow-50' : i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                          >
+                            <td className="px-4 py-3 font-black text-gray-900 border-r border-gray-100">
+                              {p.capacity}号
+                              {p.slug === product.slug && <span className="ml-1 text-[10px] bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded font-black">選択中</span>}
+                            </td>
+                            <td className="px-4 py-3 text-gray-600 text-xs border-r border-gray-100">
+                              <Link href={p.detailUrl} className={`hover:underline ${color.text}`}>{p.model}</Link>
+                            </td>
+                            <td className="px-4 py-3 text-right text-gray-400 text-xs line-through border-r border-gray-100">{formatPrice(p.listPrice)}円</td>
+                            <td className="px-4 py-3 text-center border-r border-gray-100">
+                              <span className="text-red-600 font-black text-xs">{p.discountRate}%OFF</span>
+                            </td>
+                            <td className="px-4 py-3 text-right font-bold text-gray-800 border-r border-gray-100">{formatPrice(p.salePrice)}円</td>
+                            <td className="px-4 py-3 text-right font-black text-red-600">{formatPrice(p.totalInTax)}円</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+            <p className="text-xs text-gray-400 mt-3">※ リモコン（{product.remoteModel}）および標準取付費（処分費込）を含む税込価格</p>
+          </div>
+        </section>
+
+        {/* 標準工事費に含まれる内容 */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-6">標準取付費（{formatPrice(product.constructionFee)}円・税抜）に含まれる作業</h2>
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-brand-900 text-white p-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div>
+                  <div className="font-black text-lg">標準取付費（処分費込）</div>
+                  <div className="text-blue-200 text-sm">以下の作業がすべて含まれます</div>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-3xl font-black">{formatPrice(product.constructionFee)}円</div>
+                  <div className="text-blue-200 text-sm">税抜 / 税込 {formatPrice(Math.round(product.constructionFee * 1.1))}円</div>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-5">
+                  {constructionFeeItems.map((item) => (
+                    <div key={item} className="flex items-center gap-1.5 text-sm text-gray-700">
+                      <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="font-bold text-yellow-800 text-sm mb-2">追加費用が発生するケース</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {additionalFeeItems.map((item) => (
+                      <div key={item} className="text-xs text-yellow-700">・{item}</div>
+                    ))}
+                  </div>
+                  <div className="mt-2 text-xs text-yellow-600">※ 追加費用が発生する場合は、事前にご説明・お見積もりを行います。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* オート・フルオートの説明 */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-6">オートとフルオートの違い</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className={`rounded-xl p-5 border-2 ${product.type === 'auto' ? 'border-blue-400 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="bg-blue-600 text-white text-xs font-black px-2.5 py-1 rounded">オート</span>
+                  {product.type === 'auto' && <span className="text-blue-600 text-xs font-bold">← この商品</span>}
+                </div>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    自動湯はり（設定量まで自動で止まる）
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    自動追い焚き（ボタン操作で設定温度へ）
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-gray-300 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                    <span className="text-gray-400">自動保温（手動での追い焚きが必要）</span>
+                  </li>
+                </ul>
+              </div>
+              <div className={`rounded-xl p-5 border-2 ${product.type === 'full-auto' ? 'border-blue-400 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="bg-blue-700 text-white text-xs font-black px-2.5 py-1 rounded">フルオート</span>
+                  {product.type === 'full-auto' && <span className="text-blue-600 text-xs font-bold">← この商品</span>}
+                </div>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    自動湯はり
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    自動追い焚き
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    自動保温・自動足し湯（温度が下がると自動加熱）
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* こんな方におすすめ */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-6">こんな方におすすめ</h2>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                {
+                  icon: <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+                  title: `${product.capacity}号が適した世帯`,
+                  desc: product.capacity === 16 ? '1〜2人の少人数世帯。シャワーや台所など同時使用が少ない方。' : product.capacity === 20 ? '2〜4人の標準的な家族世帯。シャワーと台所の同時使用が主な使い方。' : '4人以上の大家族。複数箇所での同時使用が多い方。',
+                },
+                {
+                  icon: <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>,
+                  title: product.type === 'auto' ? 'オートで十分な方' : 'フルオートの利便性を求める方',
+                  desc: product.type === 'auto' ? '追い焚きはボタン操作でOK。手動での操作に慣れている方。費用を抑えたい方。' : '湯温管理を自動化したい方。忙しい共働き世帯・高齢者のいるご家庭に最適。',
+                },
+                {
+                  icon: <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>,
+                  title: '設置タイプ',
+                  desc: `${product.installationLabel}。壁に直接取り付けるタイプで、戸建て・マンション問わず広く採用されています。`,
+                },
+              ].map((item, i) => (
+                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                  <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm">
+                    {item.icon}
+                  </div>
+                  <h3 className="font-black text-gray-900 text-sm mb-2">{item.title}</h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 保証について */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-6">保証について</h2>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="bg-white border border-blue-200 rounded-xl p-5">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+                </div>
+                <h3 className="font-black text-gray-900 mb-1">メーカー保証</h3>
+                <p className="text-sm text-gray-600">{product.warranty}対応。機器本体の製品保証。</p>
+              </div>
+              <div className="bg-white border border-green-200 rounded-xl p-5">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" /></svg>
+                </div>
+                <h3 className="font-black text-gray-900 mb-1">工事保証</h3>
+                <p className="text-sm text-gray-600">施工部分の不具合は迅速に対応。宝宮設備の自社施工による保証。</p>
+              </div>
+              <div className="bg-white border border-yellow-200 rounded-xl p-5">
+                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                </div>
+                <h3 className="font-black text-gray-900 mb-1">アフターサポート</h3>
+                <p className="text-sm text-gray-600">{siteConfig.hours}。工事後の不具合もお気軽にご連絡ください。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 関連商品 */}
+        {related.length > 0 && (
+          <section className="py-12 bg-white">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-6">
+                {product.makerLabel}の他の商品
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {related.map((p) => (
+                  <ProductCard key={p.id} product={p} />
                 ))}
+              </div>
+              <div className="text-center mt-6">
+                <Link
+                  href={makerPage}
+                  className="inline-flex items-center gap-2 border border-gray-300 text-gray-700 font-bold px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                >
+                  {product.makerLabel}の全商品を見る
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </Link>
               </div>
             </div>
           </section>
         )}
 
-        {/* Bottom CTA */}
-        <section className="bg-brand-900 py-12 text-center">
-          <div className="max-w-xl mx-auto px-6">
-            <p className="text-slate-400 text-sm mb-2">現地確認後に正確なお見積もりをご提示します</p>
-            <h2 className="text-white font-black text-xl mb-6">無料でお見積もり依頼</h2>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href="tel:046-205-4558"
-                className="inline-flex items-center justify-center gap-2 bg-coral-600 hover:bg-coral-700 text-white font-black text-lg px-8 py-4 transition-colors"
+        {/* 対応エリア */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">対応エリア</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-gray-600 text-sm mb-4">
+                株式会社宝宮設備は以下のエリアを中心に自社施工で対応しています。
+                エリア外の場合もお気軽にご相談ください。
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {siteConfig.areas.map((area) => (
+                  <span key={area} className="bg-brand-50 border border-brand-200 text-brand-700 font-bold text-sm px-3 py-1.5 rounded-lg">
+                    {area}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400">※ 記載エリア以外もご相談可能です。まずはお問い合わせください。</p>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-10 bg-white">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-6">よくある質問</h2>
+            <div className="space-y-4">
+              {faqs.map((faq, i) => (
+                <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                  <div className="p-4 flex items-start gap-3 bg-gray-50">
+                    <span className="flex-shrink-0 w-6 h-6 bg-brand-700 text-white text-sm font-black flex items-center justify-center rounded-full">Q</span>
+                    <div className="font-bold text-gray-900 text-sm">{faq.q}</div>
+                  </div>
+                  <div className="p-4 flex items-start gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-yellow-400 text-gray-900 text-sm font-black flex items-center justify-center rounded-full">A</span>
+                    <div className="text-gray-600 text-sm leading-relaxed">{faq.a}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 見積もりCTA */}
+        <section className={`py-14 text-white ${color.bg}`}>
+          <div className="max-w-3xl mx-auto px-4 text-center">
+            <h2 className="text-2xl md:text-3xl font-black mb-3">{product.model} の交換はお任せください</h2>
+            <p className="text-white/80 text-sm mb-2">工事費込み税込価格</p>
+            <div className="text-4xl font-black mb-6">{formatPrice(product.totalInTax)}<span className="text-2xl">円</span></div>
+            <p className="mb-8 text-white/80 text-sm">写真を送るだけで最短即日でお見積もり。{siteConfig.hours}受付。</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href={`/estimate?product=${product.slug}`}
+                className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-black text-lg px-8 py-4 rounded-lg shadow-lg transition-colors w-full sm:w-auto justify-center"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                </svg>
-                046-205-4558
-              </a>
+                無料見積もりを依頼する
+              </Link>
               <a
-                href="https://line.me/ti/p/XXXXXXXXXX"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-[#00B900] hover:bg-[#009a00] text-white font-bold text-base px-8 py-4 transition-colors"
+                href={siteConfig.phoneHref}
+                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-black text-lg px-8 py-4 rounded-lg transition-colors w-full sm:w-auto justify-center"
               >
-                LINEで無料相談
+                {siteConfig.phone}
               </a>
             </div>
           </div>

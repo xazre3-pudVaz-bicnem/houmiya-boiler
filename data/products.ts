@@ -17,8 +17,10 @@ export type ProductType = 'auto' | 'full-auto' | 'kyuto-only'
 
 export type ProductItem = {
   id: string
+  slug: string             // URLスラッグ（例: rinnai-ruf-a2405saw-c）
   maker: 'rinnai' | 'noritz' | 'paloma'
   makerLabel: string
+  makerEn: string          // 表示用英語名（Rinnai / NORITZ / Paloma）
   series: string
   model: string
   remoteModel: string
@@ -59,12 +61,12 @@ const RINNAI_REMOTE_SALE = 20000
 
 // ノーリツ
 const NORITZ_REMOTE_MODEL = 'RC-J101E'
-const NORITZ_REMOTE_LIST = 40000  // 参考サイト非掲載のため定価は参考値
+const NORITZ_REMOTE_LIST = 40000
 const NORITZ_REMOTE_SALE = 19400
 
 // パロマ
 const PALOMA_REMOTE_MODEL = 'MFC-E226V'
-const PALOMA_REMOTE_LIST = 42000  // 参考サイト非掲載のため定価は参考値
+const PALOMA_REMOTE_LIST = 42000
 const PALOMA_REMOTE_SALE = 20700
 
 // ─── 商品データ ───────────────────────────────────────────────────────
@@ -79,8 +81,10 @@ export const productsData: ProductItem[] = [
   // ── オートタイプ ──────────────────────────────────────
   {
     id: 'ruf-a2405saw',
+    slug: 'rinnai-ruf-a2405saw-c',
     maker: 'rinnai',
     makerLabel: 'リンナイ',
+    makerEn: 'Rinnai',
     series: 'RUF-A',
     model: 'RUF-A2405SAW(C)',
     remoteModel: RINNAI_REMOTE_MODEL,
@@ -103,15 +107,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     description: 'リンナイ RUF-Aシリーズ オートタイプ 24号。自動湯はり・自動追い焚き対応。壁掛屋外型で戸建て・マンション両対応。',
-    detailUrl: '/rinnai',
+    detailUrl: '/products/rinnai-ruf-a2405saw-c',
     popular: true,
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'ruf-a2005saw',
+    slug: 'rinnai-ruf-a2005saw-c',
     maker: 'rinnai',
     makerLabel: 'リンナイ',
+    makerEn: 'Rinnai',
     series: 'RUF-A',
     model: 'RUF-A2005SAW(C)',
     remoteModel: RINNAI_REMOTE_MODEL,
@@ -134,14 +140,16 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     description: 'リンナイ RUF-Aシリーズ オートタイプ 20号。3〜4人世帯に最適。自動湯はり・自動追い焚き対応。',
-    detailUrl: '/rinnai',
+    detailUrl: '/products/rinnai-ruf-a2005saw-c',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'ruf-a1615saw',
+    slug: 'rinnai-ruf-a1615saw-c',
     maker: 'rinnai',
     makerLabel: 'リンナイ',
+    makerEn: 'Rinnai',
     series: 'RUF-A',
     model: 'RUF-A1615SAW(C)',
     remoteModel: RINNAI_REMOTE_MODEL,
@@ -164,7 +172,7 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     description: 'リンナイ RUF-Aシリーズ オートタイプ 16号。1〜2人世帯向けのコンパクトモデル。',
-    detailUrl: '/rinnai',
+    detailUrl: '/products/rinnai-ruf-a1615saw-c',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
@@ -172,8 +180,10 @@ export const productsData: ProductItem[] = [
   // ── フルオートタイプ ────────────────────────────────────
   {
     id: 'ruf-a2405aw',
+    slug: 'rinnai-ruf-a2405aw-c',
     maker: 'rinnai',
     makerLabel: 'リンナイ',
+    makerEn: 'Rinnai',
     series: 'RUF-A',
     model: 'RUF-A2405AW(C)',
     remoteModel: RINNAI_REMOTE_MODEL,
@@ -196,15 +206,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     description: 'リンナイ RUF-Aシリーズ フルオートタイプ 24号。湯はり・追い焚き・保温まですべて自動。最上位クラス。',
-    detailUrl: '/rinnai',
+    detailUrl: '/products/rinnai-ruf-a2405aw-c',
     recommended: true,
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'ruf-a2005aw',
+    slug: 'rinnai-ruf-a2005aw-c',
     maker: 'rinnai',
     makerLabel: 'リンナイ',
+    makerEn: 'Rinnai',
     series: 'RUF-A',
     model: 'RUF-A2005AW(C)',
     remoteModel: RINNAI_REMOTE_MODEL,
@@ -227,14 +239,16 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     description: 'リンナイ RUF-Aシリーズ フルオートタイプ 20号。3〜4人世帯の快適生活を全自動でサポート。',
-    detailUrl: '/rinnai',
+    detailUrl: '/products/rinnai-ruf-a2005aw-c',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'ruf-a1615aw',
+    slug: 'rinnai-ruf-a1615aw-c',
     maker: 'rinnai',
     makerLabel: 'リンナイ',
+    makerEn: 'Rinnai',
     series: 'RUF-A',
     model: 'RUF-A1615AW(C)',
     remoteModel: RINNAI_REMOTE_MODEL,
@@ -257,7 +271,7 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     description: 'リンナイ RUF-Aシリーズ フルオートタイプ 16号。コンパクトながら全自動機能を搭載。',
-    detailUrl: '/rinnai',
+    detailUrl: '/products/rinnai-ruf-a1615aw-c',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
@@ -270,8 +284,10 @@ export const productsData: ProductItem[] = [
   // ── オートタイプ ──────────────────────────────────────
   {
     id: 'gt-2470saw-1',
+    slug: 'noritz-gt-2470saw-1',
     maker: 'noritz',
     makerLabel: 'ノーリツ',
+    makerEn: 'NORITZ',
     series: 'ユコアGT-70',
     model: 'GT-2470SAW-1 BL',
     remoteModel: NORITZ_REMOTE_MODEL,
@@ -294,15 +310,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     description: 'ノーリツ ユコアGT-70 オートタイプ 24号。自動湯はり・自動追い焚き対応。信頼のノーリツブランド。',
-    detailUrl: '/noritz',
+    detailUrl: '/products/noritz-gt-2470saw-1',
     popular: true,
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'gt-2070saw-1',
+    slug: 'noritz-gt-2070saw-1',
     maker: 'noritz',
     makerLabel: 'ノーリツ',
+    makerEn: 'NORITZ',
     series: 'ユコアGT-70',
     model: 'GT-2070SAW-1 BL',
     remoteModel: NORITZ_REMOTE_MODEL,
@@ -325,14 +343,16 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     description: 'ノーリツ ユコアGT-70 オートタイプ 20号。3〜4人世帯に最適なスタンダードモデル。',
-    detailUrl: '/noritz',
+    detailUrl: '/products/noritz-gt-2070saw-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'gt-1670saw-1',
+    slug: 'noritz-gt-1670saw-1',
     maker: 'noritz',
     makerLabel: 'ノーリツ',
+    makerEn: 'NORITZ',
     series: 'ユコアGT-70',
     model: 'GT-1670SAW-1 BL',
     remoteModel: NORITZ_REMOTE_MODEL,
@@ -355,7 +375,7 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     description: 'ノーリツ ユコアGT-70 オートタイプ 16号。1〜2人世帯向けのコンパクトモデル。',
-    detailUrl: '/noritz',
+    detailUrl: '/products/noritz-gt-1670saw-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
@@ -363,8 +383,10 @@ export const productsData: ProductItem[] = [
   // ── フルオートタイプ ────────────────────────────────────
   {
     id: 'gt-2470aw-1',
+    slug: 'noritz-gt-2470aw-1',
     maker: 'noritz',
     makerLabel: 'ノーリツ',
+    makerEn: 'NORITZ',
     series: 'ユコアGT-70',
     model: 'GT-2470AW-1 BL',
     remoteModel: NORITZ_REMOTE_MODEL,
@@ -387,15 +409,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     description: 'ノーリツ ユコアGT-70 フルオートタイプ 24号。全自動機能で快適なバスタイムを毎日実現。',
-    detailUrl: '/noritz',
+    detailUrl: '/products/noritz-gt-2470aw-1',
     recommended: true,
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'gt-2070aw-1',
+    slug: 'noritz-gt-2070aw-1',
     maker: 'noritz',
     makerLabel: 'ノーリツ',
+    makerEn: 'NORITZ',
     series: 'ユコアGT-70',
     model: 'GT-2070AW-1 BL',
     remoteModel: NORITZ_REMOTE_MODEL,
@@ -418,14 +442,16 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     description: 'ノーリツ ユコアGT-70 フルオートタイプ 20号。人気の3〜4人世帯向けフルオートモデル。',
-    detailUrl: '/noritz',
+    detailUrl: '/products/noritz-gt-2070aw-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'gt-1670aw-1',
+    slug: 'noritz-gt-1670aw-1',
     maker: 'noritz',
     makerLabel: 'ノーリツ',
+    makerEn: 'NORITZ',
     series: 'ユコアGT-70',
     model: 'GT-1670AW-1 BL',
     remoteModel: NORITZ_REMOTE_MODEL,
@@ -448,7 +474,7 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     description: 'ノーリツ ユコアGT-70 フルオートタイプ 16号。コンパクトながら全自動機能を搭載。',
-    detailUrl: '/noritz',
+    detailUrl: '/products/noritz-gt-1670aw-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
@@ -461,8 +487,10 @@ export const productsData: ProductItem[] = [
   // ── オートタイプ ──────────────────────────────────────
   {
     id: 'fh-2423saw-1',
+    slug: 'paloma-fh-2423saw-1',
     maker: 'paloma',
     makerLabel: 'パロマ',
+    makerEn: 'Paloma',
     series: 'FH',
     model: 'FH-2423SAW-1',
     remoteModel: PALOMA_REMOTE_MODEL,
@@ -485,15 +513,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     description: 'パロマ FH オートタイプ 24号。安定した給湯性能と使いやすい操作性。81%OFFの特別価格。',
-    detailUrl: '/paloma',
+    detailUrl: '/products/paloma-fh-2423saw-1',
     popular: true,
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'fh-2023saw-1',
+    slug: 'paloma-fh-2023saw-1',
     maker: 'paloma',
     makerLabel: 'パロマ',
+    makerEn: 'Paloma',
     series: 'FH',
     model: 'FH-2023SAW-1',
     remoteModel: PALOMA_REMOTE_MODEL,
@@ -516,14 +546,16 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     description: 'パロマ FH オートタイプ 20号。3〜4人世帯に最適。84%OFFの圧倒的コスパ。',
-    detailUrl: '/paloma',
+    detailUrl: '/products/paloma-fh-2023saw-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'fh-1613saw-1',
+    slug: 'paloma-fh-1613saw-1',
     maker: 'paloma',
     makerLabel: 'パロマ',
+    makerEn: 'Paloma',
     series: 'FH',
     model: 'FH-1613SAW-1',
     remoteModel: PALOMA_REMOTE_MODEL,
@@ -546,7 +578,7 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     description: 'パロマ FH オートタイプ 16号。1〜2人世帯向けのコンパクトモデル。',
-    detailUrl: '/paloma',
+    detailUrl: '/products/paloma-fh-1613saw-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
@@ -554,8 +586,10 @@ export const productsData: ProductItem[] = [
   // ── フルオートタイプ ────────────────────────────────────
   {
     id: 'fh-2423fawl-1',
+    slug: 'paloma-fh-2423fawl-1',
     maker: 'paloma',
     makerLabel: 'パロマ',
+    makerEn: 'Paloma',
     series: 'FH',
     model: 'FH-2423FAWL-1',
     remoteModel: PALOMA_REMOTE_MODEL,
@@ -578,15 +612,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     description: 'パロマ FH フルオートタイプ 24号。湯はり・追い焚き・保温まですべて自動。',
-    detailUrl: '/paloma',
+    detailUrl: '/products/paloma-fh-2423fawl-1',
     recommended: true,
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'fh-2023fawl-1',
+    slug: 'paloma-fh-2023fawl-1',
     maker: 'paloma',
     makerLabel: 'パロマ',
+    makerEn: 'Paloma',
     series: 'FH',
     model: 'FH-2023FAWL-1',
     remoteModel: PALOMA_REMOTE_MODEL,
@@ -609,14 +645,16 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     description: 'パロマ FH フルオートタイプ 20号。人気の3〜4人世帯向けフルオートモデル。',
-    detailUrl: '/paloma',
+    detailUrl: '/products/paloma-fh-2023fawl-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
   {
     id: 'fh-1613fawl-1',
+    slug: 'paloma-fh-1613fawl-1',
     maker: 'paloma',
     makerLabel: 'パロマ',
+    makerEn: 'Paloma',
     series: 'FH',
     model: 'FH-1613FAWL-1',
     remoteModel: PALOMA_REMOTE_MODEL,
@@ -639,13 +677,17 @@ export const productsData: ProductItem[] = [
     warranty: '10年保証',
     image: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     description: 'パロマ FH フルオートタイプ 16号。コンパクトな全自動タイプ。',
-    detailUrl: '/paloma',
+    detailUrl: '/products/paloma-fh-1613fawl-1',
     priceStatus: 'confirmed',
     priceSource: PRICE_SOURCE,
   },
 ]
 
 // ─── ユーティリティ ───────────────────────────────────────────────────────────
+
+export function getProductBySlug(slug: string): ProductItem | undefined {
+  return productsData.find((p) => p.slug === slug)
+}
 
 export function getProductsByMaker(maker: ProductItem['maker']) {
   return productsData.filter((p) => p.maker === maker)
