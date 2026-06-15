@@ -90,13 +90,21 @@ export async function getPosts(perPage = 12): Promise<WPPost[]> {
   const url = `${WP_API_BASE}/posts?_embed&per_page=${perPage}&orderby=date&order=desc`
   try {
     const res = await fetch(url, NO_STORE)
+    const contentType = res.headers.get('content-type') ?? ''
     if (!res.ok) {
-      console.error(`[WP API] getPosts failed: HTTP ${res.status} ${res.statusText}`)
+      console.error(`[WP API] getPosts HTTP ${res.status} ${res.statusText}`)
       return []
     }
-    return (await res.json()) as WPPost[]
+    if (!contentType.includes('application/json')) {
+      const text = await res.text()
+      console.error(`[WP API] getPosts wrong content-type: ${contentType} | body: ${text.slice(0, 300)}`)
+      return []
+    }
+    const data = (await res.json()) as WPPost[]
+    console.log(`[WP API] getPosts OK: ${data.length} posts`)
+    return data
   } catch (err) {
-    console.error('[WP API] getPosts network error:', err)
+    console.error('[WP API] getPosts error:', err)
     return []
   }
 }
