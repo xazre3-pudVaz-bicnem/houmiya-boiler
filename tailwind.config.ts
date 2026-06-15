@@ -9,6 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // ブランドカラー（青系）
         brand: {
           950: '#0f1e30',
           900: '#1E3A5F',
@@ -22,6 +23,24 @@ const config: Config = {
           100: '#d4e3f0',
           50:  '#eef4fb',
         },
+        // 赤（価格・割引強調）
+        red: {
+          700: '#b91c1c',
+          600: '#dc2626',
+          500: '#ef4444',
+          50:  '#fef2f2',
+        },
+        // 黄（CTA・キャンペーン）
+        yellow: {
+          500: '#eab308',
+          400: '#facc15',
+          300: '#fde047',
+          50:  '#fefce8',
+        },
+        // 緑（LINE）
+        line: '#00b900',
+        lineHover: '#009a00',
+        // coral（旧互換）
         coral: {
           700: '#b91c1c',
           600: '#dc2626',
@@ -32,7 +51,6 @@ const config: Config = {
           dark: '#0284c7',
           light: '#38bdf8',
         },
-        line: '#00b900',
       },
       fontFamily: {
         sans: ['var(--font-noto)', '"Hiragino Sans"', '"Yu Gothic"', 'sans-serif'],
