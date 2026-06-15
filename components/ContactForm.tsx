@@ -1,7 +1,16 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+/*
+ * FormSubmit 初回認証:
+ * 初回フォーム送信後、homiya@houmiyasetubi.com 宛に FormSubmit の認証メールが届きます。
+ * メール内の "Activate Form" リンクをクリックして認証を完了してください。
+ * 認証後、以降のフォーム送信内容がメールで届くようになります。
+ */
+
+import { useState, useEffect, useRef, FormEvent } from 'react'
 import { siteConfig } from '@/data/site'
+
+const FORM_ACTION = 'https://formsubmit.co/homiya@houmiyasetubi.com'
 
 const buildingTypes = ['戸建て', 'マンション', 'アパート', '店舗・事業所', 'その他']
 const contactMethods = ['電話', 'メール', 'LINE', 'どちらでも可']
@@ -42,66 +51,36 @@ const defaultForm: FormData = {
 }
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'config-error'>('idle')
-  const [errorMsg, setErrorMsg] = useState('')
   const [formData, setFormData] = useState<FormData>(defaultForm)
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof FormData, string>>>({})
+  const [sourceUrl, setSourceUrl] = useState('')
+  const replyToRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') setSourceUrl(window.location.href)
+  }, [])
 
   const validate = (): Partial<Record<keyof FormData, string>> => {
     const e: Partial<Record<keyof FormData, string>> = {}
     if (!formData.name.trim()) e.name = 'お名前を入力してください'
-    if (!formData.phone.trim()) {
-      e.phone = '電話番号を入力してください'
-    } else if (!/^[0-9\-\+\(\)\s]{10,15}$/.test(formData.phone.replace(/\s/g, ''))) {
-      e.phone = '正しい電話番号を入力してください'
-    }
-    if (!formData.purpose && !formData.symptom) e.purpose = 'ご相談内容を選択してください'
-    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      e.email = '正しいメールアドレスを入力してください'
-    }
+    if (!formData.phone.trim()) e.phone = '電話番号を入力してください'
+    if (!formData.purpose) e.purpose = 'ご相談内容を選択してください'
     return e
   }
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     const errs = validate()
     if (Object.keys(errs).length > 0) {
+      e.preventDefault()
       setFieldErrors(errs)
       return
     }
     setFieldErrors({})
-    setStatus('loading')
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          area: formData.area,
-          buildingType: formData.buildingType,
-          symptom: formData.symptom,
-          purpose: formData.purpose,
-          contactMethod: formData.contactMethod,
-          message: formData.message,
-          sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
-        }),
-      })
-      const json = await res.json()
-      if (res.status === 503) {
-        setStatus('config-error')
-      } else if (!res.ok) {
-        setErrorMsg(json.error || '送信に失敗しました。')
-        setStatus('error')
-      } else {
-        setStatus('success')
-        setFormData(defaultForm)
-      }
-    } catch {
-      setErrorMsg('ネットワークエラーが発生しました。')
-      setStatus('error')
+    // _replyto にメールアドレスをセット
+    if (replyToRef.current) {
+      replyToRef.current.value = formData.email.trim()
     }
+    // preventDefault しない → FormSubmit へネイティブ送信
   }
 
   const handleChange = (
@@ -153,178 +132,179 @@ export default function ContactForm() {
           </div>
         </div>
 
-        {/* 送信成功 */}
-        {status === 'success' && (
-          <div className="bg-white rounded-lg p-8 md:p-10 text-center shadow-card-lg">
-            <svg className="w-14 h-14 text-sky mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-brand-800 font-black text-xl mb-3">送信が完了しました</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              お問い合わせいただきありがとうございます。<br />
-              内容を確認のうえ、担当者よりご連絡いたします。<br />
-              お急ぎの場合はお電話（{siteConfig.phone}）にてご連絡ください。
-            </p>
-          </div>
-        )}
-
-        {/* SMTP未設定エラー */}
-        {status === 'config-error' && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
-            <h3 className="text-brand-800 font-black text-xl mb-3">送信設定が未完了です</h3>
-            <p className="text-slate-600 text-sm mb-4">
-              お手数ですが、お電話またはLINEにてお問い合わせください。
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <a href={siteConfig.phoneHref} className="inline-flex items-center gap-2 bg-red-600 text-white font-bold px-6 py-3 rounded-lg">
-                <PhoneIcon /> {siteConfig.phone}
-              </a>
-              <a href={siteConfig.lineUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-white font-bold px-6 py-3 rounded-lg" style={{ backgroundColor: '#00B900' }}>
-                LINEで相談
-              </a>
-            </div>
-          </div>
-        )}
-
         {/* フォーム */}
-        {(status === 'idle' || status === 'loading' || status === 'error') && (
-          <form onSubmit={handleSubmit} noValidate className="bg-white rounded-lg p-6 md:p-8 shadow-card-lg">
-            <div className="space-y-4">
-              {/* Name */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  お名前 <span className="text-coral-600 ml-1">必須</span>
-                </label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="例：田中 太郎" className={inputClass} />
-                {fieldErrors.name && <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>}
-              </div>
+        <form
+          action={FORM_ACTION}
+          method="POST"
+          onSubmit={handleSubmit}
+          noValidate
+          className="bg-white rounded-lg p-6 md:p-8 shadow-card-lg"
+        >
+          {/* FormSubmit hidden fields */}
+          <input type="hidden" name="_subject" value="【給湯器サイト】無料見積もり・お問い合わせがありました" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value="https://www.houmiya-boiler.com/thanks" />
+          <input ref={replyToRef} type="hidden" name="_replyto" defaultValue="" />
+          <input type="hidden" name="送信元URL" value={sourceUrl} />
 
-              {/* Phone */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  電話番号 <span className="text-coral-600 ml-1">必須</span>
-                </label>
-                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="例：090-1234-5678" className={inputClass} />
-                {fieldErrors.phone && <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  メールアドレス <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
-                </label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="例：example@email.com" className={inputClass} />
-                {fieldErrors.email && <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>}
-                <p className="text-slate-400 text-xs mt-1">入力いただいた場合、自動返信メールをお送りします。</p>
-              </div>
-
-              {/* Area */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  住所・対応エリア <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
-                </label>
-                <input type="text" name="area" value={formData.area} onChange={handleChange} placeholder="例：横浜市戸塚区〇〇町" className={inputClass} />
-              </div>
-
-              {/* Building type + Contact method */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                    建物種別 <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
-                  </label>
-                  <select name="buildingType" value={formData.buildingType} onChange={handleChange} className={inputClass}>
-                    <option value="">選択してください</option>
-                    {buildingTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                    希望連絡方法 <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
-                  </label>
-                  <select name="contactMethod" value={formData.contactMethod} onChange={handleChange} className={inputClass}>
-                    <option value="">選択してください</option>
-                    {contactMethods.map((m) => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              {/* Purpose */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  ご相談内容 <span className="text-coral-600 ml-1">必須</span>
-                </label>
-                <select name="purpose" value={formData.purpose} onChange={handleChange} className={inputClass}>
-                  <option value="">選択してください</option>
-                  {purposeOptions.map((p) => <option key={p} value={p}>{p}</option>)}
-                </select>
-                {fieldErrors.purpose && <p className="text-red-500 text-xs mt-1">{fieldErrors.purpose}</p>}
-              </div>
-
-              {/* Symptom */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  現在の症状・詳細 <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
-                </label>
-                <textarea
-                  name="symptom"
-                  value={formData.symptom}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="例：10年以上使用している給湯器からエラーコードが表示されるようになった。お湯が出たり出なかったりする。"
-                  className={inputClass}
-                />
-              </div>
-
-              {/* Photo note */}
-              <div className="bg-sky/5 border border-sky/20 rounded p-3.5">
-                <p className="text-brand-700 text-sm font-semibold mb-1">写真でより正確なお見積もりができます</p>
-                <p className="text-slate-500 text-xs leading-relaxed">
-                  給湯器の全体写真・型番ラベル・設置場所の写真があると、より正確な概算お見積もりが可能です。
-                  写真はLINEからお送りいただくとスムーズです。
-                </p>
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
-                  その他メッセージ <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
-                </label>
-                <textarea name="message" value={formData.message} onChange={handleChange} rows={3} placeholder="ご希望の日時、その他ご要望などをご記入ください" className={inputClass} />
-              </div>
-
-              {/* Privacy */}
-              <p className="text-slate-400 text-xs leading-relaxed">
-                ご入力いただいた個人情報は、お問い合わせへの対応および当社サービスのご案内にのみ使用いたします。
-                第三者への提供はいたしません。
-              </p>
-
-              {/* Error message */}
-              {status === 'error' && (
-                <div className="bg-red-50 border border-red-200 rounded px-4 py-3 text-sm text-red-700 font-medium">
-                  {errorMsg || '送信に失敗しました。お手数ですが、お電話またはLINEでお問い合わせください。'}
-                </div>
-              )}
-
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                data-cta="submit-contact-form"
-                className="w-full bg-brand-800 hover:bg-brand-700 disabled:bg-brand-400 disabled:cursor-not-allowed text-white font-bold text-base py-4 rounded transition-all duration-150 active:scale-95 shadow-card focus:outline-none focus-visible:ring-2 focus-visible:ring-sky flex items-center justify-center gap-2"
-              >
-                {status === 'loading' ? (
-                  <>
-                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    送信中...
-                  </>
-                ) : '無料見積もりを送信する'}
-              </button>
+          <div className="space-y-4">
+            {/* Name */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                お名前 <span className="text-coral-600 ml-1">必須</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="例：田中 太郎"
+                required
+                className={inputClass}
+              />
+              {fieldErrors.name && <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>}
             </div>
-          </form>
-        )}
+
+            {/* Phone */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                電話番号 <span className="text-coral-600 ml-1">必須</span>
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="例：090-1234-5678"
+                required
+                className={inputClass}
+              />
+              {fieldErrors.phone && <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                メールアドレス <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="例：example@email.com"
+                className={inputClass}
+              />
+              <p className="text-slate-400 text-xs mt-1">入力いただいた場合、自動返信メールをお送りします。</p>
+            </div>
+
+            {/* Area */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                住所・対応エリア <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
+              </label>
+              <input
+                type="text"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                placeholder="例：横浜市戸塚区〇〇町"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Building type + Contact method */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                  建物種別 <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
+                </label>
+                <select name="buildingType" value={formData.buildingType} onChange={handleChange} className={inputClass}>
+                  <option value="">選択してください</option>
+                  {buildingTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                  希望連絡方法 <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
+                </label>
+                <select name="contactMethod" value={formData.contactMethod} onChange={handleChange} className={inputClass}>
+                  <option value="">選択してください</option>
+                  {contactMethods.map((m) => <option key={m} value={m}>{m}</option>)}
+                </select>
+              </div>
+            </div>
+
+            {/* Purpose */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                ご相談内容 <span className="text-coral-600 ml-1">必須</span>
+              </label>
+              <select name="purpose" value={formData.purpose} onChange={handleChange} className={inputClass}>
+                <option value="">選択してください</option>
+                {purposeOptions.map((p) => <option key={p} value={p}>{p}</option>)}
+              </select>
+              {fieldErrors.purpose && <p className="text-red-500 text-xs mt-1">{fieldErrors.purpose}</p>}
+            </div>
+
+            {/* Symptom */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                現在の症状・詳細 <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
+              </label>
+              <textarea
+                name="symptom"
+                value={formData.symptom}
+                onChange={handleChange}
+                rows={4}
+                placeholder="例：10年以上使用している給湯器からエラーコードが表示されるようになった。お湯が出たり出なかったりする。"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Photo note */}
+            <div className="bg-sky/5 border border-sky/20 rounded p-3.5">
+              <p className="text-brand-700 text-sm font-semibold mb-1">写真でより正確なお見積もりができます</p>
+              <p className="text-slate-500 text-xs leading-relaxed">
+                給湯器の全体写真・型番ラベル・設置場所の写真があると、より正確な概算お見積もりが可能です。
+                写真は
+                <a href={siteConfig.lineUrl} target="_blank" rel="noopener noreferrer" className="underline text-sky ml-0.5">LINE相談</a>
+                からお送りいただくとスムーズです。
+              </p>
+            </div>
+
+            {/* Message */}
+            <div>
+              <label className="block text-xs font-bold text-brand-800 mb-1.5 uppercase tracking-wide">
+                その他メッセージ <span className="text-slate-400 ml-1 font-normal normal-case">任意</span>
+              </label>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                rows={3}
+                placeholder="ご希望の日時、その他ご要望などをご記入ください"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Privacy */}
+            <p className="text-slate-400 text-xs leading-relaxed">
+              ご入力いただいた個人情報は、お問い合わせへの対応および当社サービスのご案内にのみ使用いたします。
+              第三者への提供はいたしません。
+            </p>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              data-cta="submit-contact-form"
+              className="w-full bg-brand-800 hover:bg-brand-700 text-white font-bold text-base py-4 rounded transition-all duration-150 active:scale-95 shadow-card focus:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+            >
+              無料見積もりを送信する
+            </button>
+          </div>
+        </form>
       </div>
     </section>
   )

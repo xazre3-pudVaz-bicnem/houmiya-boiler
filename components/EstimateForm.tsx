@@ -1,9 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+/*
+ * FormSubmit 初回認証:
+ * 初回フォーム送信後、homiya@houmiyasetubi.com 宛に FormSubmit の認証メールが届きます。
+ * メール内の "Activate Form" リンクをクリックして認証を完了してください。
+ * 認証後、以降のフォーム送信内容がメールで届くようになります。
+ */
+
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { type ProductItem, formatPrice } from '@/data/products'
 import { siteConfig } from '@/data/site'
+
+const FORM_ACTION = 'https://formsubmit.co/homiya@houmiyasetubi.com'
 
 type FormState = {
   buildingType: string
@@ -15,7 +24,6 @@ type FormState = {
   symptoms: string[]
   desiredType: string
   desiredMaker: string
-  desiredProduct: string
   name: string
   phone: string
   email: string
@@ -25,7 +33,7 @@ type FormState = {
   notes: string
 }
 
-const defaultForm = (preProduct: string): FormState => ({
+const defaultForm = (): FormState => ({
   buildingType: '',
   installType: '',
   size: '',
@@ -35,7 +43,6 @@ const defaultForm = (preProduct: string): FormState => ({
   symptoms: [],
   desiredType: '',
   desiredMaker: '',
-  desiredProduct: preProduct,
   name: '',
   phone: '',
   email: '',
@@ -62,8 +69,12 @@ function RadioGroup({
           }`}
         >
           <input
-            type="radio" name={name} value={opt} checked={value === opt}
-            onChange={() => onChange(opt)} className="sr-only"
+            type="radio"
+            name={name}
+            value={opt}
+            checked={value === opt}
+            onChange={() => onChange(opt)}
+            className="sr-only"
           />
           {opt}
         </label>
@@ -91,8 +102,10 @@ function CheckGroup({
           }`}
         >
           <input
-            type="checkbox" checked={values.includes(opt)}
-            onChange={() => toggle(opt)} className="sr-only"
+            type="checkbox"
+            checked={values.includes(opt)}
+            onChange={() => toggle(opt)}
+            className="sr-only"
           />
           {values.includes(opt) && (
             <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -122,162 +135,67 @@ type Props = {
 }
 
 export default function EstimateForm({ preselectedProduct }: Props) {
-  const [form, setForm] = useState<FormState>(
-    defaultForm(preselectedProduct?.model ?? '')
-  )
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'config-error'>('idle')
-  const [submitErrorMsg, setSubmitErrorMsg] = useState('')
+  const [form, setForm] = useState<FormState>(defaultForm())
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
-  const [photoNames, setPhotoNames] = useState<string[]>([])
+  const [sourceUrl, setSourceUrl] = useState('')
+  const replyToRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') setSourceUrl(window.location.href)
+  }, [])
 
   const set = (key: keyof FormState) => (value: string | string[]) =>
     setForm((prev) => ({ ...prev, [key]: value }))
 
-  const validate = () => {
+  const validate = (): typeof errors => {
     const e: typeof errors = {}
     if (!form.name.trim()) e.name = 'お名前を入力してください'
-    if (!form.phone.trim()) {
-      e.phone = '電話番号を入力してください'
-    } else if (!/^[0-9\-\+\(\)\s]{10,15}$/.test(form.phone.replace(/\s/g, ''))) {
-      e.phone = '正しい電話番号を入力してください'
-    }
+    if (!form.phone.trim()) e.phone = '電話番号を入力してください'
     if (!form.installType) e.installType = '設置タイプを選択してください'
-    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      e.email = '正しいメールアドレスを入力してください'
-    }
     return e
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const errs = validate()
     if (Object.keys(errs).length > 0) {
+      e.preventDefault()
       setErrors(errs)
       const firstErr = document.querySelector('[data-error]')
       firstErr?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
-    setSubmitStatus('loading')
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          address: form.address,
-          buildingType: form.buildingType,
-          installType: form.installType,
-          size: form.size,
-          currentMaker: form.currentMaker,
-          currentModel: form.currentModel,
-          age: form.age,
-          symptoms: form.symptoms,
-          desiredType: form.desiredType,
-          desiredMaker: form.desiredMaker,
-          desiredProduct: form.desiredProduct,
-          timing: form.timing,
-          contactMethod: form.contactMethod,
-          notes: form.notes,
-          productSlug: preselectedProduct?.slug,
-          sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
-        }),
-      })
-      const json = await res.json()
-      if (res.status === 503) {
-        setSubmitStatus('config-error')
-      } else if (!res.ok) {
-        setSubmitErrorMsg(json.error || '送信に失敗しました。')
-        setSubmitStatus('error')
-      } else {
-        setSubmitStatus('success')
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-    } catch {
-      setSubmitErrorMsg('ネットワークエラーが発生しました。')
-      setSubmitStatus('error')
+    // _replyto にメールアドレスをセット（React state 経由では間に合わないため DOM 直接操作）
+    if (replyToRef.current) {
+      replyToRef.current.value = form.email.trim()
     }
-  }
-
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? [])
-    setPhotoNames(files.map((f) => f.name))
-  }
-
-  // ─── 送信成功 ───────────────────────────────────────────────────────────
-  if (submitStatus === 'success') {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="w-20 h-20 rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-black text-brand-900 mb-3">送信が完了しました</h2>
-        <p className="text-slate-500 text-sm mb-2">
-          内容を確認のうえ、担当者よりご連絡いたします。
-        </p>
-        <p className="text-slate-400 text-xs mb-8">通常1〜2時間以内にご連絡しております（受付 9:00〜18:00）</p>
-        <p className="text-slate-400 text-xs">お急ぎの場合は直接お電話ください</p>
-        <a
-          href={siteConfig.phoneHref}
-          data-cta="phone-estimate-thanks"
-          className="inline-flex items-center gap-2 mt-3 bg-brand-900 hover:bg-brand-800 text-white font-black px-6 py-3 rounded-lg transition-colors shadow"
-        >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-          </svg>
-          {siteConfig.phone}
-        </a>
-      </div>
-    )
-  }
-
-  // ─── SMTP 未設定エラー ────────────────────────────────────────────────
-  if (submitStatus === 'config-error') {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="w-20 h-20 rounded-full bg-yellow-50 border-2 border-yellow-200 flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-black text-brand-900 mb-3">送信設定が未完了です</h2>
-        <p className="text-slate-500 text-sm mb-8">
-          お手数ですが、お電話またはLINEにてお問い合わせください。
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href={siteConfig.phoneHref}
-            data-cta="phone-estimate-config-error"
-            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black px-8 py-3.5 rounded-lg transition-colors shadow"
-          >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-            </svg>
-            {siteConfig.phone}
-          </a>
-          <a
-            href={siteConfig.lineUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cta="line-estimate-config-error"
-            className="inline-flex items-center gap-2 text-white font-black px-8 py-3.5 rounded-lg transition-colors shadow"
-            style={{ backgroundColor: '#00B900' }}
-          >
-            LINEで無料相談
-          </a>
-        </div>
-        <p className="text-slate-400 text-xs mt-6">受付時間 9:00〜18:00（年中無休）</p>
-      </div>
-    )
+    // preventDefault しない → FormSubmit へネイティブ送信
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="max-w-3xl mx-auto px-4 py-14 space-y-10">
+    <form
+      action={FORM_ACTION}
+      method="POST"
+      onSubmit={handleSubmit}
+      noValidate
+      className="max-w-3xl mx-auto px-4 py-14 space-y-10"
+    >
+      {/* ─── FormSubmit hidden fields ─────────────────────────────────── */}
+      <input type="hidden" name="_subject" value="【給湯器サイト】無料見積もり・お問い合わせがありました" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_next" value="https://www.houmiya-boiler.com/thanks" />
+      <input ref={replyToRef} type="hidden" name="_replyto" defaultValue="" />
+      <input type="hidden" name="症状" value={form.symptoms.join('・')} />
+      <input type="hidden" name="送信元URL" value={sourceUrl} />
+      {preselectedProduct && (
+        <input
+          type="hidden"
+          name="希望商品"
+          value={`${preselectedProduct.makerLabel} ${preselectedProduct.model}（${preselectedProduct.capacity}号 ${preselectedProduct.typeLabel}）`}
+        />
+      )}
 
-      {/* 商品詳細ページからの遷移バナー */}
+      {/* ─── 商品詳細ページからの遷移バナー ──────────────────────────── */}
       {preselectedProduct && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-4">
           <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -300,7 +218,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
         </div>
       )}
 
-      {/* Section 1 */}
+      {/* ─── Section 1: 現在の給湯器 ──────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
         <SectionTitle num={1} title="現在の給湯器について教えてください" />
         <div className="space-y-6">
@@ -308,19 +226,19 @@ export default function EstimateForm({ preselectedProduct }: Props) {
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">建物の種類</label>
             <RadioGroup
-              name="buildingType"
+              name="建物種別"
               value={form.buildingType}
               options={['戸建て', 'マンション', 'アパート', '集合住宅', 'その他']}
               onChange={set('buildingType')}
             />
           </div>
 
-          <div data-error={errors.installType}>
+          <div data-error={errors.installType || undefined}>
             <label className="block text-sm font-bold text-slate-700 mb-2">
               設置タイプ <span className="text-red-500 text-xs font-normal">必須</span>
             </label>
             <RadioGroup
-              name="installType"
+              name="設置タイプ"
               value={form.installType}
               options={['屋外壁掛型', '屋外据置型', '屋内設置型', 'PS（パイプシャフト）型', 'わからない']}
               onChange={set('installType')}
@@ -331,29 +249,28 @@ export default function EstimateForm({ preselectedProduct }: Props) {
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">現在の号数</label>
             <RadioGroup
-              name="size"
+              name="現在の号数"
               value={form.size}
               options={['16号', '20号', '24号', 'わからない']}
               onChange={set('size')}
             />
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1.5">現在のメーカー</label>
-              <RadioGroup
-                name="currentMaker"
-                value={form.currentMaker}
-                options={['リンナイ', 'ノーリツ', 'パロマ', 'その他', 'わからない']}
-                onChange={set('currentMaker')}
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1.5">現在のメーカー</label>
+            <RadioGroup
+              name="currentMaker"
+              value={form.currentMaker}
+              options={['リンナイ', 'ノーリツ', 'パロマ', 'その他', 'わからない']}
+              onChange={set('currentMaker')}
+            />
           </div>
 
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5">現在の型番（わかる場合）</label>
             <input
               type="text"
+              name="currentModel"
               value={form.currentModel}
               onChange={(e) => set('currentModel')(e.target.value)}
               placeholder="例：RUF-A2405SAW(C)"
@@ -365,7 +282,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">使用年数</label>
             <RadioGroup
-              name="age"
+              name="使用年数"
               value={form.age}
               options={['5年未満', '5〜10年', '10〜15年', '15年以上', 'わからない']}
               onChange={set('age')}
@@ -392,7 +309,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
         </div>
       </div>
 
-      {/* Section 2 */}
+      {/* ─── Section 2: ご希望の給湯器 ───────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
         <SectionTitle num={2} title="ご希望の給湯器（わからない場合はおまかせでOK）" />
         <div className="space-y-6">
@@ -409,7 +326,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">タイプ</label>
                 <RadioGroup
-                  name="desiredType"
+                  name="希望タイプ"
                   value={form.desiredType}
                   options={['フルオート', 'オート', '給湯専用', '今のままで良い', 'おまかせ']}
                   onChange={set('desiredType')}
@@ -418,7 +335,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">メーカーのご希望</label>
                 <RadioGroup
-                  name="desiredMaker"
+                  name="希望メーカー"
                   value={form.desiredMaker}
                   options={['こだわらない', 'リンナイ', 'ノーリツ', 'パロマ']}
                   onChange={set('desiredMaker')}
@@ -427,60 +344,41 @@ export default function EstimateForm({ preselectedProduct }: Props) {
             </>
           )}
 
-          {/* 写真添付 */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">
-              給湯器の写真（添付推奨）
-            </label>
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-brand-300 transition-colors">
-              <svg className="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-              </svg>
-              <p className="text-sm text-gray-500 mb-1">写真を選択（本体・型番ラベル・設置場所）</p>
-              <p className="text-xs text-gray-400 mb-3">写真があるとより正確なお見積もりができます</p>
-              <label className="inline-flex items-center gap-2 bg-white border border-slate-300 text-slate-600 font-bold text-sm px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                写真を追加
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={handlePhotoChange}
-                />
-              </label>
-              {photoNames.length > 0 && (
-                <div className="mt-3 space-y-1">
-                  {photoNames.map((name, i) => (
-                    <div key={i} className="text-xs text-green-600 flex items-center gap-1 justify-center">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
-                      {name}
-                    </div>
-                  ))}
-                </div>
-              )}
+          {/* 写真 → LINE誘導 */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+            <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+            </svg>
+            <div>
+              <p className="text-sm font-bold text-blue-900 mb-0.5">給湯器の写真を送るとより正確なお見積もりができます</p>
+              <p className="text-xs text-blue-700">
+                現在の給湯器の写真を送る場合は、
+                <a href={siteConfig.lineUrl} target="_blank" rel="noopener noreferrer" className="underline font-bold ml-0.5">LINE相談</a>
+                から送付いただくとスムーズです。
+              </p>
             </div>
-            <p className="text-xs text-gray-400 mt-2">LINEで写真を送る場合は、お見積り依頼後にLINEからご連絡ください。</p>
           </div>
 
         </div>
       </div>
 
-      {/* Section 3 */}
+      {/* ─── Section 3: お客様情報 ────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
         <SectionTitle num={3} title="お客様情報" />
         <div className="space-y-5">
 
           <div className="grid sm:grid-cols-2 gap-5">
-            <div data-error={errors.name}>
+            <div data-error={errors.name || undefined}>
               <label className="block text-sm font-bold text-slate-700 mb-1.5">
                 お名前 <span className="text-red-500 text-xs font-normal">必須</span>
               </label>
               <input
                 type="text"
+                name="name"
                 value={form.name}
                 onChange={(e) => set('name')(e.target.value)}
                 placeholder="山田 太郎"
+                required
                 className={`w-full border rounded-lg px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand-300 transition ${
                   errors.name ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'
                 }`}
@@ -488,15 +386,17 @@ export default function EstimateForm({ preselectedProduct }: Props) {
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
             </div>
 
-            <div data-error={errors.phone}>
+            <div data-error={errors.phone || undefined}>
               <label className="block text-sm font-bold text-slate-700 mb-1.5">
                 電話番号 <span className="text-red-500 text-xs font-normal">必須</span>
               </label>
               <input
                 type="tel"
+                name="phone"
                 value={form.phone}
                 onChange={(e) => set('phone')(e.target.value)}
                 placeholder="090-1234-5678"
+                required
                 className={`w-full border rounded-lg px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand-300 transition ${
                   errors.phone ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'
                 }`}
@@ -506,20 +406,25 @@ export default function EstimateForm({ preselectedProduct }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">メールアドレス</label>
+            <label className="block text-sm font-bold text-slate-700 mb-1.5">
+              メールアドレス <span className="text-slate-400 text-xs font-normal">任意</span>
+            </label>
             <input
               type="email"
+              name="email"
               value={form.email}
               onChange={(e) => set('email')(e.target.value)}
               placeholder="example@mail.com"
               className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand-300 transition bg-white"
             />
+            <p className="text-xs text-gray-400 mt-1">入力いただいた場合、自動返信メールをお送りします。</p>
           </div>
 
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5">住所</label>
             <input
               type="text"
+              name="address"
               value={form.address}
               onChange={(e) => set('address')(e.target.value)}
               placeholder="神奈川県横浜市○○区○○"
@@ -531,7 +436,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">ご希望の対応時期</label>
               <RadioGroup
-                name="timing"
+                name="対応時期"
                 value={form.timing}
                 options={['できるだけ早く', '今週中', '今月中', '時期は未定']}
                 onChange={set('timing')}
@@ -551,6 +456,7 @@ export default function EstimateForm({ preselectedProduct }: Props) {
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5">ご質問・備考</label>
             <textarea
+              name="message"
               value={form.notes}
               onChange={(e) => set('notes')(e.target.value)}
               placeholder="現在のエラーコードや気になる症状などをご記入ください"
@@ -562,37 +468,20 @@ export default function EstimateForm({ preselectedProduct }: Props) {
         </div>
       </div>
 
-      {/* プライバシー + 送信 */}
+      {/* ─── 送信ボタン ──────────────────────────────────────────────── */}
       <div className="text-center">
         <p className="text-slate-400 text-xs mb-6">
           入力いただいた個人情報は、見積もりのご連絡にのみ使用し、第三者に提供することはありません。
         </p>
-        {submitStatus === 'error' && (
-          <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-5 py-4 text-sm text-red-700 font-medium">
-            {submitErrorMsg || '送信に失敗しました。お手数ですが、お電話またはLINEでお問い合わせください。'}
-          </div>
-        )}
         <button
           type="submit"
-          disabled={submitStatus === 'loading'}
-          className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed text-white font-black text-lg px-12 py-4 rounded-xl shadow transition-colors"
+          data-cta="submit-estimate"
+          className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black text-lg px-12 py-4 rounded-xl shadow transition-colors"
         >
-          {submitStatus === 'loading' ? (
-            <>
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              送信中...
-            </>
-          ) : (
-            <>
-              無料で見積もりを依頼する
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </>
-          )}
+          無料で見積もりを依頼する
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
         </button>
         <p className="text-slate-400 text-xs mt-3">通常1〜2時間以内にご連絡します（9:00〜18:00）</p>
       </div>
