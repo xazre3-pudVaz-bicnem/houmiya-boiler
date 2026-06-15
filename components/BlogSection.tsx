@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import {
-  fetchPosts,
+  getLatestPosts,
   getFeaturedImage,
   getFeaturedImageAlt,
   getCategories,
@@ -11,8 +11,9 @@ import {
 
 const FALLBACK_IMAGE = '/hero-banner.png'
 
+// トップページ組み込み用。60秒 revalidate でホームの静的性能を維持しつつ準即時反映。
 export default async function BlogSection() {
-  const posts = await fetchPosts(3)
+  const posts = await getLatestPosts(3)
   if (posts.length === 0) return null
 
   return (

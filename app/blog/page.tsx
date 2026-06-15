@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import CTABanner from '@/components/CTABanner'
 import {
-  fetchPosts,
+  getPosts,
   getFeaturedImage,
   getFeaturedImageAlt,
   getCategories,
@@ -14,19 +14,21 @@ import {
   formatDate,
 } from '@/lib/wordpress'
 
-export const revalidate = 3600
+// WordPressの最新記事を毎リクエスト取得（即時反映）
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: '給湯器コラム｜株式会社宝宮設備',
   description:
-    '給湯器交換、給湯器の寿命、エラーコード、リンナイ・ノーリツ・パロマ製品情報など、給湯器に関するお役立ち情報を掲載しています。',
+    '給湯器の交換時期、エラーコード、メーカー比較、費用相場など、給湯器に関するお役立ち情報を発信しています。',
   alternates: { canonical: 'https://www.houmiya-boiler.com/blog' },
 }
 
 const FALLBACK_IMAGE = '/hero-banner.png'
 
 export default async function BlogPage() {
-  const posts = await fetchPosts(12)
+  const posts = await getPosts(12)
 
   return (
     <>
@@ -41,7 +43,7 @@ export default async function BlogPage() {
             </div>
             <h1 className="text-white font-black text-3xl md:text-4xl mb-3">給湯器コラム</h1>
             <p className="text-blue-100 text-sm md:text-base max-w-xl mx-auto">
-              給湯器の豆知識・交換のタイミング・メーカー比較など、役に立つ情報を発信しています。
+              給湯器の交換時期、エラーコード、メーカー比較、費用相場など、給湯器に関するお役立ち情報を発信しています。
             </p>
           </div>
         </section>
@@ -65,7 +67,7 @@ export default async function BlogPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                   </svg>
                 </div>
-                <p className="text-gray-400 text-sm">記事を取得できませんでした。しばらくしてから再度お試しください。</p>
+                <p className="text-gray-400 text-sm">記事を取得できませんでした。時間を置いて再度お試しください。</p>
                 <Link href="/" className="inline-block mt-6 text-sky-dark text-sm font-bold hover:underline">
                   トップページへ戻る
                 </Link>

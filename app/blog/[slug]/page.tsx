@@ -7,8 +7,7 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import { siteConfig } from '@/data/site'
 import {
-  fetchPostBySlug,
-  fetchAllPostSlugs,
+  getPostBySlug,
   getFeaturedImage,
   getFeaturedImageAlt,
   getCategories,
@@ -16,21 +15,17 @@ import {
   formatDate,
 } from '@/lib/wordpress'
 
-export const revalidate = 3600
-export const dynamicParams = true
+// WordPressの最新記事を毎リクエスト取得（即時反映）
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 const FALLBACK_IMAGE = '/hero-banner.png'
-
-export async function generateStaticParams() {
-  const slugs = await fetchAllPostSlugs()
-  return slugs.map((slug) => ({ slug }))
-}
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params
-  const post = await fetchPostBySlug(slug)
+  const post = await getPostBySlug(slug)
   if (!post) return {}
   const title = `${post.title.rendered} | ${siteConfig.name}`
   const description = stripHtml(post.excerpt.rendered).slice(0, 120)
@@ -56,7 +51,7 @@ export default async function BlogDetailPage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const post = await fetchPostBySlug(slug)
+  const post = await getPostBySlug(slug)
   if (!post) notFound()
 
   const imgSrc = getFeaturedImage(post) ?? FALLBACK_IMAGE
