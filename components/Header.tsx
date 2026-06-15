@@ -39,6 +39,7 @@ const navLinks = [
   { href: '/cases', label: '施工事例' },
   { href: '/area/yokohama', label: '対応エリア' },
   { href: '/guide/full-auto-auto', label: '給湯器の知識' },
+  { href: '/blog', label: 'コラム' },
   { href: '/estimate', label: '無料見積もり' },
 ]
 

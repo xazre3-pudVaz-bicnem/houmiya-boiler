@@ -10,6 +10,7 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import ProductCard from '@/components/ProductCard'
 import EstimateForm from '@/components/EstimateForm'
+import BlogSection from '@/components/BlogSection'
 import { getProductsByMaker, constructionFeeItems, additionalFeeItems, formatPrice } from '@/data/products'
 import { casesData } from '@/data/cases'
 import { guidesData } from '@/data/guides'
@@ -641,7 +642,12 @@ export default function Home() {
         </section>
 
         {/* ═══════════════════════════════════
-            17. お問い合わせフォーム（speed-estimate）
+            17. 給湯器コラム（WordPressブログ最新3件）
+        ═══════════════════════════════════ */}
+        <BlogSection />
+
+        {/* ═══════════════════════════════════
+            18. お問い合わせフォーム（speed-estimate）
         ═══════════════════════════════════ */}
         <section className="py-12 bg-white" id="speed-estimate">
           <div className="max-w-3xl mx-auto px-4">

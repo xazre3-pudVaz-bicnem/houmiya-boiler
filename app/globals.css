@@ -138,3 +138,123 @@
     position: static !important;
   }
 }
+
+/* ─── WordPress 記事本文スタイル ─── */
+.wp-content {
+  color: #374151;
+  line-height: 1.85;
+  font-size: 1rem;
+}
+.wp-content h2 {
+  font-size: 1.375rem;
+  font-weight: 900;
+  color: #1E3A5F;
+  border-left: 4px solid #0ea5e9;
+  padding-left: 0.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+.wp-content h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #23466B;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.wp-content h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #374151;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.wp-content p {
+  margin-bottom: 1.25rem;
+}
+.wp-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.wp-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.wp-content li {
+  margin-bottom: 0.4rem;
+}
+.wp-content a {
+  color: #0284c7;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.wp-content a:hover {
+  color: #0ea5e9;
+}
+.wp-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem auto;
+  display: block;
+}
+.wp-content blockquote {
+  border-left: 4px solid #0ea5e9;
+  background: #eef4fb;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  color: #4b5563;
+  font-style: italic;
+}
+.wp-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+}
+.wp-content th {
+  background: #1E3A5F;
+  color: white;
+  padding: 0.6rem 0.875rem;
+  font-weight: 700;
+  text-align: left;
+  border: 1px solid #1E3A5F;
+}
+.wp-content td {
+  padding: 0.6rem 0.875rem;
+  border: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+.wp-content tr:nth-child(even) td {
+  background: #f8fafc;
+}
+.wp-content pre,
+.wp-content code {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+}
+.wp-content pre {
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+.wp-content code {
+  padding: 0.1em 0.35em;
+}
+.wp-content strong {
+  font-weight: 700;
+  color: #1f2937;
+}
+.wp-content hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}

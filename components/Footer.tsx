@@ -69,6 +69,7 @@ const footerColumns = [
       { href: '/guide/model-number', label: '型番の見方' },
       { href: '/guide/error-code', label: 'エラーコード一覧' },
       { href: '/guide/lifespan', label: '給湯器の寿命' },
+      { href: '/blog', label: '給湯器コラム一覧' },
     ],
   },
   {

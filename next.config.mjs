@@ -7,6 +7,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.pexels.com' },
       { protocol: 'https', hostname: 'images.microcms-assets.io' },
       { protocol: 'https', hostname: 'www.noritz.co.jp' },
+      { protocol: 'https', hostname: 'wp.houmiya-boiler.com' },
     ],
   },
 }
