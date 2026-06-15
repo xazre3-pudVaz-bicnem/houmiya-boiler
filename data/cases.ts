@@ -15,7 +15,7 @@ export type CaseItem = {
   imageSrc: string
   imageAlt: string
   // 仮データフラグ — 実施工写真・実型番に差し替え時にfalseへ
-  isDummy?: boolean
+  isSample?: boolean
 }
 
 export const casesData: CaseItem[] = [
@@ -32,10 +32,10 @@ export const casesData: CaseItem[] = [
     capacity: 24,
     type: 'オート',
     duration: '約3時間',
-    comment: '長年ご使用のガスふろ給湯器からリンナイの最新モデルへ交換。配管状態も良好で、スムーズに施工完了しました。号数アップで家族全員がゆっくりお風呂を楽しめるようになったと喜んでいただきました。',
+    comment: '長年ご使用のガスふろ給湯器からリンナイの最新モデルへ交換。配管状態も良好で、スムーズに施工完了しました。号数を20号から24号にアップし、大家族でもお湯切れしにくい環境を実現。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '横浜市戸塚区 戸建て リンナイ RUF-A2405SAW(C) 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 2,
@@ -50,10 +50,10 @@ export const casesData: CaseItem[] = [
     capacity: 24,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'マンションのPS（パイプスペース）設置タイプの交換。狭い作業スペースながら丁寧に施工。フルオートへのグレードアップで、追い焚き・保温もすべて自動になり大変便利になったとのお声をいただきました。',
+    comment: 'マンションのPS（パイプスペース）設置タイプの交換。狭い作業スペースながら丁寧に施工。フルオートへのグレードアップで、追い焚き・保温がすべて自動化されました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '川崎市中原区 マンション リンナイ RUF-A2405AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 3,
@@ -71,7 +71,7 @@ export const casesData: CaseItem[] = [
     comment: '使用年数12年、冬場にエラーコードが頻発するようになりご相談。ノーリツの最新モデルへ交換し、安定したお湯の供給が実現。弊社所在地の厚木市なので迅速にご対応できました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     imageAlt: '厚木市 戸建て ノーリツ GT-2470SAW 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 4,
@@ -86,10 +86,10 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'オート',
     duration: '約2.5時間',
-    comment: 'アパートオーナー様より複数台の交換ご依頼。入居者様に支障が出ないよう一台ずつ迅速に対応しました。費用も分かりやすくご提示でき、ご満足いただけました。',
+    comment: 'アパートオーナー様より複数台の交換ご依頼。入居者様に支障が出ないよう一台ずつ迅速に対応しました。費用は事前に明細をご提示し、工事完了後にご確認いただきました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     imageAlt: '海老名市 アパート ノーリツ GT-2070SAW 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 5,
@@ -104,10 +104,10 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'お湯になるまで時間がかかる、水温が安定しないとのご相談でご依頼。リンナイのフルオートへ交換し、湯はりもすべて自動になり大変喜んでいただきました。',
+    comment: 'お湯になるまで時間がかかる、水温が安定しないとのご相談でご依頼。リンナイのフルオートへ交換し、湯はり・追い焚き・保温がすべて自動になりました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '横浜市港北区 戸建て リンナイ RUF-A2005AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 6,
@@ -125,7 +125,7 @@ export const casesData: CaseItem[] = [
     comment: '引越しに伴い最新機種への交換をご希望。マンション規約の確認も行い、適合機種を選定。24号にグレードアップしたことでお湯切れも解消されました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '川崎市高津区 マンション パロマ FH-E247AW フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 7,
@@ -140,10 +140,10 @@ export const casesData: CaseItem[] = [
     capacity: 24,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'ガス漏れのような異臭がするとの緊急ご連絡。安全を確認したうえで速やかに交換対応。迅速な対応にとても安心されたとのお声をいただきました。',
+    comment: 'ガス漏れのような異臭がするとの緊急ご連絡。安全を確認したうえで速やかに交換対応。当日中に新しい給湯器の稼働を確認し、安全な状態で引き渡しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '横浜市青葉区 戸建て リンナイ RUF-A2405AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 8,
@@ -158,10 +158,10 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'フルオート',
     duration: '約3時間',
-    comment: '使用15年の給湯器が故障。ノーリツのフルオートへ交換。お客様は追い焚きの自動化を特に喜ばれていました。リモコンも最新タイプに替えたことで操作が格段に楽になったとのことです。',
+    comment: '使用15年の給湯器が故障。ノーリツのフルオートへ交換。追い焚きの自動化に対応し、リモコンも最新タイプへ刷新しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     imageAlt: '横浜市都筑区 戸建て ノーリツ GT-2070AW フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 9,
@@ -179,7 +179,7 @@ export const casesData: CaseItem[] = [
     comment: 'ご高齢のご夫婦が使いやすいフルオートタイプをご提案。操作説明も丁寧に行い、当日から快適にお使いいただけるようサポートしました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '川崎市宮前区 戸建て リンナイ RUF-A1615AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 10,
@@ -194,10 +194,10 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'マンションのPS扉内設置タイプ。設置スペースが限られた環境でも対応機種を選定し施工完了。追い焚きが何度でもできるフルオートへの切り替えに大変喜んでいただきました。',
+    comment: 'マンションのPS扉内設置タイプ。設置スペースが限られた環境でも対応機種を選定し施工完了。フルオートタイプへの切り替えで、追い焚き・保温が自動化されました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '横浜市金沢区 マンション パロマ FH-E207AW フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 11,
@@ -212,10 +212,10 @@ export const casesData: CaseItem[] = [
     capacity: 24,
     type: 'フルオート',
     duration: '約3時間',
-    comment: '真冬にお湯が突然出なくなったとの緊急ご相談。弊社の拠点がある厚木市のためすぐにご対応できました。翌日には新しい給湯器が稼働し、お客様にとても安堵していただきました。',
+    comment: '真冬にお湯が突然出なくなったとの緊急ご相談。弊社の拠点がある厚木市のためすぐにご対応できました。翌日には新しい給湯器が稼働し、安定した給湯環境を回復しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '厚木市 戸建て リンナイ RUF-A2405AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 12,
@@ -233,7 +233,7 @@ export const casesData: CaseItem[] = [
     comment: '給湯器から水漏れが発生したとのご連絡でご訪問。応急処置後に交換作業を実施。ノーリツのオートタイプで安定した給湯環境が復活しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     imageAlt: '海老名市 戸建て ノーリツ GT-2070SAW オート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 13,
@@ -248,10 +248,10 @@ export const casesData: CaseItem[] = [
     capacity: 16,
     type: 'フルオート',
     duration: '約2.5時間',
-    comment: 'ご夫婦2名のご世帯。コスト重視でパロマのフルオート16号をご提案。予算内でフルオートを実現でき、お客様に大変ご満足いただけました。',
+    comment: 'ご夫婦2名のご世帯。コスト重視でパロマのフルオート16号をご提案。予算内でフルオートタイプへの交換を実現しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '横浜市保土ケ谷区 戸建て パロマ FH-E167AW フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 14,
@@ -266,10 +266,10 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'オート',
     duration: '約3時間',
-    comment: '年末年始を前にした給湯器の故障で緊急ご依頼。年末でも迅速対応し、安心して新年をお迎えいただけました。費用の安さに驚かれたとのお声もいただきました。',
+    comment: '年末年始を前にした給湯器の故障で緊急ご依頼。年末でも迅速対応し、年内に新しい給湯器の稼働を確認しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '横浜市泉区 戸建て リンナイ RUF-A2005SAW(C) オート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 15,
@@ -284,10 +284,10 @@ export const casesData: CaseItem[] = [
     capacity: 24,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'ご家族4人のご家庭。使用10年を機に計画的に交換。ノーリツのフルオート24号で、湯はりから追い焚き・保温まですべて自動になり日々の家事が楽になったとのことです。',
+    comment: 'ご家族4人のご家庭。使用10年を機に計画的に交換。ノーリツのフルオート24号で、湯はりから追い焚き・保温までがすべて自動化されました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     imageAlt: '川崎市麻生区 戸建て ノーリツ GT-2470AW フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 16,
@@ -302,10 +302,10 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'マンションのPS標準設置型。管理組合への申請書類の書き方もご案内し、スムーズに手続きできたと喜ばれました。',
+    comment: 'マンションのPS標準設置型。管理組合への申請書類の書き方もご案内し、手続きから施工まで一括サポートしました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '横浜市港南区 マンション リンナイ RUF-A2005AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 17,
@@ -323,7 +323,7 @@ export const casesData: CaseItem[] = [
     comment: 'お子さんが増え家族が4人になったのを機に、号数アップをご希望。24号オートタイプへの交換で、複数人が続けてお風呂を使ってもお湯が安定して出るようになりました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '横浜市旭区 戸建て パロマ FH-E247SAW オート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 18,
@@ -338,10 +338,10 @@ export const casesData: CaseItem[] = [
     capacity: 24,
     type: 'フルオート',
     duration: '約3時間',
-    comment: 'リモコンにエラーコードが頻繁に表示されるとのご依頼。使用年数が13年のため交換をご提案。リンナイのフルオートで毎日快適に過ごせると喜ばれました。',
+    comment: 'リモコンにエラーコードが頻繁に表示されるとのご依頼。使用年数が13年のため交換をご提案。リンナイのフルオートへ交換し、安定した動作を確認しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/3d0303492ec04dfa9b52be726706cc6c/RUF-A2405AWC.jpg',
     imageAlt: '海老名市 戸建て リンナイ RUF-A2405AW(C) フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 19,
@@ -356,10 +356,10 @@ export const casesData: CaseItem[] = [
     capacity: 16,
     type: 'フルオート',
     duration: '約2.5時間',
-    comment: 'コンパクトなPS扉内設置タイプの交換。スペースが限られる中でも確実に施工。ノーリツのフルオートで日々の家事が楽になったと好評でした。',
+    comment: 'コンパクトなPS扉内設置タイプの交換。スペースが限られる中でも確実に施工。ノーリツのフルオートで湯はり・追い焚き・保温が自動化されました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/08d1fdd39bb641e18a8102b0b0c074e6/GT-C2472AW-1.jpg',
     imageAlt: '横浜市神奈川区 マンション ノーリツ GT-1670AW フルオート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
   {
     id: 20,
@@ -374,9 +374,9 @@ export const casesData: CaseItem[] = [
     capacity: 20,
     type: 'オート',
     duration: '約3時間',
-    comment: '給湯器の点火不良が続き、交換をご決断されたケース。パロマのオートタイプ20号へ交換し、毎日安心して使えるようになったとのご感想をいただきました。',
+    comment: '給湯器の点火不良が続き、交換をご決断されたケース。パロマのオートタイプ20号へ交換し、点火不良が解消され安定した給湯を確認しました。',
     imageSrc: 'https://images.microcms-assets.io/assets/01eaf4720aab4f63bb0b1e534c4a9f45/a0a4791f520d4f48a0ccc4781473ed5c/RUF-SA2005AWA.jpg',
     imageAlt: '川崎市多摩区 戸建て パロマ FH-E207SAW オート 交換施工',
-    isDummy: true,
+    isSample: true,
   },
 ]

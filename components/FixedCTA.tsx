@@ -63,6 +63,7 @@ export default function FixedCTA() {
           {/* 電話する */}
           <a
             href={`tel:${PHONE}`}
+            data-cta="phone-mobile"
             className="flex flex-col items-center justify-center bg-coral-600 active:bg-coral-700 text-white gap-1.5 py-4 select-none"
             style={{ minHeight: '64px', WebkitTapHighlightColor: 'transparent' }}
           >
@@ -74,6 +75,7 @@ export default function FixedCTA() {
           <a
             href="#speed-estimate"
             onClick={scrollToEstimate}
+            data-cta="estimate-mobile"
             className="flex flex-col items-center justify-center bg-brand-900 active:bg-brand-800 text-white gap-1.5 py-4 select-none"
             style={{ minHeight: '64px', WebkitTapHighlightColor: 'transparent' }}
           >
@@ -86,6 +88,7 @@ export default function FixedCTA() {
             href={LINE_URL}
             target="_blank"
             rel="noopener noreferrer"
+            data-cta="line-mobile"
             className="flex flex-col items-center justify-center text-white gap-1.5 py-4 select-none"
             style={{
               minHeight: '64px',
@@ -113,7 +116,7 @@ export default function FixedCTA() {
               <div className="text-brand-900 text-[11px] font-bold leading-none mb-1">受付時間</div>
               <div className="text-brand-900 text-[11px]">9:00〜18:00（年中無休）</div>
             </div>
-            <a href={`tel:${PHONE}`} className="flex items-center gap-2 group flex-shrink-0">
+            <a href={`tel:${PHONE}`} data-cta="phone-desktop" className="flex items-center gap-2 group flex-shrink-0">
               <svg className="w-5 h-5 text-brand-900 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
               </svg>
@@ -127,6 +130,7 @@ export default function FixedCTA() {
               <a
                 href="#speed-estimate"
                 onClick={scrollToEstimate}
+                data-cta="estimate-desktop"
                 className="flex items-center gap-2 bg-brand-900 hover:bg-brand-800 text-white font-bold text-sm px-6 py-3 transition-colors shadow"
               >
                 <EstimateIcon />
@@ -136,6 +140,7 @@ export default function FixedCTA() {
                 href={LINE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cta="line-desktop"
                 className="flex items-center gap-2 text-white font-bold text-sm px-6 py-3 transition-colors shadow"
                 style={{ backgroundColor: '#00B900' }}
               >

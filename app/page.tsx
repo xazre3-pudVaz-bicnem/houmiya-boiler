@@ -390,7 +390,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大79%OFF</span>
+                <span className="bg-indigo-700 text-white text-xs font-black px-3 py-1 rounded mb-2 inline-block">最大84%OFF</span>
                 <h2 className="text-2xl font-black text-gray-900">パロマ ガスふろ給湯器</h2>
                 <p className="text-gray-500 text-sm mt-1">壁掛型 / FH シリーズ / 工事費込み価格</p>
               </div>
