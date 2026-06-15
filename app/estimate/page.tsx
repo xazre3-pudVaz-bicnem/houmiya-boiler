@@ -4,6 +4,7 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import EstimateForm from '@/components/EstimateForm'
 import { siteConfig } from '@/data/site'
+import { getProductBySlug } from '@/data/products'
 
 export const metadata: Metadata = {
   title: '給湯器の無料見積もり依頼｜横浜・川崎・厚木・海老名｜宝宮設備',
@@ -11,7 +12,13 @@ export const metadata: Metadata = {
     '給湯器交換の無料見積もり依頼フォーム。写真を添付いただくと最短即日で工事費込みのお見積りをご案内します。横浜市・川崎市・厚木市・海老名市対応。',
 }
 
-export default function EstimatePage() {
+export default async function EstimatePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ product?: string }>
+}) {
+  const { product: productSlug } = await searchParams
+  const preselectedProduct = productSlug ? getProductBySlug(productSlug) : undefined
   return (
     <>
       <Header />
@@ -67,7 +74,7 @@ export default function EstimatePage() {
           </div>
         </section>
 
-        <EstimateForm />
+        <EstimateForm preselectedProduct={preselectedProduct} />
 
       </main>
       <Footer />

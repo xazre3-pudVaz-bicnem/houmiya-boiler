@@ -30,18 +30,18 @@ export const metadata: Metadata = {
     '給湯器交換 横浜市',
     '宝宮設備',
   ],
-  metadataBase: new URL('https://houmiya-boiler.com'),
+  metadataBase: new URL('https://www.houmiya-boiler.com'),
   openGraph: {
     title: '横浜市の給湯器交換・販売なら株式会社宝宮設備｜川崎・厚木・海老名対応',
     description:
       '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売なら株式会社宝宮設備へ。給湯器の故障、交換、撤去まで自社施工で迅速対応。最短即日対応、適正価格。',
-    url: 'https://houmiya-boiler.com',
+    url: 'https://www.houmiya-boiler.com',
     siteName: '宝宮設備 給湯器交換専門サイト',
     locale: 'ja_JP',
     type: 'website',
     images: [
       {
-        url: '/og-image.svg',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: '横浜市の給湯器交換なら宝宮設備',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
       '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売なら株式会社宝宮設備へ。最短即日対応。自社施工。',
   },
   alternates: {
-    canonical: 'https://houmiya-boiler.com',
+    canonical: 'https://www.houmiya-boiler.com',
   },
   robots: {
     index: true,
@@ -78,7 +78,9 @@ const localBusinessSchema = {
   alternateName: '宝宮設備 給湯器交換専門',
   description:
     '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売・撤去を行う専門業者。自社施工で最短即日対応。リンナイ・ノーリツ・パロマ対応。',
-  url: 'https://houmiya-boiler.com',
+  url: 'https://www.houmiya-boiler.com',
+  logo: 'https://www.houmiya-boiler.com/logo.png',
+  image: 'https://www.houmiya-boiler.com/logo.png',
   telephone: '+81-46-205-4558',
   address: {
     '@type': 'PostalAddress',
@@ -262,7 +264,6 @@ export default function RootLayout({
     <html lang="ja">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         {/* Structured data */}
         <script

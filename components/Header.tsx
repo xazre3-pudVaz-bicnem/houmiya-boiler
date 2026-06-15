@@ -90,13 +90,12 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt={siteConfig.name}
-              width={280}
-              height={70}
+              width={340}
+              height={90}
               priority
-              unoptimized
-              className="h-auto w-[160px] md:w-[200px] object-contain"
+              className="h-auto w-[170px] md:w-[210px] lg:w-[240px] object-contain"
             />
           </Link>
 
