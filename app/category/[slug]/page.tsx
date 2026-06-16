@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import ProductCard from '@/components/ProductCard'
+import CapacityGuide from '@/components/CapacityGuide'
 import { productsData, getProductsByCategory, getProductsByInstallation } from '@/data/products'
 import { siteConfig } from '@/data/site'
 
@@ -120,6 +121,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             </div>
             <h1 className="text-2xl md:text-3xl font-black mb-3">{config.title}</h1>
             <p className="text-blue-100 text-sm">{config.description}</p>
+          </div>
+        </section>
+
+        <section className="py-6 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <CapacityGuide />
           </div>
         </section>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ProductItem, formatPrice } from '@/data/products'
+import { getCapacityLabel } from '@/lib/productUtils'
 import { siteConfig } from '@/data/site'
 
 type Props = {
@@ -78,6 +79,11 @@ export default function ProductCard({ product, showDetail = true }: Props) {
           <div className="font-black text-gray-900 text-sm leading-tight">{model}</div>
           <div className="text-xs text-gray-500 mt-0.5">
             {capacity}号 / {typeLabel} / {installationLabel}
+          </div>
+          <div className="mt-1">
+            <span className="inline-block text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded px-2 py-0.5">
+              {getCapacityLabel(capacity)}
+            </span>
           </div>
         </div>
 

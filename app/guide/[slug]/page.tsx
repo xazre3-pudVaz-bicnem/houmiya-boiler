@@ -63,6 +63,30 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                         {section.heading}
                       </h2>
                       <p className="text-gray-600 text-sm leading-relaxed">{section.body}</p>
+                      {section.table && (
+                        <div className="mt-4 overflow-x-auto">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="bg-brand-900 text-white">
+                                {section.table.headers.map((h, j) => (
+                                  <th key={j} className="text-left px-4 py-2.5 font-bold text-xs">{h}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {section.table.rows.map((row, j) => (
+                                <tr key={j} className={j % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                  {row.map((cell, k) => (
+                                    <td key={k} className={`px-4 py-2.5 border-b border-gray-100 text-xs ${k === 0 ? 'font-bold text-gray-700' : 'text-gray-600'}`}>
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

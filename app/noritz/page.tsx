@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import ProductCard from '@/components/ProductCard'
+import CapacityGuide from '@/components/CapacityGuide'
 import { getProductsByMaker, constructionFeeItems, additionalFeeItems } from '@/data/products'
 import { siteConfig } from '@/data/site'
 
@@ -53,6 +54,13 @@ export default function NoritzPage() {
                 オートタイプとフルオートタイプがあり、省エネ性・機能性ともに高い評価を受けています。
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* 号数ガイド */}
+        <section className="py-6 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <CapacityGuide />
           </div>
         </section>
 

@@ -14,6 +14,7 @@ import {
   additionalFeeItems,
   formatPrice,
 } from '@/data/products'
+import { getCapacityLabel, getCapacityDescription } from '@/lib/productUtils'
 import { siteConfig } from '@/data/site'
 
 export function generateStaticParams() {
@@ -151,10 +152,20 @@ export default async function ProductDetailPage({
                 <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-1 leading-tight">
                   {product.model}
                 </h1>
-                <div className="flex items-center gap-2 mb-5">
+                <div className="flex items-center gap-2 mb-3">
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${color.light}`}>{product.capacity}号</span>
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${color.light}`}>{product.typeLabel}</span>
                   <span className="text-xs font-bold px-2.5 py-1 rounded-full border border-gray-200 bg-gray-50">{product.installationLabel}</span>
+                </div>
+
+                {/* 号数の目安 */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-5">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-black text-blue-900">{product.capacity}号</span>
+                    <span className="text-xs font-bold text-blue-700 bg-blue-100 rounded px-2 py-0.5">{getCapacityLabel(product.capacity)}</span>
+                  </div>
+                  <p className="text-xs text-blue-800 leading-relaxed">{getCapacityDescription(product.capacity)}</p>
+                  <p className="text-[11px] text-blue-500 mt-1.5">号数は使用人数の目安です。設置状況によって適した号数は変わります。迷った場合はお気軽にご相談ください。</p>
                 </div>
 
                 {/* 料金内訳ボックス */}
