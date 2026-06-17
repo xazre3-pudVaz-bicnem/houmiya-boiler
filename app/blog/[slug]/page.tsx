@@ -137,6 +137,66 @@ export default async function BlogDetailPage(
             </div>
           </div>
 
+          {/* 関連ページ内部リンク */}
+          <div className="mt-10 border border-gray-200 rounded-xl p-5">
+            <p className="text-xs font-black text-gray-600 uppercase tracking-wider mb-4">関連するページ</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-2">対応エリア</p>
+                <ul className="space-y-1.5">
+                  {[
+                    { href: '/area/yokohama', label: '横浜市の給湯器交換' },
+                    { href: '/area/kawasaki', label: '川崎市の給湯器交換' },
+                    { href: '/area/atsugi', label: '厚木市の給湯器交換' },
+                    { href: '/area/ebina', label: '海老名市の給湯器交換' },
+                  ].map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-bold hover:underline">
+                        {l.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-2">給湯器の基礎知識</p>
+                <ul className="space-y-1.5">
+                  {[
+                    { href: '/guide/full-auto-auto', label: 'フルオートとオートの違い' },
+                    { href: '/guide/capacity', label: '号数の選び方' },
+                    { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
+                    { href: '/guide/lifespan', label: '給湯器の寿命' },
+                    { href: '/guide/error-code', label: 'エラーコード一覧' },
+                  ].map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-bold hover:underline">
+                        {l.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-2">トラブル症状</p>
+                <ul className="space-y-1.5">
+                  {[
+                    { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
+                    { href: '/trouble/error-111', label: 'エラーコード111' },
+                    { href: '/trouble/water-leak', label: '水漏れがある' },
+                    { href: '/trouble/temperature-unstable', label: '温度が安定しない' },
+                    { href: '/trouble', label: 'トラブル症状一覧' },
+                  ].map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-bold hover:underline">
+                        {l.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
           {/* ブログ一覧へ戻る */}
           <div className="mt-8 text-center">
             <Link

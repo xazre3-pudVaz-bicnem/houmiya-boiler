@@ -1,34 +1,34 @@
 import Link from 'next/link'
 import { siteConfig } from '@/data/site'
 
-const footerColumns = [
+const makerColumns = [
   {
     title: 'リンナイ',
     links: [
       { href: '/rinnai', label: 'リンナイ給湯器 一覧' },
-      { href: '/rinnai', label: 'ガスふろ給湯器 壁掛型' },
       { href: '/category/gas-furo', label: 'ガスふろ給湯器' },
       { href: '/category/ps-standard', label: 'PS標準設置型' },
       { href: '/category/ps-door', label: 'PS扉内設置型' },
+      { href: '/category/eco-jaws', label: 'エコジョーズ' },
     ],
   },
   {
     title: 'ノーリツ',
     links: [
       { href: '/noritz', label: 'ノーリツ給湯器 一覧' },
-      { href: '/noritz', label: 'ガスふろ給湯器 壁掛型' },
-      { href: '/category/gas-furo', label: 'ガスふろ給湯器' },
       { href: '/category/eco-jaws', label: 'エコジョーズ' },
       { href: '/category/warm-water-heating', label: '暖房付き給湯器' },
+      { href: '/category/ps-standard', label: 'PS標準設置型' },
+      { href: '/category/gas-kyuto', label: '給湯専用' },
     ],
   },
   {
     title: 'パロマ',
     links: [
       { href: '/paloma', label: 'パロマ給湯器 一覧' },
-      { href: '/paloma', label: 'ガスふろ給湯器 壁掛型' },
       { href: '/category/gas-furo', label: 'ガスふろ給湯器' },
       { href: '/category/gas-kyuto', label: '給湯専用' },
+      { href: '/category/ps-standard', label: 'PS標準設置型' },
     ],
   },
   {
@@ -42,22 +42,23 @@ const footerColumns = [
     ],
   },
   {
-    title: '施工事例',
-    links: [
-      { href: '/cases', label: '施工事例一覧' },
-      { href: '/cases', label: '横浜市の施工事例' },
-      { href: '/cases', label: '川崎市の施工事例' },
-      { href: '/cases', label: '厚木市の施工事例' },
-      { href: '/cases', label: '海老名市の施工事例' },
-    ],
-  },
-  {
     title: '対応エリア',
     links: [
+      { href: '/area', label: '対応エリア一覧' },
       { href: '/area/yokohama', label: '横浜市の給湯器交換' },
       { href: '/area/kawasaki', label: '川崎市の給湯器交換' },
       { href: '/area/atsugi', label: '厚木市の給湯器交換' },
       { href: '/area/ebina', label: '海老名市の給湯器交換' },
+    ],
+  },
+  {
+    title: 'トラブル症状',
+    links: [
+      { href: '/trouble', label: '症状別ページ一覧' },
+      { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
+      { href: '/trouble/error-111', label: 'エラーコード111' },
+      { href: '/trouble/water-leak', label: '水漏れがある' },
+      { href: '/trouble/gas-smell', label: 'ガス臭いがする' },
     ],
   },
   {
@@ -66,7 +67,6 @@ const footerColumns = [
       { href: '/guide/full-auto-auto', label: 'フルオートとオートの違い' },
       { href: '/guide/capacity', label: '号数の選び方' },
       { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
-      { href: '/guide/model-number', label: '型番の見方' },
       { href: '/guide/error-code', label: 'エラーコード一覧' },
       { href: '/guide/lifespan', label: '給湯器の寿命' },
       { href: '/blog', label: '給湯器コラム一覧' },
@@ -78,8 +78,44 @@ const footerColumns = [
       { href: '/estimate', label: 'お問い合わせ' },
       { href: '/#faq', label: 'よくある質問' },
       { href: '/warranty', label: '保証・アフター' },
+      { href: '/voice', label: 'お客様の声' },
     ],
   },
+]
+
+const yokohamaWardLinks = [
+  { href: '/area/yokohama/kohoku', label: '港北区' },
+  { href: '/area/yokohama/totsuka', label: '戸塚区' },
+  { href: '/area/yokohama/aoba', label: '青葉区' },
+  { href: '/area/yokohama/tsuzuki', label: '都筑区' },
+  { href: '/area/yokohama/kanagawa', label: '神奈川区' },
+  { href: '/area/yokohama/tsurumi', label: '鶴見区' },
+  { href: '/area/yokohama/naka', label: '中区' },
+  { href: '/area/yokohama/minami', label: '南区' },
+  { href: '/area/yokohama/asahi', label: '旭区' },
+  { href: '/area/yokohama/kanazawa', label: '金沢区' },
+]
+
+const kawasakiWardLinks = [
+  { href: '/area/kawasaki/nakahara', label: '中原区' },
+  { href: '/area/kawasaki/takatsu', label: '高津区' },
+  { href: '/area/kawasaki/miyamae', label: '宮前区' },
+  { href: '/area/kawasaki/tama', label: '多摩区' },
+  { href: '/area/kawasaki/asao', label: '麻生区' },
+  { href: '/area/kawasaki/saiwai', label: '幸区' },
+  { href: '/area/kawasaki/kawasaki-ku', label: '川崎区' },
+]
+
+const troubleLinks = [
+  { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
+  { href: '/trouble/error-111', label: 'エラーコード111' },
+  { href: '/trouble/error-110', label: 'エラーコード110' },
+  { href: '/trouble/water-leak', label: '水漏れ' },
+  { href: '/trouble/no-reheating', label: '追い焚きできない' },
+  { href: '/trouble/temperature-unstable', label: '温度が安定しない' },
+  { href: '/trouble/remote-controller', label: 'リモコンがつかない' },
+  { href: '/trouble/strange-noise', label: '異音がする' },
+  { href: '/trouble/gas-smell', label: 'ガス臭い' },
 ]
 
 const InstagramIcon = () => (
@@ -135,12 +171,62 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* 区別・症状別リンク帯 */}
+      <div className="border-b border-gray-800 py-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2.5 pb-1.5 border-b border-gray-800">
+                横浜市の区別ページ
+              </p>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                {yokohamaWardLinks.map((l) => (
+                  <Link key={l.href} href={l.href} className="text-gray-500 hover:text-gray-200 text-xs transition-colors">
+                    {l.label}
+                  </Link>
+                ))}
+                <Link href="/area/yokohama" className="text-brand-400 hover:text-brand-300 text-xs transition-colors font-bold">
+                  横浜市全体 →
+                </Link>
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2.5 pb-1.5 border-b border-gray-800">
+                川崎市の区別ページ
+              </p>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                {kawasakiWardLinks.map((l) => (
+                  <Link key={l.href} href={l.href} className="text-gray-500 hover:text-gray-200 text-xs transition-colors">
+                    {l.label}
+                  </Link>
+                ))}
+                <Link href="/area/kawasaki" className="text-brand-400 hover:text-brand-300 text-xs transition-colors font-bold">
+                  川崎市全体 →
+                </Link>
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2.5 pb-1.5 border-b border-gray-800">
+                給湯器のトラブル症状
+              </p>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                {troubleLinks.map((l) => (
+                  <Link key={l.href} href={l.href} className="text-gray-500 hover:text-gray-200 text-xs transition-colors">
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* メインフッター */}
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-8 mb-10">
-          {footerColumns.map((col) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-6 mb-10">
+          {makerColumns.map((col) => (
             <div key={col.title} className="lg:col-span-1">
-              <h3 className="text-[11px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
+              <h3 className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
                 {col.title}
               </h3>
               <ul className="space-y-2">

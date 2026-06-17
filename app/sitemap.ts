@@ -4,6 +4,8 @@ import { productsData } from '@/data/products'
 import { fetchAllPostSlugs } from '@/lib/wordpress'
 import { allWards } from '@/data/ward-configs'
 import { troubleList } from '@/data/trouble-configs'
+import { casesData } from '@/data/cases'
+import { areaConfigs } from '@/data/area-configs'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
@@ -75,12 +77,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  const areaPageUrls: MetadataRoute.Sitemap = areaPages.map((area) => ({
-    url: `${BASE_URL}/area/${area.slug}`,
+  const casePageUrls: MetadataRoute.Sitemap = casesData.map((c) => ({
+    url: `${BASE_URL}/cases/${c.slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
-    priority: 0.9,
+    priority: 0.7,
   }))
+
+  const showableAreaSlugs = Object.entries(areaConfigs)
+    .filter(([, config]) => config.show !== false)
+    .map(([slug]) => slug)
+
+  const areaPageUrls: MetadataRoute.Sitemap = areaPages
+    .filter((area) => showableAreaSlugs.includes(area.slug))
+    .map((area) => ({
+      url: `${BASE_URL}/area/${area.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.9,
+    }))
 
   const wardPageUrls: MetadataRoute.Sitemap = allWards.map((w) => ({
     url: `${BASE_URL}/area/${w.citySlug}/${w.wardSlug}`,
@@ -105,5 +120,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...areaPageUrls,
     ...wardPageUrls,
     ...troublePageUrls,
+    ...casePageUrls,
   ]
 }

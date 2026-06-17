@@ -1,72 +1,52 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
+import CasesGrid from '@/components/CasesGrid'
 import { casesData } from '@/data/cases'
 import { siteConfig } from '@/data/site'
 
 export const metadata: Metadata = {
-  title: '給湯器交換の施工事例｜横浜・川崎・厚木・海老名｜宝宮設備',
+  title: '給湯器交換の施工事例一覧｜横浜・川崎・厚木・海老名｜宝宮設備',
   description:
-    '株式会社宝宮設備の給湯器交換施工事例一覧。横浜市・川崎市・厚木市・海老名市での施工実績を紹介。リンナイ・ノーリツ・パロマ対応。',
+    '株式会社宝宮設備の給湯器交換施工事例一覧。横浜市・川崎市・厚木市・海老名市での施工実績。エリア・メーカー・設置タイプで絞り込み可能。リンナイ・ノーリツ・パロマ対応。',
+  alternates: { canonical: 'https://www.houmiya-boiler.com/cases' },
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
+    { '@type': 'ListItem', position: 2, name: '施工事例一覧', item: 'https://www.houmiya-boiler.com/cases' },
+  ],
 }
 
 export default function CasesPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 
         <section className="bg-brand-900 text-white py-10">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-3 mb-4 text-sm">
+            <nav className="flex items-center gap-3 mb-4 text-sm flex-wrap">
               <Link href="/" className="text-blue-200 hover:text-white">トップ</Link>
               <span className="text-blue-400">›</span>
-              <span>施工事例</span>
-            </div>
+              <span>施工事例一覧</span>
+            </nav>
             <h1 className="text-3xl font-black mb-2">施工事例一覧</h1>
-            <p className="text-blue-100 text-sm">横浜市・川崎市・厚木市・海老名市での給湯器交換施工実績</p>
+            <p className="text-blue-100 text-sm">
+              横浜市・川崎市・厚木市・海老名市での給湯器交換施工実績 全{casesData.length}件
+            </p>
           </div>
         </section>
 
-        <section className="py-12 bg-gray-50">
+        <section className="py-10 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {casesData.map((c) => (
-                <div key={c.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <div className="aspect-video bg-gray-100 relative overflow-hidden">
-                    <Image
-                      src={c.imageSrc}
-                      alt={c.imageAlt}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-                      <span className="bg-brand-700 text-white text-[10px] font-bold px-2 py-0.5 rounded">{c.date}</span>
-                      <span className="bg-white text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded">{c.maker}</span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{c.area}</span>
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{c.buildingType}</span>
-                      <span className="text-xs bg-blue-50 text-brand-700 px-2 py-0.5 rounded">{c.type}</span>
-                    </div>
-                    <div className="text-xs text-gray-500 mb-1">
-                      <span className="font-bold text-gray-700">交換後：</span>{c.afterModel}
-                    </div>
-                    <div className="text-xs text-gray-500 mb-2">
-                      <span className="font-bold text-gray-700">設置タイプ：</span>{c.installationType}
-                      <span className="mx-2">|</span>
-                      <span className="font-bold text-gray-700">施工時間：</span>{c.duration}
-                    </div>
-                    <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">{c.comment}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <CasesGrid cases={casesData} />
           </div>
         </section>
 

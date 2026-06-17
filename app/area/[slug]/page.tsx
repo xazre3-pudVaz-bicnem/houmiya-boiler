@@ -11,7 +11,9 @@ import { siteConfig } from '@/data/site'
 import { areaConfigs } from '@/data/area-configs'
 
 export async function generateStaticParams() {
-  return Object.keys(areaConfigs).map((slug) => ({ slug }))
+  return Object.entries(areaConfigs)
+    .filter(([, config]) => config.show !== false)
+    .map(([slug]) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
