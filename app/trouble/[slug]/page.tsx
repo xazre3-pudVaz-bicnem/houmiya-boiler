@@ -159,8 +159,37 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
 
+        {/* 症状の概要 */}
+        {config.overview && (
+          <section className="py-10 bg-white">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-4">{config.title}とは｜症状の概要</h2>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <p className="text-sm text-gray-700 leading-relaxed">{config.overview}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* よくある発生状況 */}
+        {config.situations && config.situations.length > 0 && (
+          <section className="py-10 bg-gray-50">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-4">よくある発生状況</h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {config.situations.map((s, i) => (
+                  <div key={i} className="flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-4">
+                    <span className="flex-shrink-0 w-2 h-2 bg-brand-700 rounded-full mt-1.5" />
+                    <span className="text-sm text-gray-700 leading-relaxed">{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* 考えられる原因 */}
-        <section className="py-10 bg-gray-50">
+        <section className="py-10 bg-white">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-4">考えられる主な原因</h2>
             <ul className="space-y-2">
@@ -200,8 +229,34 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
                 </div>
               ))}
             </div>
+
+            {config.selfCheck && (
+              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <div className="font-black text-gray-900 text-sm mb-2">自分で確認できる範囲</div>
+                <p className="text-sm text-gray-700 leading-relaxed">{config.selfCheck}</p>
+              </div>
+            )}
           </div>
         </section>
+
+        {/* やってはいけないこと */}
+        {config.doNot && config.doNot.length > 0 && (
+          <section className="py-10 bg-gray-50">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-4">やってはいけないこと</h2>
+              <ul className="space-y-2">
+                {config.doNot.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 bg-white border border-red-200 rounded-xl p-4">
+                    <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm text-gray-700 leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         {/* 修理 vs 交換 */}
         <section className="py-10 bg-gray-50">
@@ -260,6 +315,74 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
             <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-5">
               <div className="font-black text-gray-900 text-sm mb-2">使用年数10〜15年以上の場合</div>
               <p className="text-sm text-gray-700 leading-relaxed">{config.lifespanNote}</p>
+            </div>
+            {config.yearNote && (
+              <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-5 mt-4">
+                <div className="font-black text-gray-900 text-sm mb-2">使用年数による判断の目安</div>
+                <p className="text-sm text-gray-700 leading-relaxed">{config.yearNote}</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* マンション・戸建ての注意点 */}
+        {(config.mansionNote || config.detachedNote) && (
+          <section className="py-10 bg-gray-50">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-4">住宅タイプ別の注意点</h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {config.mansionNote && (
+                  <div className="bg-white border border-gray-200 rounded-xl p-5">
+                    <div className="font-black text-gray-900 text-sm mb-2">マンションの場合</div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.mansionNote}</p>
+                  </div>
+                )}
+                {config.detachedNote && (
+                  <div className="bg-white border border-gray-200 rounded-xl p-5">
+                    <div className="font-black text-gray-900 text-sm mb-2">戸建ての場合</div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.detachedNote}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 追加セクション */}
+        {config.sections && config.sections.length > 0 && (
+          <section className="py-10 bg-white">
+            <div className="max-w-6xl mx-auto px-4 space-y-6">
+              {config.sections.map((s, i) => (
+                <div key={i}>
+                  <h2 className="text-xl font-black text-gray-900 mb-3">{s.heading}</h2>
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                    <p className="text-sm text-gray-600 leading-relaxed">{s.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 関連商品・基礎知識への内部リンク */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-base font-black text-gray-700 mb-4">関連する基礎知識・トラブル</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {[
+                { href: '/guide/lifespan', label: '給湯器の寿命' },
+                { href: '/guide/error-code', label: 'エラーコード一覧' },
+                { href: '/guide/capacity', label: '号数の選び方' },
+                { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
+                { href: '/products', label: '給湯器の商品一覧' },
+                { href: '/cases', label: '施工事例一覧' },
+                { href: '/estimate', label: '無料見積もり' },
+                { href: '/trouble', label: 'トラブル症状一覧' },
+              ].map((link) => (
+                <Link key={link.href} href={link.href} className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-brand-700 transition-colors text-center">
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         </section>
