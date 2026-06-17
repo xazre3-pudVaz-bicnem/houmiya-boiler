@@ -120,9 +120,27 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     ],
   }
 
+  const allFaqs = seo ? [...seo.faqs, ...(seo.additionalFaqs ?? [])] : []
+
+  const faqJsonLd =
+    allFaqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: allFaqs.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        }
+      : null
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      {faqJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      )}
       <Header />
       <main className="pt-[100px]">
 
@@ -146,8 +164,25 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
         </section>
 
+        {/* 目次 */}
+        <section id="category-toc" className="py-5 bg-white border-b border-gray-100">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+              <p className="text-xs font-black text-gray-600 mb-3 uppercase tracking-wider">このページの目次</p>
+              <ol className="list-decimal list-inside space-y-1.5 text-sm">
+                <li><a href="#products" className="text-brand-700 hover:underline">商品一覧</a></li>
+                {seo?.detailedDescription && <li><a href="#about" className="text-brand-700 hover:underline">詳しい説明</a></li>}
+                {seo?.compareSections?.map((s, i) => (
+                  <li key={i}><a href={`#compare-${i}`} className="text-brand-700 hover:underline">{s.heading}</a></li>
+                ))}
+                {allFaqs.length > 0 && <li><a href="#faq" className="text-brand-700 hover:underline">よくある質問</a></li>}
+              </ol>
+            </div>
+          </div>
+        </section>
+
         {/* 商品一覧 */}
-        <section className="py-10 bg-gray-50">
+        <section id="products" className="py-10 bg-gray-50 scroll-mt-[100px]">
           <div className="max-w-6xl mx-auto px-4">
             {products.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -180,10 +215,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {/* SEOコンテンツ */}
         {seo && (
           <>
-            <section className="py-10 bg-white">
+            <section id="about" className="py-10 bg-white scroll-mt-[100px]">
               <div className="max-w-4xl mx-auto px-4">
                 <h2 className="text-xl font-black text-gray-900 mb-4">{config.title}について</h2>
                 <p className="text-gray-700 text-sm leading-relaxed mb-6">{seo.longDescription}</p>
+
+                {seo.detailedDescription && (
+                  <p className="text-gray-700 text-sm leading-relaxed mb-6">{seo.detailedDescription}</p>
+                )}
 
                 <h3 className="text-base font-black text-gray-900 mb-3">こんな方にご利用いただいています</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-6">{seo.whoNeeds}</p>
@@ -199,8 +238,89 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     </li>
                   ))}
                 </ul>
+
+                {seo.checkBeforeExchange && seo.checkBeforeExchange.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-base font-black text-gray-900 mb-3">交換前のチェックリスト</h3>
+                    <div className="bg-brand-50 border border-brand-200 rounded-xl p-5">
+                      <ul className="space-y-2">
+                        {seo.checkBeforeExchange.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                            <svg className="w-4 h-4 text-brand-700 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {seo.detachedNote && (
+                  <div className="mt-8">
+                    <h3 className="text-base font-black text-gray-900 mb-3">戸建てにお住まいの方へ</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">{seo.detachedNote}</p>
+                  </div>
+                )}
               </div>
             </section>
+
+            {/* 比較セクション */}
+            {seo.compareSections?.map((cs, i) => (
+              <section key={i} id={`compare-${i}`} className="py-10 bg-gray-50 scroll-mt-[100px]">
+                <div className="max-w-4xl mx-auto px-4">
+                  <h2 className="text-xl font-black text-gray-900 mb-4">{cs.heading}</h2>
+                  <p className="text-gray-700 text-sm leading-relaxed mb-6">{cs.body}</p>
+                  {cs.table && (
+                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead className="bg-brand-900 text-white">
+                            <tr>
+                              {cs.table.headers.map((h, hi) => (
+                                <th key={hi} className={`px-4 py-3 text-xs font-bold ${hi === 0 ? 'text-left' : 'text-center'}`}>{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {cs.table.rows.map((row, ri) => (
+                              <tr key={ri} className={`border-t border-gray-100 ${ri % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                {row.map((cell, ci) => (
+                                  <td key={ci} className={`px-4 py-3 ${ci === 0 ? 'text-left font-bold text-gray-800' : 'text-center text-gray-700'}`}>{cell}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            ))}
+
+            {/* 見積もりに必要な写真 */}
+            {seo.photoGuide && seo.photoGuide.length > 0 && (
+              <section className="py-10 bg-white">
+                <div className="max-w-4xl mx-auto px-4">
+                  <h2 className="text-xl font-black text-gray-900 mb-4">見積もりに必要な写真</h2>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                    以下の写真をLINEまたは見積もりフォームからお送りいただくと、より正確なお見積もりが可能です。
+                  </p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {seo.photoGuide.map((p, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm text-blue-900">
+                          <span className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs font-black flex items-center justify-center rounded-full mt-0.5">{i + 1}</span>
+                          {p}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
 
             {seo.mansionNote && (
               <section className="py-6 bg-yellow-50">
@@ -218,11 +338,11 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               </section>
             )}
 
-            {seo.faqs.length > 0 && (
-              <section className="py-10 bg-gray-50">
+            {allFaqs.length > 0 && (
+              <section id="faq" className="py-10 bg-gray-50 scroll-mt-[100px]">
                 <div className="max-w-4xl mx-auto px-4">
                   <h2 className="text-xl font-black text-gray-900 mb-6">{config.title} よくある質問</h2>
-                  <FaqAccordion faqs={seo.faqs} />
+                  <FaqAccordion faqs={allFaqs} />
                 </div>
               </section>
             )}
