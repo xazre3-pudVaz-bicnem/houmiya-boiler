@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import ProductCard from '@/components/ProductCard'
+import FaqAccordion from '@/components/FaqAccordion'
 import {
   productsData,
   getProductBySlug,
@@ -16,6 +17,21 @@ import {
 } from '@/data/products'
 import { getCapacityLabel, getCapacityDescription } from '@/lib/productUtils'
 import { siteConfig } from '@/data/site'
+
+function getProductFeatureText(capacity: number, type: string, maker: string): string {
+  const capText =
+    capacity === 24
+      ? '4人以上のファミリー世帯向けの24号'
+      : capacity === 20
+      ? '2〜3人家族向けの20号'
+      : '一人暮らし・少人数世帯向けの16号'
+  const typeText =
+    type === 'full-auto'
+      ? 'フルオートタイプ。自動湯はり・追い焚き・自動保温に加え、自動たし湯・配管自動洗浄機能を搭載。'
+      : 'オートタイプ。自動湯はり・追い焚き・自動保温機能を搭載。'
+  const makerText = maker ? `${maker}の` : ''
+  return `${makerText}${capText}の${typeText}`
+}
 
 export function generateStaticParams() {
   return productsData.map((p) => ({ id: p.slug }))
@@ -91,10 +107,67 @@ export default async function ProductDetailPage({
       q: '見積もりから工事まで何日かかりますか？',
       a: '写真をお送りいただくか、現地確認後に最短即日でお見積もりをご提示します。工事日程はご都合に合わせて調整可能です。最短で翌日工事にも対応しています。',
     },
+    {
+      q: 'この商品を見積もりしてもらうには？',
+      a: `この商品ページの「この商品で無料見積もり」ボタンから、または ${siteConfig.phone} へのお電話・LINEからご依頼いただけます。設置場所の写真をお送りいただくとスムーズです。`,
+    },
+    {
+      q: 'リモコンは付属しますか？',
+      a: `掲載価格は本体と台所リモコン・浴室リモコン（${product.remoteModel}）のセット価格です。リモコンの取付工事も標準取付費に含まれています。`,
+    },
+    {
+      q: 'エコジョーズ対応機種ですか？',
+      a:
+        product.category === 'eco-jaws'
+          ? 'はい。こちらは省エネ型のエコジョーズ対応機種です。設置にはドレン排水の経路が確保できる環境が必要です。'
+          : 'こちらは従来型の機種です。エコジョーズをご希望の場合は、同等の号数・タイプのエコジョーズ対応機種をご案内しますのでお気軽にご相談ください。',
+    },
+    {
+      q: 'マンションに設置できますか？',
+      a: `こちらは${product.installationLabel}です。マンションのパイプスペース（PS）設置型をお探しの場合は、PS扉まわりの写真をお送りいただければ適合機種をご提案します。`,
+    },
+    {
+      q: '保証はどうなっていますか？',
+      a: `${product.warranty}に対応し、メーカー保証に加えて自社施工による工事保証もお付けしています。工事後の不具合もお気軽にご連絡ください。`,
+    },
+    {
+      q: '既存の給湯器と入れ替えできますか？',
+      a: '同等の設置タイプ・号数であればスムーズに入れ替えできます。号数やタイプを変更する場合は配管やガス供給量の確認が必要なため、事前にご相談ください。',
+    },
   ]
+
+  const checkBeforeItems = [
+    '現在お使いの給湯器の型番の確認（本体のシールに記載）',
+    `号数の確認（この商品は${product.capacity}号）`,
+    `タイプの確認（この商品は${product.typeLabel}）`,
+    `設置タイプの確認（この商品は${product.installationLabel}）`,
+    '都市ガス／プロパンガスの種類の確認',
+  ]
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
+      { '@type': 'ListItem', position: 2, name: `${product.makerLabel}給湯器`, item: `https://www.houmiya-boiler.com${makerPage}` },
+      { '@type': 'ListItem', position: 3, name: product.model, item: `https://www.houmiya-boiler.com${product.detailUrl}` },
+    ],
+  }
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 
@@ -260,6 +333,70 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
+            </div>
+          </div>
+        </section>
+
+        {/* この商品の特徴 */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">この商品の特徴</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                {product.makerLabel} {product.model} は、{getProductFeatureText(product.capacity, product.type, product.makerLabel)}
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                設置タイプは{product.installationLabel}で、{product.series}シリーズのモデルです。
+                本体・リモコンセット・標準取付費をすべて含んだ工事費込み税込価格{formatPrice(product.totalInTax)}円でご提供しています。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* この号数が向いているご家庭 */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">この号数（{product.capacity}号）が向いているご家庭</h2>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-sm font-black text-blue-900">{product.capacity}号</span>
+                <span className="text-xs font-bold text-blue-700 bg-blue-100 rounded px-2 py-0.5">{getCapacityLabel(product.capacity)}</span>
+              </div>
+              <p className="text-sm text-blue-800 leading-relaxed mb-4">{getCapacityDescription(product.capacity)}</p>
+              <ul className="space-y-2">
+                {(product.capacity === 16
+                  ? ['一人暮らし・ご夫婦のみの世帯', 'シャワー中心でお湯の同時使用が少ない方', '設置スペースを抑えたい方']
+                  : product.capacity === 20
+                  ? ['2〜3人のご家族', 'シャワーと台所を同時に使うことがある方', 'バランスの取れた号数を選びたい方']
+                  : ['4人以上のご家族', 'お風呂とキッチンを同時に使うことが多い方', '続けて入浴してもお湯切れを避けたい方']
+                ).map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                    <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* 交換前に確認すること */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">交換前に確認すること</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <ul className="space-y-2">
+                {checkBeforeItems.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                    <svg className="w-4 h-4 text-brand-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
@@ -572,20 +709,7 @@ export default async function ProductDetailPage({
         <section className="py-10 bg-white">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-6">よくある質問</h2>
-            <div className="space-y-4">
-              {faqs.map((faq, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="p-4 flex items-start gap-3 bg-gray-50">
-                    <span className="flex-shrink-0 w-6 h-6 bg-brand-700 text-white text-sm font-black flex items-center justify-center rounded-full">Q</span>
-                    <div className="font-bold text-gray-900 text-sm">{faq.q}</div>
-                  </div>
-                  <div className="p-4 flex items-start gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-yellow-400 text-gray-900 text-sm font-black flex items-center justify-center rounded-full">A</span>
-                    <div className="text-gray-600 text-sm leading-relaxed">{faq.a}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <FaqAccordion faqs={faqs} />
           </div>
         </section>
 
