@@ -100,6 +100,19 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
 
   const otherTroubles = troubleList.filter((t) => t.slug !== slug).slice(0, 4)
 
+  // 目次用セクション構築
+  const tocItems: { id: string; label: string }[] = []
+  if (config.overview) tocItems.push({ id: 'toc-overview', label: `${config.title}とは｜症状の概要` })
+  if (config.situations?.length) tocItems.push({ id: 'toc-situations', label: 'よくある発生状況' })
+  tocItems.push({ id: 'toc-causes', label: '考えられる主な原因' })
+  tocItems.push({ id: 'toc-checkfirst', label: 'まず確認すべきこと' })
+  if (config.doNot?.length) tocItems.push({ id: 'toc-donot', label: 'やってはいけないこと' })
+  tocItems.push({ id: 'toc-repair', label: '修理で済むケース・交換を検討するケース' })
+  if (config.sections?.length) {
+    config.sections.forEach((s, i) => tocItems.push({ id: `toc-section-${i}`, label: s.heading }))
+  }
+  tocItems.push({ id: 'toc-faq', label: 'よくある質問' })
+
   return (
     <>
       <script
@@ -159,9 +172,27 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
 
+        {/* 目次 */}
+        <section className="py-8 bg-white border-b border-gray-100">
+          <div className="max-w-6xl mx-auto px-4">
+            <nav aria-label="目次" className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+              <div className="font-black text-gray-900 text-sm mb-3">目次</div>
+              <ol className="space-y-1.5 list-decimal list-inside">
+                {tocItems.map((item) => (
+                  <li key={item.id} className="text-sm">
+                    <a href={`#${item.id}`} className="text-brand-700 hover:underline">
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </div>
+        </section>
+
         {/* 症状の概要 */}
         {config.overview && (
-          <section className="py-10 bg-white">
+          <section id="toc-overview" className="py-10 bg-white scroll-mt-[110px]">
             <div className="max-w-6xl mx-auto px-4">
               <h2 className="text-xl font-black text-gray-900 mb-4">{config.title}とは｜症状の概要</h2>
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
@@ -173,7 +204,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
 
         {/* よくある発生状況 */}
         {config.situations && config.situations.length > 0 && (
-          <section className="py-10 bg-gray-50">
+          <section id="toc-situations" className="py-10 bg-gray-50 scroll-mt-[110px]">
             <div className="max-w-6xl mx-auto px-4">
               <h2 className="text-xl font-black text-gray-900 mb-4">よくある発生状況</h2>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -189,7 +220,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
         )}
 
         {/* 考えられる原因 */}
-        <section className="py-10 bg-white">
+        <section id="toc-causes" className="py-10 bg-white scroll-mt-[110px]">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-4">考えられる主な原因</h2>
             <ul className="space-y-2">
@@ -206,7 +237,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
         </section>
 
         {/* まず確認すること */}
-        <section className="py-10 bg-white">
+        <section id="toc-checkfirst" className="py-10 bg-white scroll-mt-[110px]">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-4">まず確認すべきこと</h2>
             <div className="space-y-2">
@@ -241,7 +272,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
 
         {/* やってはいけないこと */}
         {config.doNot && config.doNot.length > 0 && (
-          <section className="py-10 bg-gray-50">
+          <section id="toc-donot" className="py-10 bg-gray-50 scroll-mt-[110px]">
             <div className="max-w-6xl mx-auto px-4">
               <h2 className="text-xl font-black text-gray-900 mb-4">やってはいけないこと</h2>
               <ul className="space-y-2">
@@ -259,7 +290,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
         )}
 
         {/* 修理 vs 交換 */}
-        <section className="py-10 bg-gray-50">
+        <section id="toc-repair" className="py-10 bg-gray-50 scroll-mt-[110px]">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-4">修理で済むケース・交換を検討するケース</h2>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -353,7 +384,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
           <section className="py-10 bg-white">
             <div className="max-w-6xl mx-auto px-4 space-y-6">
               {config.sections.map((s, i) => (
-                <div key={i}>
+                <div key={i} id={`toc-section-${i}`} className="scroll-mt-[110px]">
                   <h2 className="text-xl font-black text-gray-900 mb-3">{s.heading}</h2>
                   <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
                     <p className="text-sm text-gray-600 leading-relaxed">{s.body}</p>
@@ -426,7 +457,7 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
         )}
 
         {/* FAQ */}
-        <section className="py-10 bg-gray-50">
+        <section id="toc-faq" className="py-10 bg-gray-50 scroll-mt-[110px]">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-6">よくある質問</h2>
             <FaqAccordion faqs={config.faqs} />
