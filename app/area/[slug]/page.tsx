@@ -259,23 +259,20 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
             <h2 className="text-xl font-black text-gray-900 mb-6">{config.name}の住宅タイプ別 給湯器交換</h2>
             <div className="space-y-4">
               <div className="border border-gray-200 rounded-xl p-6">
-                <h3 className="font-black text-gray-900 mb-3 flex items-center gap-2 text-base">
-                  <span className="w-6 h-6 bg-brand-700 text-white text-xs flex items-center justify-center rounded font-black flex-shrink-0">戸</span>
-                  {config.name}の戸建て 給湯器交換
+                <h3 className="font-black text-gray-900 mb-3 text-base">
+                  {config.name}の戸建て給湯器交換
                 </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">{config.detachedNote}</p>
               </div>
               <div className="border border-gray-200 rounded-xl p-6">
-                <h3 className="font-black text-gray-900 mb-3 flex items-center gap-2 text-base">
-                  <span className="w-6 h-6 bg-blue-600 text-white text-xs flex items-center justify-center rounded font-black flex-shrink-0">マ</span>
-                  {config.name}のマンション 給湯器交換
+                <h3 className="font-black text-gray-900 mb-3 text-base">
+                  {config.name}のマンション給湯器交換
                 </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">{config.mansionNote}</p>
               </div>
               <div className="border border-gray-200 rounded-xl p-6">
-                <h3 className="font-black text-gray-900 mb-3 flex items-center gap-2 text-base">
-                  <span className="w-6 h-6 bg-gray-600 text-white text-xs flex items-center justify-center rounded font-black flex-shrink-0">賃</span>
-                  {config.name}のアパート・賃貸物件 給湯器交換
+                <h3 className="font-black text-gray-900 mb-3 text-base">
+                  {config.name}のアパート・賃貸物件の給湯器交換
                 </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">{config.rentalNote}</p>
               </div>

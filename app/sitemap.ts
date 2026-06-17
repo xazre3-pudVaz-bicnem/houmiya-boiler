@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next'
 import { areaPages } from '@/data/subpage-areas'
 import { productsData } from '@/data/products'
 import { fetchAllPostSlugs } from '@/lib/wordpress'
+import { allWards } from '@/data/ward-configs'
+import { troubleList } from '@/data/trouble-configs'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
@@ -41,6 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/voice`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/ecojoys`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE_URL}/trouble`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ]
 
   const wpSlugs = await fetchAllPostSlugs()
@@ -79,6 +82,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }))
 
+  const wardPageUrls: MetadataRoute.Sitemap = allWards.map((w) => ({
+    url: `${BASE_URL}/area/${w.citySlug}/${w.wardSlug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
+  const troublePageUrls: MetadataRoute.Sitemap = troubleList.map((t) => ({
+    url: `${BASE_URL}/trouble/${t.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
   return [
     ...staticPages,
     ...blogDetailPages,
@@ -86,5 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryPages,
     ...guidePages,
     ...areaPageUrls,
+    ...wardPageUrls,
+    ...troublePageUrls,
   ]
 }

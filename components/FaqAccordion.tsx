@@ -29,14 +29,12 @@ export default function FaqAccordion({ faqs }: { faqs: FaqItem[] }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          {openIndex === i && (
-            <div className="border-t border-yellow-100 p-4 flex items-start gap-3 bg-yellow-50">
-              <span className="flex-shrink-0 w-6 h-6 bg-yellow-400 text-gray-900 text-xs font-black flex items-center justify-center rounded-full mt-0.5">
-                A
-              </span>
-              <p className="text-gray-700 text-sm leading-relaxed">{faq.a}</p>
-            </div>
-          )}
+          <div className={`border-t border-yellow-100 flex items-start gap-3 bg-yellow-50 ${openIndex === i ? 'p-4' : 'hidden'}`}>
+            <span className="flex-shrink-0 w-6 h-6 bg-yellow-400 text-gray-900 text-xs font-black flex items-center justify-center rounded-full mt-0.5">
+              A
+            </span>
+            <p className="text-gray-700 text-sm leading-relaxed">{faq.a}</p>
+          </div>
         </div>
       ))}
     </div>
