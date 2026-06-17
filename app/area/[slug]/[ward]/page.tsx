@@ -527,6 +527,58 @@ function WardContent({
           </div>
         </section>
 
+        {/* 地域×症状/設置タイプへのクロスリンク */}
+        <section className="py-8 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-sm font-black text-gray-700 mb-4">{config.cityName}のお悩み別ページ</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-2">症状・トラブル別</p>
+                <ul className="space-y-1.5">
+                  {[
+                    { href: `/area/${config.citySlug}/no-hot-water`, label: `${config.cityName}で給湯器のお湯が出ない` },
+                    { href: `/area/${config.citySlug}/error-111`, label: `${config.cityName}で給湯器エラー111` },
+                    { href: `/area/${config.citySlug}/water-leak`, label: `${config.cityName}で給湯器水漏れ` },
+                  ].map(l => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-semibold hover:underline">
+                        {l.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-2">設置タイプ別</p>
+                <ul className="space-y-1.5">
+                  {(config.citySlug === 'yokohama' || config.citySlug === 'kawasaki'
+                    ? [
+                        { href: `/area/${config.citySlug}/mansion-ps`, label: `${config.cityName}のマンションPS設置型` },
+                        { href: `/area/${config.citySlug}/wall-mounted`, label: `${config.cityName}の壁掛型交換` },
+                        { href: `/area/${config.citySlug}/eco-jaws`, label: `${config.cityName}のエコジョーズ交換` },
+                      ]
+                    : [
+                        { href: `/area/${config.citySlug}/wall-mounted`, label: `${config.cityName}の壁掛型交換` },
+                        { href: `/area/${config.citySlug}/eco-jaws`, label: `${config.cityName}のエコジョーズ交換` },
+                      ]
+                  ).map(l => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-semibold hover:underline">
+                        {l.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="mt-4">
+              <Link href={`/area/${config.citySlug}`} className="text-xs text-brand-700 hover:text-brand-900 font-bold hover:underline">
+                ← {config.cityName}のトップページへ戻る
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* 関連商品 */}
         <section className="py-12 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">

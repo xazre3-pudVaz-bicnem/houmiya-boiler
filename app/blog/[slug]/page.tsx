@@ -21,6 +21,37 @@ export const revalidate = 0
 
 const FALLBACK_IMAGE = '/hero-banner.png'
 
+const keywordLinkMap: { keyword: string; href: string }[] = [
+  { keyword: '横浜市', href: '/area/yokohama' },
+  { keyword: '川崎市', href: '/area/kawasaki' },
+  { keyword: '厚木市', href: '/area/atsugi' },
+  { keyword: '海老名市', href: '/area/ebina' },
+  { keyword: 'エコジョーズ', href: '/guide/eco-jaws' },
+  { keyword: 'エラー111', href: '/trouble/error-111' },
+  { keyword: 'お湯が出ない', href: '/trouble/no-hot-water' },
+  { keyword: '号数', href: '/guide/capacity' },
+  { keyword: 'フルオート', href: '/guide/full-auto-auto' },
+  { keyword: '寿命', href: '/guide/lifespan' },
+]
+
+/**
+ * WordPress HTML内の特定キーワードに内部リンクを追加する
+ * - 各キーワードの最初の出現のみリンク化（多重リンク回避）
+ * - すでに <a> タグ内にある場合はスキップ
+ */
+function addKeywordLinks(html: string): string {
+  let result = html
+  for (const { keyword, href } of keywordLinkMap) {
+    if (result.includes(`href="${href}"`)) continue
+    const regex = new RegExp(`(?<!<[^>]*)(${keyword})(?![^<]*>)`, 'u')
+    result = result.replace(
+      regex,
+      `<a href="${href}" class="text-brand-700 underline underline-offset-2 hover:text-brand-900 font-semibold">${keyword}</a>`
+    )
+  }
+  return result
+}
+
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -58,8 +89,45 @@ export default async function BlogDetailPage(
   const imgAlt = getFeaturedImageAlt(post)
   const cats = getCategories(post)
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title.rendered,
+    datePublished: post.date,
+    dateModified: post.modified,
+    author: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: 'https://www.houmiya-boiler.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.houmiya-boiler.com/logo.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://www.houmiya-boiler.com/blog/${slug}`,
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
+      { '@type': 'ListItem', position: 2, name: '給湯器コラム', item: 'https://www.houmiya-boiler.com/blog' },
+      { '@type': 'ListItem', position: 3, name: post.title.rendered, item: `https://www.houmiya-boiler.com/blog/${slug}` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 
@@ -109,7 +177,7 @@ export default async function BlogDetailPage(
           {/* 本文 */}
           <div
             className="wp-content"
-            dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+            dangerouslySetInnerHTML={{ __html: addKeywordLinks(post.content.rendered) }}
           />
 
           {/* 記事下CTA */}
@@ -118,7 +186,7 @@ export default async function BlogDetailPage(
             <p className="text-brand-700 text-sm mb-4">
               横浜市・川崎市・厚木市・海老名市対応。無料見積もり受付中。
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
               <Link
                 href="/estimate"
                 className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black px-6 py-3 rounded-lg transition-colors shadow"
@@ -134,13 +202,24 @@ export default async function BlogDetailPage(
                 </svg>
                 {siteConfig.phone}
               </a>
+              <a
+                href={siteConfig.lineUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-lg transition-colors shadow"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.03 2 11c0 3.28 1.84 6.16 4.6 7.9-.14.43-.31.84-.52 1.22-.2.36-.1.81.26 1.06.19.14.42.2.64.14.06-.02 5.96-1.66 7.02-2.01C14.95 19.41 16 18.49 17 17.4 17 17.4 22 14.65 22 11c0-4.97-4.48-9-10-9z" />
+                </svg>
+                LINEで写真相談
+              </a>
             </div>
           </div>
 
           {/* 関連ページ内部リンク */}
           <div className="mt-10 border border-gray-200 rounded-xl p-5">
             <p className="text-xs font-black text-gray-600 uppercase tracking-wider mb-4">関連するページ</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
               <div>
                 <p className="text-xs font-bold text-gray-500 mb-2">対応エリア</p>
                 <ul className="space-y-1.5">
@@ -185,6 +264,24 @@ export default async function BlogDetailPage(
                     { href: '/trouble/water-leak', label: '水漏れがある' },
                     { href: '/trouble/temperature-unstable', label: '温度が安定しない' },
                     { href: '/trouble', label: 'トラブル症状一覧' },
+                  ].map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-bold hover:underline">
+                        {l.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-2">横浜市・川崎市 区ページ</p>
+                <ul className="space-y-1.5">
+                  {[
+                    { href: '/area/yokohama/kohoku', label: '横浜市港北区' },
+                    { href: '/area/yokohama/totsuka', label: '横浜市戸塚区' },
+                    { href: '/area/yokohama/aoba', label: '横浜市青葉区' },
+                    { href: '/area/kawasaki/nakahara', label: '川崎市中原区' },
+                    { href: '/area/yokohama', label: '横浜市 全18区を見る' },
                   ].map((l) => (
                     <li key={l.href}>
                       <Link href={l.href} className="text-xs text-brand-700 hover:text-brand-900 font-bold hover:underline">
