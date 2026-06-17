@@ -210,6 +210,57 @@ export default async function CaseDetailPage({
             </div>
           </section>
 
+          {/* 工事内容の詳細 */}
+          {c.workContent && (
+            <section className="py-8 border-b border-gray-100">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-lg font-black text-gray-900 mb-3">工事の内容</h2>
+                <p className="text-sm text-gray-700 leading-relaxed">{c.workContent}</p>
+              </div>
+            </section>
+          )}
+
+          {/* 確認したポイント + 写真で確認した内容 */}
+          {(c.checkPoints || c.photoPoints) && (
+            <section className="py-8 border-b border-gray-100">
+              <div className="max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {c.checkPoints && (
+                    <div>
+                      <h3 className="text-sm font-black text-gray-800 mb-3">交換時に確認したポイント</h3>
+                      <ul className="space-y-2">
+                        {c.checkPoints.map((point, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                            <svg className="w-4 h-4 text-brand-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+                            </svg>
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {c.photoPoints && (
+                    <div>
+                      <h3 className="text-sm font-black text-gray-800 mb-3">写真見積もりで確認した内容</h3>
+                      <ul className="space-y-2">
+                        {c.photoPoints.map((point, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                            <svg className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* 同じ条件の方に選ばれる商品 */}
           {relatedProducts.length > 0 && (
             <section className="mb-10">
