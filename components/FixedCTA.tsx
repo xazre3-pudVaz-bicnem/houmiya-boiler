@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { siteConfig } from '@/data/site'
 
 const PHONE = '046-205-4558'
-const LINE_URL = 'https://line.me/ti/p/XXXXXXXXXX'
 const HEADER_H = 80 // px — fixed header height
 
 function scrollToEstimate(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -85,7 +85,7 @@ export default function FixedCTA() {
 
           {/* LINE相談 */}
           <a
-            href={LINE_URL}
+            href={siteConfig.lineUrl}
             target="_blank"
             rel="noopener noreferrer"
             data-cta="line-mobile"
@@ -137,7 +137,7 @@ export default function FixedCTA() {
                 スピード見積もり依頼
               </a>
               <a
-                href={LINE_URL}
+                href={siteConfig.lineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-cta="line-desktop"

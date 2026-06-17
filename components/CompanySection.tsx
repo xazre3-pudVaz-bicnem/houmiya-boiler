@@ -1,3 +1,5 @@
+import { siteConfig } from '@/data/site'
+
 const companyInfo = [
   { label: '会社名', value: '株式会社宝宮設備' },
   { label: '代表者', value: '小宮 龍亮' },
@@ -9,9 +11,8 @@ const companyInfo = [
 ]
 
 const snsList = [
-  { name: 'Instagram', href: '#', color: 'bg-gradient-to-br from-purple-500 to-pink-500' },
-  { name: 'TikTok', href: '#', color: 'bg-slate-900' },
-  { name: 'LINE公式', href: 'https://line.me/ti/p/XXXXXXXXXX', color: 'bg-[#00B900]' },
+  { name: '公式Instagram', href: siteConfig.instagramUrl, color: 'bg-gradient-to-br from-purple-500 to-pink-500' },
+  { name: 'LINE公式', href: siteConfig.lineUrl, color: 'bg-[#00B900]' },
 ]
 
 export default function CompanySection() {

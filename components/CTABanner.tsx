@@ -1,3 +1,5 @@
+import { siteConfig } from '@/data/site'
+
 type CTABannerProps = {
   variant?: 'phone' | 'line' | 'quote' | 'full'
   title?: string
@@ -41,7 +43,7 @@ export default function CTABanner({ variant = 'full', title, subtitle }: CTABann
           )}
           {(variant === 'line' || variant === 'full') && (
             <a
-              href="https://line.me/ti/p/XXXXXXXXXX"
+              href={siteConfig.lineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-[#00B900] hover:bg-[#009a00] text-white font-bold py-3.5 px-7 rounded transition-all duration-150 active:scale-95"

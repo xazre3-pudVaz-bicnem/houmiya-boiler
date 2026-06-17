@@ -1,6 +1,7 @@
 'use client'
 
 import { trackPhoneClick, trackLineClick } from '@/lib/tracking'
+import { siteConfig } from '@/data/site'
 
 export default function UrgentSection() {
   return (
@@ -39,7 +40,7 @@ export default function UrgentSection() {
 
           {/* LINE */}
           <a
-            href="https://line.me/ti/p/XXXXXXXXXX"
+            href={siteConfig.lineUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackLineClick('urgent_section')}

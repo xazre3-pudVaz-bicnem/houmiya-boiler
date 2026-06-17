@@ -1,3 +1,5 @@
+import { siteConfig } from '@/data/site'
+
 const symptoms = [
   { label: 'お湯が出ない' },
   { label: 'エラーコードが出る' },
@@ -55,7 +57,7 @@ export default function EmergencySection() {
               046-205-4558
             </a>
             <a
-              href="https://line.me/ti/p/XXXXXXXXXX"
+              href={siteConfig.lineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-[#00B900] hover:bg-[#009a00] text-white font-bold py-3 px-5 rounded transition-colors text-sm active:scale-95"
