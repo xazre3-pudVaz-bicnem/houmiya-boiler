@@ -52,8 +52,47 @@ export default function TroubleIndexPage() {
           </div>
         </section>
 
+        {/* リード文 */}
+        <section className="py-10 bg-white">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 space-y-4">
+              <p className="text-sm text-gray-600 leading-relaxed">
+                給湯器の不具合は、「お湯が出ない」「エラーコードが出る」「追い焚きができない」「お湯の温度が安定しない」「水漏れ」「リモコンがつかない」「異音がする」「ガス臭い」など、症状によって原因も対処法も異なります。
+                症状によっては、ガス栓やガスメーターの確認、リモコンのリセットなど、ご自身で対処できるものもあります。一方で、内部部品の劣化が原因の場合は修理・交換が必要です。
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                このページでは、給湯器でよくある症状を一覧にまとめています。それぞれのページでは、考えられる原因・まず確認すべきこと・修理で済むケースと交換を検討するケース・使用年数の目安・よくある質問を掲載しています。
+                給湯器の寿命は一般的に10年前後とされており、使用年数が10年を超えて症状が複数出ている場合は、修理より交換が適切なケースが多くなります。
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                なお、ガスのにおいがする場合や、「ポン」「バン」といった爆発音に近い異音がする場合は、安全に関わる可能性があります。ただちに使用を中止し、換気のうえガス会社または専門業者へご連絡ください。
+                症状が解決しない場合や交換をご検討の際は、横浜市・川崎市・厚木市・海老名市対応の株式会社宝宮設備までご相談ください。給湯器の写真をLINEでお送りいただくだけでも概算見積もりが可能です。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 症状カテゴリの説明 */}
+        <section className="py-6 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                { name: 'お湯・温度のトラブル', desc: 'お湯が出ない・温度が安定しない・追い焚きができないなど、お湯に関する症状です。' },
+                { name: 'エラー・表示のトラブル', desc: 'エラーコード（111・110など）やリモコンがつかないといった表示・操作の症状です。' },
+                { name: '安全に関わるトラブル', desc: '異音・ガス臭いなど、安全に関わる可能性のある症状です。安全確保を最優先してください。' },
+              ].map((c) => (
+                <div key={c.name} className="bg-white border border-gray-200 rounded-xl p-4">
+                  <div className="font-black text-gray-900 text-sm mb-1">{c.name}</div>
+                  <p className="text-xs text-gray-500 leading-relaxed">{c.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="py-12 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-6">給湯器のトラブル症状一覧</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {troubleList.map((t) => (
                 <Link

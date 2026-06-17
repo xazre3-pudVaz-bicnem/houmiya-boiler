@@ -27,6 +27,7 @@ const guideSlugList = [
   'error-code',
   'lifespan',
   'installation-type',
+  'color-variation',
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -46,6 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/ecojoys`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/trouble`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/guide`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ]
 
   const wpSlugs = await fetchAllPostSlugs()

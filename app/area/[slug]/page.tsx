@@ -202,6 +202,12 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <p className="text-gray-600 text-sm leading-relaxed">{config.intro1}</p>
               <p className="text-gray-600 text-sm leading-relaxed">{config.intro2}</p>
             </div>
+            {config.allWardText && (
+              <div className="bg-white border border-gray-200 rounded-xl p-6 mt-4">
+                <h3 className="font-black text-gray-900 mb-3 text-base">{config.name}の地域・住宅傾向</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{config.allWardText}</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -429,6 +435,92 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <a href={siteConfig.lineUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-white font-bold text-sm px-5 py-2.5 rounded-lg transition-colors" style={{ backgroundColor: '#00B900' }}>
                 LINEで写真を送る
               </a>
+            </div>
+          </div>
+        </section>
+
+        {/* エリア詳細情報（拡張フィールド） */}
+        {(config.installTypeNote || config.capacityGuide || config.workflowNote || config.estimateNote || config.additionalCostNote || config.troubleNote) && (
+          <section className="py-10 bg-white">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-6">{config.name}の給湯器交換 詳細ガイド</h2>
+              <div className="space-y-4">
+                {config.installTypeNote && (
+                  <div className="border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 mb-3 text-base">{config.name}で多い給湯器の設置タイプ</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.installTypeNote}</p>
+                  </div>
+                )}
+                {config.capacityGuide && (
+                  <div className="border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 mb-3 text-base">{config.name}での号数の選び方</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.capacityGuide}</p>
+                  </div>
+                )}
+                {config.workflowNote && (
+                  <div className="border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 mb-3 text-base">{config.name}での見積もり・工事の流れ</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.workflowNote}</p>
+                  </div>
+                )}
+                {config.estimateNote && (
+                  <div className="border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 mb-3 text-base">見積もりに必要な情報・写真</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.estimateNote}</p>
+                  </div>
+                )}
+                {config.additionalCostNote && (
+                  <div className="border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 mb-3 text-base">追加費用が発生するケース</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.additionalCostNote}</p>
+                  </div>
+                )}
+                {config.troubleNote && (
+                  <div className="border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 mb-3 text-base">{config.name}でよくある故障症状</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{config.troubleNote}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 追加H2セクション */}
+        {config.sections && config.sections.length > 0 && (
+          <section className="py-10 bg-gray-50">
+            <div className="max-w-6xl mx-auto px-4 space-y-6">
+              {config.sections.map((s, i) => (
+                <div key={i}>
+                  <h2 className="text-xl font-black text-gray-900 mb-3">{s.heading}</h2>
+                  <div className="bg-white border border-gray-200 rounded-xl p-6">
+                    <p className="text-sm text-gray-600 leading-relaxed">{s.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 関連トラブル・基礎知識への内部リンク */}
+        <section className="py-10 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-base font-black text-gray-700 mb-4">{config.name}で多い給湯器トラブル・関連ページ</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {[
+                { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
+                { href: '/trouble/error-111', label: 'エラーコード111' },
+                { href: '/trouble/no-reheating', label: '追い焚きできない' },
+                { href: '/trouble/temperature-unstable', label: '温度が安定しない' },
+                { href: '/trouble/water-leak', label: '水漏れ' },
+                { href: '/guide/lifespan', label: '給湯器の寿命' },
+                { href: '/guide/capacity', label: '号数の選び方' },
+                { href: '/trouble', label: 'トラブル症状一覧' },
+              ].map((link) => (
+                <Link key={link.href} href={link.href} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-brand-700 transition-colors text-center">
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         </section>

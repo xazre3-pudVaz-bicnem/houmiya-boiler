@@ -1,3 +1,5 @@
+export type WardSection = { heading: string; body: string }
+
 export type WardConfig = {
   citySlug: string
   cityName: string
@@ -7,6 +9,11 @@ export type WardConfig = {
   intro1: string
   intro2: string
   housingNote: string
+  introBody: string
+  housingTrend: string
+  installTypeNote: string
+  troubleNote: string
+  sections: WardSection[]
   faqs: { q: string; a: string }[]
   metaTitle: string
   metaDescription: string
@@ -39,6 +46,18 @@ function makeFaqs(
     {
       q: '標準工事費以外に追加費用がかかる場合はありますか？',
       a: '配管の劣化・延長・変更が必要な場合や、エコジョーズ交換時のドレン排水工事が必要な場合は追加費用が発生することがあります。事前のお見積もりでご確認いただけます。',
+    },
+    {
+      q: `${full}での見積もりは無料ですか？`,
+      a: '見積もりは完全無料です。写真確認または現地確認後にお見積もりをご提示し、ご依頼いただかなくても費用はかかりません。',
+    },
+    {
+      q: '号数（16号・20号・24号）はどう選べばいいですか？',
+      a: '16号は一人暮らし向け、20号は2〜3人家族向け、24号は4人以上の家族向けが目安です。現在の給湯器の型番をお知らせいただければ最適な号数をご提案します。',
+    },
+    {
+      q: '使用年数10年を超えていますが修理と交換どちらがよいですか？',
+      a: '使用年数10年以上で症状が出ている場合は、修理しても別の部品が故障するリスクがあるため、交換をおすすめするケースが多いです。状態を確認したうえでご提案します。',
     },
   ]
   const mansionFaqs = [
@@ -89,9 +108,81 @@ type WardInput = {
   metaDescription: string
 }
 
+function makeIntroBody(full: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
+  if (housingType === 'mansion') {
+    return `${full}は集合住宅・マンションが多いエリアで、PS（パイプシャフト）設置型の給湯器交換のご依頼が中心です。株式会社宝宮設備は${full}全域に対応しており、PS標準設置型・PS扉内設置型などマンション向け設置タイプの交換実績があります。給湯器本体とPS扉の写真をLINEでお送りいただければ、対応可否と概算見積もりをご案内できます。リンナイ・ノーリツ・パロマの主要3メーカーに対応し、工事費込み価格でご提示します。`
+  }
+  if (housingType === 'detached') {
+    return `${full}は戸建て住宅が多いエリアで、屋外壁掛型・据置型の給湯器交換が中心です。株式会社宝宮設備は${full}全域に対応しており、エコジョーズへの省エネ化交換にも対応しています。戸建てはドレン排水の経路を確保しやすく、エコジョーズへの交換もスムーズなケースが多いです。給湯器の写真をLINEでお送りいただければ概算見積もりをご案内できます。工事費込み価格でリンナイ・ノーリツ・パロマに対応します。`
+  }
+  return `${full}は戸建て住宅とマンション・集合住宅が混在するエリアです。株式会社宝宮設備は${full}全域に対応しており、戸建ての屋外壁掛型からマンションのPS設置型まで、住宅タイプに応じた機種をご提案します。賃貸物件・アパートの交換にも対応しています。給湯器の写真をLINEでお送りいただければ、設置タイプに応じた概算見積もりをご案内できます。工事費込み価格で対応します。`
+}
+
+function makeHousingTrend(full: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
+  if (housingType === 'mansion') {
+    return `${full}はマンション・集合住宅の割合が高く、PS設置型の給湯器が多く採用されています。タワーマンションや大型集合住宅では、管理組合の承認を得た機種への変更が必要な場合があります。築15〜25年を迎えた物件での交換需要が高まっているエリアです。PS設置型は扉の形状や排気方向で適合機種が変わるため、PS扉と本体の写真確認が重要になります。`
+  }
+  if (housingType === 'detached') {
+    return `${full}は戸建て住宅が中心で、屋外壁掛型・据置型の給湯器が多く設置されています。築20〜35年を迎えた住宅での給湯器交換が増えており、同型交換に加えて省エネ型のエコジョーズへの更新を検討される方も多いエリアです。戸建てはドレン排水の設置スペースを確保しやすく、エコジョーズへの移行に適した環境が整っているケースが多くなっています。`
+  }
+  return `${full}は戸建てとマンションが混在するエリアで、住宅タイプによって採用される設置タイプが異なります。戸建てでは屋外壁掛型・据置型、マンションではPS設置型が中心です。同じエリア内でも住宅により最適な機種が変わるため、まずは現在の設置状況を確認することが大切です。賃貸物件・アパートの交換ニーズもあるエリアです。`
+}
+
+function makeInstallTypeNote(housingType: 'mansion' | 'detached' | 'mixed'): string {
+  if (housingType === 'mansion') {
+    return 'マンションが多いため、PS標準設置型・PS扉内設置型・PS扉内上方排気型などの設置タイプが中心です。PS設置型は設置スペースや排気方向により適合機種が限られるため、PS扉と本体の写真でご確認ください。'
+  }
+  if (housingType === 'detached') {
+    return '戸建てが多いため、屋外壁掛型・据置型が中心です。エコジョーズへの交換も、ドレン排水の経路が確保できれば対応しやすい環境です。設置タイプは型番末尾の記号や設置状況の写真で確認できます。'
+  }
+  return '戸建ての屋外壁掛型・据置型と、マンションのPS設置型の両方に対応しています。住宅タイプによって設置タイプが異なるため、設置状況の写真でご確認のうえ最適な機種をご提案します。'
+}
+
+function makeTroubleNote(full: string): string {
+  return `${full}でよくあるご相談は、「お湯が出ない」「エラーコードが表示される」「追い焚きができない」「お湯の温度が安定しない」「給湯器から水漏れがする」などです。使用年数10年を超えた給湯器は故障が増え始める目安で、症状が複数出ている場合は修理より交換が適切なケースが多くなります。気になる症状があれば写真とあわせてご相談ください。`
+}
+
+function makeSections(full: string, housingType: 'mansion' | 'detached' | 'mixed'): WardSection[] {
+  const flow: WardSection = {
+    heading: `${full}での給湯器交換の流れ`,
+    body: `お問い合わせ（電話・LINE・フォーム）後、給湯器の写真確認または現地確認を行い、お見積もりをご提示します。ご納得いただけたら工事日時を調整し、既存給湯器の撤去から新規設置・試運転・使用説明まで一貫して対応します。標準的な交換であれば2〜4時間程度で完了します。工事後のアフター対応も行っていますので、${full}での給湯器交換は安心してお任せください。`,
+  }
+  if (housingType === 'mansion') {
+    return [
+      {
+        heading: `${full}のマンションで交換するときのポイント`,
+        body: `${full}のマンションでは、PS設置型の適合機種を選ぶことに加え、管理組合・管理規約で機種や工事手順が定められている場合があります。事前に管理規約を確認し、必要に応じて届け出を行うことでスムーズに進みます。PS内での水漏れは下階への影響が懸念されるため、見つけた場合は早めにご連絡ください。書類対応も可能な範囲でサポートします。`,
+      },
+      flow,
+    ]
+  }
+  if (housingType === 'detached') {
+    return [
+      {
+        heading: `${full}の戸建てでエコジョーズに交換するメリット`,
+        body: `${full}の戸建ては、エコジョーズへの交換に適した環境が整っているケースが多いエリアです。エコジョーズは排気熱を再利用してガス代を約10〜15%削減しやすい省エネ型給湯器で、お湯の使用量が多いご家庭ほど効果が大きくなります。ドレン排水の経路が確保できれば設置でき、長期的なコストメリットを重視する方に選ばれています。設置可否はドレン排水の確認後にご案内します。`,
+      },
+      flow,
+    ]
+  }
+  return [
+    {
+      heading: `${full}の住宅タイプ別の給湯器交換`,
+      body: `${full}は戸建てとマンションが混在するため、住宅タイプに合わせた機種選定が重要です。戸建てでは屋外壁掛型・据置型やエコジョーズ、マンションではPS設置型をご提案します。賃貸物件・アパートの交換にも対応しており、オーナー様・管理会社様からの複数台交換もご相談いただけます。まずは設置状況の写真をお送りください。`,
+    },
+    flow,
+  ]
+}
+
 function build(input: WardInput): WardConfig {
+  const full = `${input.cityName}${input.wardName}`
   return {
     ...input,
+    introBody: makeIntroBody(full, input.housingType),
+    housingTrend: makeHousingTrend(full, input.housingType),
+    installTypeNote: makeInstallTypeNote(input.housingType),
+    troubleNote: makeTroubleNote(full),
+    sections: makeSections(full, input.housingType),
     faqs: makeFaqs(input.cityName, input.wardName, input.housingType),
     canonical: `https://www.houmiya-boiler.com/area/${input.citySlug}/${input.wardSlug}`,
   }
