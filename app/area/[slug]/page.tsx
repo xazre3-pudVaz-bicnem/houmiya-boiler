@@ -180,6 +180,25 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
           </div>
         </section>
 
+        {/* 目次 */}
+        {config.sections && config.sections.length > 0 && (
+          <section className="py-5 bg-gray-50 border-b border-gray-200">
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="bg-white border border-gray-200 rounded-xl p-5">
+                <p className="text-xs font-black text-gray-700 mb-3 uppercase tracking-wider">目次</p>
+                <ol className="space-y-1.5 list-decimal list-inside columns-2">
+                  {config.sections.map((s, i) => (
+                    <li key={i}>
+                      <a href={`#section-area-${i}`} className="text-xs text-brand-700 hover:underline">{s.heading}</a>
+                    </li>
+                  ))}
+                  <li><a href="#area-faq" className="text-xs text-brand-700 hover:underline">よくある質問</a></li>
+                </ol>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* 対応区バッジ */}
         {config.wards && (
           <section className="py-6 bg-white border-b">
@@ -490,11 +509,45 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
         {config.sections && config.sections.length > 0 && (
           <section className="py-10 bg-gray-50">
             <div className="max-w-6xl mx-auto px-4 space-y-6">
-              {config.sections.map((s, i) => (
-                <div key={i}>
-                  <h2 className="text-xl font-black text-gray-900 mb-3">{s.heading}</h2>
+              {config.sections.map((section, i) => (
+                <div key={i} id={`section-area-${i}`} className="scroll-mt-28">
+                  <h2 className="text-xl font-black text-gray-900 mb-3">{section.heading}</h2>
                   <div className="bg-white border border-gray-200 rounded-xl p-6">
-                    <p className="text-sm text-gray-600 leading-relaxed">{s.body}</p>
+                    <p className="text-sm text-gray-600 leading-relaxed">{section.body}</p>
+                    {section.list && (
+                      <ul className="mt-3 space-y-1.5">
+                        {section.list.map((item, k) => (
+                          <li key={k} className="flex items-start gap-2 text-sm text-gray-700">
+                            <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {section.table && (
+                      <div className="mt-4 overflow-x-auto">
+                        <table className="w-full text-sm border-collapse">
+                          <thead>
+                            <tr className="bg-brand-900 text-white">
+                              {section.table.headers.map((h, j) => (
+                                <th key={j} className="text-left px-4 py-2.5 font-bold text-xs">{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {section.table.rows.map((row, j) => (
+                              <tr key={j} className={j % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                {row.map((cell, k) => (
+                                  <td key={k} className="px-4 py-2.5 border-b border-gray-100 text-xs">{cell}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -526,7 +579,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
         </section>
 
         {/* ⑮ よくある質問（アコーディオン） */}
-        <section className="py-10 bg-gray-50">
+        <section id="area-faq" className="py-10 bg-gray-50 scroll-mt-28">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-6">{config.name}の給湯器交換 よくある質問</h2>
             <FaqAccordion faqs={config.faqs} />
