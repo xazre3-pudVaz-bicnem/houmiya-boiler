@@ -9,6 +9,38 @@ import { areaConfigs } from '@/data/area-configs'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
+// 地域×症状ページ
+const areaTroublePages = [
+  { citySlug: 'yokohama', troubleSlug: 'no-hot-water' },
+  { citySlug: 'yokohama', troubleSlug: 'error-111' },
+  { citySlug: 'yokohama', troubleSlug: 'water-leak' },
+  { citySlug: 'kawasaki', troubleSlug: 'no-hot-water' },
+  { citySlug: 'kawasaki', troubleSlug: 'error-111' },
+  { citySlug: 'kawasaki', troubleSlug: 'water-leak' },
+  { citySlug: 'atsugi', troubleSlug: 'no-hot-water' },
+  { citySlug: 'atsugi', troubleSlug: 'error-111' },
+  { citySlug: 'atsugi', troubleSlug: 'water-leak' },
+  { citySlug: 'ebina', troubleSlug: 'no-hot-water' },
+  { citySlug: 'ebina', troubleSlug: 'error-111' },
+  { citySlug: 'ebina', troubleSlug: 'water-leak' },
+]
+
+// 地域×設置タイプページ
+const areaInstalltypePages = [
+  { citySlug: 'yokohama', typeSlug: 'mansion-ps' },
+  { citySlug: 'yokohama', typeSlug: 'wall-mounted' },
+  { citySlug: 'yokohama', typeSlug: 'eco-jaws' },
+  { citySlug: 'kawasaki', typeSlug: 'mansion-ps' },
+  { citySlug: 'kawasaki', typeSlug: 'wall-mounted' },
+  { citySlug: 'kawasaki', typeSlug: 'eco-jaws' },
+  { citySlug: 'atsugi', typeSlug: 'wall-mounted' },
+  { citySlug: 'atsugi', typeSlug: 'floor-standing' },
+  { citySlug: 'atsugi', typeSlug: 'eco-jaws' },
+  { citySlug: 'ebina', typeSlug: 'wall-mounted' },
+  { citySlug: 'ebina', typeSlug: 'floor-standing' },
+  { citySlug: 'ebina', typeSlug: 'eco-jaws' },
+]
+
 const categorySlugList = [
   'gas-furo',
   'gas-kyuto',
@@ -113,6 +145,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  const areaTroublePageUrls: MetadataRoute.Sitemap = areaTroublePages.map(p => ({
+    url: `${BASE_URL}/area/${p.citySlug}/${p.troubleSlug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
+  const areaInstalltypePageUrls: MetadataRoute.Sitemap = areaInstalltypePages.map(p => ({
+    url: `${BASE_URL}/area/${p.citySlug}/${p.typeSlug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
   return [
     ...staticPages,
     ...blogDetailPages,
@@ -123,5 +169,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...wardPageUrls,
     ...troublePageUrls,
     ...casePageUrls,
+    ...areaTroublePageUrls,
+    ...areaInstalltypePageUrls,
   ]
 }
