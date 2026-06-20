@@ -62,6 +62,91 @@ const guideSlugList = [
   'color-variation',
 ]
 
+// 横浜市 駅ページ（46件）
+const yokohamaStationUrls = [
+  'yokohama', 'sakuragicho', 'kannai', 'ishikawacho', 'motomachi-chukagai',
+  'minatomirai', 'bashamichi', 'yamate', 'shin-yokohama', 'kikuna',
+  'hiyoshi', 'tsunashima', 'okurayama', 'aobadai', 'tama-plaza', 'azamino',
+  'center-kita', 'center-minami', 'nakamachidai', 'ryokuentoshi',
+  'totsuka', 'higashi-totsuka', 'maioka', 'kamiooka', 'konandai',
+  'yokodai', 'kanazawa-bunko', 'kanazawa-hakkei',
+  'tsurumi', 'namamugi', 'higashi-kanagawa', 'hakuraku',
+  'futamatagawa', 'tsurugamine', 'nishiya', 'shimonagaya',
+  'kamoi', 'nakayama', 'nagatsuta', 'seya',
+  'mitsukyo', 'izumino', 'tateba', 'yayoi-dai',
+  'hongodai', 'ofuna',
+].map(s => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/station/${s}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.7,
+}))
+
+// 横浜市 地域ページ（25件）
+const yokohamaDistrictUrls = [
+  'minato-mirai', 'bashamichi', 'isezakicho', 'motomachi', 'chinatown',
+  'yamashita-koen', 'noge', 'shin-yokohama', 'kohoku-new-town',
+  'tama-plaza', 'aobadai', 'totsuka', 'kamiooka', 'hiyoshi',
+  'tsunashima', 'futamatagawa', 'kanazawa-bunko', 'higashi-totsuka',
+  'hakuraku', 'yamate', 'hongodai', 'nagatsuta', 'kamoi',
+  'sakuragicho', 'kannai',
+].map(d => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/district/${d}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.6,
+}))
+
+// 横浜市 症状ページ（12件）
+const yokohamaTroubleUrls = [
+  'no-hot-water', 'error-111', 'water-leak', 'no-ignition',
+  'temperature-unstable', 'remote-control-error', 'exhaust-smell',
+  'noise', 'pilot-off', 'freeze', 'bath-autofill', 'hot-water-flow',
+].map(t => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/trouble/${t}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.75,
+}))
+
+// 横浜市 設置タイプページ（12件）
+const yokohamaTypeUrls = [
+  'mansion-ps', 'wall-mounted', 'floor-standing', 'eco-jaws',
+  'full-auto', 'auto', 'outdoor', 'indoor', 'propane',
+  'city-gas', 'heat-pump', 'replacement-only',
+].map(t => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/type/${t}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.7,
+}))
+
+// 横浜市 メーカーページ（3件）
+const yokohamaMakerUrls = ['rinnai', 'noritz', 'paloma'].map(m => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/maker/${m}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.65,
+}))
+
+// 横浜市 号数ページ（3件）
+const yokohamaCapacityUrls = ['16', '20', '24'].map(c => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/capacity/${c}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.65,
+}))
+
+// 横浜市 建物タイプページ（5件）
+const yokohamaBuildingUrls = [
+  'condominium', 'rental-apartment', 'detached-house', 'old-building', 'new-construction',
+].map(b => ({
+  url: `https://www.houmiya-boiler.com/area/yokohama/building/${b}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly' as const,
+  priority: 0.65,
+}))
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
@@ -171,5 +256,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...casePageUrls,
     ...areaTroublePageUrls,
     ...areaInstalltypePageUrls,
+    ...yokohamaStationUrls,
+    ...yokohamaDistrictUrls,
+    ...yokohamaTroubleUrls,
+    ...yokohamaTypeUrls,
+    ...yokohamaMakerUrls,
+    ...yokohamaCapacityUrls,
+    ...yokohamaBuildingUrls,
   ]
 }

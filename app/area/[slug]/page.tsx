@@ -586,6 +586,159 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
           </div>
         </section>
 
+        {/* 横浜市専用：駅・地域・症状・タイプ別 サブページナビゲーション */}
+        {slug === 'yokohama' && (
+          <section className="py-12 bg-gray-50" id="yokohama-sub-pages">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-2">横浜市の給湯器交換 — 駅・地域・症状・タイプ別に探す</h2>
+              <p className="text-sm text-gray-600 mb-8">横浜市18区・主要46駅・25地域の給湯器交換情報をまとめています。</p>
+
+              {/* 主要駅別ページ */}
+              <div className="mb-8">
+                <h3 className="text-base font-black text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-brand-700 rounded-full inline-block"></span>
+                  主要駅周辺の給湯器交換
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {[
+                    { href: '/area/yokohama/station/yokohama', label: '横浜駅周辺' },
+                    { href: '/area/yokohama/station/shin-yokohama', label: '新横浜駅周辺' },
+                    { href: '/area/yokohama/station/hiyoshi', label: '日吉駅周辺' },
+                    { href: '/area/yokohama/station/tsunashima', label: '綱島駅周辺' },
+                    { href: '/area/yokohama/station/aobadai', label: '青葉台駅周辺' },
+                    { href: '/area/yokohama/station/tama-plaza', label: 'たまプラーザ駅周辺' },
+                    { href: '/area/yokohama/station/center-kita', label: 'センター北駅周辺' },
+                    { href: '/area/yokohama/station/center-minami', label: 'センター南駅周辺' },
+                    { href: '/area/yokohama/station/totsuka', label: '戸塚駅周辺' },
+                    { href: '/area/yokohama/station/kamiooka', label: '上大岡駅周辺' },
+                    { href: '/area/yokohama/station/sakuragicho', label: '桜木町駅周辺' },
+                    { href: '/area/yokohama/station/kannai', label: '関内駅周辺' },
+                    { href: '/area/yokohama/station/minatomirai', label: 'みなとみらい駅周辺' },
+                    { href: '/area/yokohama/station/futamatagawa', label: '二俣川駅周辺' },
+                    { href: '/area/yokohama/station/tsurumi', label: '鶴見駅周辺' },
+                    { href: '/area/yokohama/station/ofuna', label: '大船駅周辺' },
+                  ].map((l) => (
+                    <Link key={l.href} href={l.href} className="text-xs text-brand-700 hover:bg-brand-50 border border-brand-200 rounded px-3 py-2 font-semibold transition-colors hover:underline">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* 地域別ページ */}
+              <div className="mb-8">
+                <h3 className="text-base font-black text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-brand-700 rounded-full inline-block"></span>
+                  地域・エリア別の給湯器交換
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {[
+                    { href: '/area/yokohama/district/minato-mirai', label: 'みなとみらい' },
+                    { href: '/area/yokohama/district/kohoku-new-town', label: '港北ニュータウン' },
+                    { href: '/area/yokohama/district/tama-plaza', label: 'たまプラーザ周辺' },
+                    { href: '/area/yokohama/district/aobadai', label: '青葉台周辺' },
+                    { href: '/area/yokohama/district/shin-yokohama', label: '新横浜周辺' },
+                    { href: '/area/yokohama/district/totsuka', label: '戸塚周辺' },
+                    { href: '/area/yokohama/district/kamiooka', label: '上大岡周辺' },
+                    { href: '/area/yokohama/district/hiyoshi', label: '日吉周辺' },
+                    { href: '/area/yokohama/district/tsunashima', label: '綱島周辺' },
+                    { href: '/area/yokohama/district/motomachi', label: '元町周辺' },
+                    { href: '/area/yokohama/district/yamate', label: '山手周辺' },
+                    { href: '/area/yokohama/district/futamatagawa', label: '二俣川周辺' },
+                  ].map((l) => (
+                    <Link key={l.href} href={l.href} className="text-xs text-brand-700 hover:bg-brand-50 border border-brand-200 rounded px-3 py-2 font-semibold transition-colors hover:underline">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* トラブル症状別 */}
+              <div className="mb-8">
+                <h3 className="text-base font-black text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-red-500 rounded-full inline-block"></span>
+                  横浜市のトラブル症状別ページ
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {[
+                    { href: '/area/yokohama/trouble/no-hot-water', label: 'お湯が出ない' },
+                    { href: '/area/yokohama/trouble/error-111', label: 'エラー111が出る' },
+                    { href: '/area/yokohama/trouble/water-leak', label: '水漏れがある' },
+                    { href: '/area/yokohama/trouble/no-ignition', label: '点火しない' },
+                    { href: '/area/yokohama/trouble/temperature-unstable', label: 'お湯の温度が不安定' },
+                    { href: '/area/yokohama/trouble/remote-control-error', label: 'リモコンエラー' },
+                    { href: '/area/yokohama/trouble/exhaust-smell', label: '排気臭・異臭がする' },
+                    { href: '/area/yokohama/trouble/noise', label: '異音がする' },
+                    { href: '/area/yokohama/trouble/freeze', label: '凍結・凍結防止' },
+                    { href: '/area/yokohama/trouble/bath-autofill', label: '自動湯張りが動かない' },
+                    { href: '/area/yokohama/trouble/hot-water-flow', label: 'お湯の出が悪い' },
+                    { href: '/area/yokohama/trouble/pilot-off', label: '種火が消える' },
+                  ].map((l) => (
+                    <Link key={l.href} href={l.href} className="text-xs text-brand-700 hover:bg-red-50 border border-red-200 rounded px-3 py-2 font-semibold transition-colors hover:underline">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* 設置タイプ別 */}
+              <div className="mb-8">
+                <h3 className="text-base font-black text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-green-500 rounded-full inline-block"></span>
+                  設置タイプ・機能別ページ
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {[
+                    { href: '/area/yokohama/type/mansion-ps', label: 'マンションPS設置型' },
+                    { href: '/area/yokohama/type/wall-mounted', label: '壁掛け型' },
+                    { href: '/area/yokohama/type/floor-standing', label: '据置型' },
+                    { href: '/area/yokohama/type/eco-jaws', label: 'エコジョーズ交換' },
+                    { href: '/area/yokohama/type/full-auto', label: 'フルオートタイプ' },
+                    { href: '/area/yokohama/type/outdoor', label: '屋外設置型' },
+                    { href: '/area/yokohama/type/propane', label: 'プロパンガス対応' },
+                    { href: '/area/yokohama/type/city-gas', label: '都市ガス対応' },
+                    { href: '/area/yokohama/type/heat-pump', label: 'エコキュート交換' },
+                  ].map((l) => (
+                    <Link key={l.href} href={l.href} className="text-xs text-brand-700 hover:bg-green-50 border border-green-200 rounded px-3 py-2 font-semibold transition-colors hover:underline">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* メーカー・号数・建物別 */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div>
+                  <h3 className="text-sm font-black text-gray-800 mb-2">メーカー別</h3>
+                  <ul className="space-y-1.5">
+                    <li><Link href="/area/yokohama/maker/rinnai" className="text-xs text-brand-700 font-semibold hover:underline">リンナイ製給湯器交換 →</Link></li>
+                    <li><Link href="/area/yokohama/maker/noritz" className="text-xs text-brand-700 font-semibold hover:underline">ノーリツ製給湯器交換 →</Link></li>
+                    <li><Link href="/area/yokohama/maker/paloma" className="text-xs text-brand-700 font-semibold hover:underline">パロマ製給湯器交換 →</Link></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-gray-800 mb-2">号数別</h3>
+                  <ul className="space-y-1.5">
+                    <li><Link href="/area/yokohama/capacity/16" className="text-xs text-brand-700 font-semibold hover:underline">16号給湯器交換 →</Link></li>
+                    <li><Link href="/area/yokohama/capacity/20" className="text-xs text-brand-700 font-semibold hover:underline">20号給湯器交換 →</Link></li>
+                    <li><Link href="/area/yokohama/capacity/24" className="text-xs text-brand-700 font-semibold hover:underline">24号給湯器交換 →</Link></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-gray-800 mb-2">建物タイプ別</h3>
+                  <ul className="space-y-1.5">
+                    <li><Link href="/area/yokohama/building/condominium" className="text-xs text-brand-700 font-semibold hover:underline">分譲マンション →</Link></li>
+                    <li><Link href="/area/yokohama/building/rental-apartment" className="text-xs text-brand-700 font-semibold hover:underline">賃貸マンション・アパート →</Link></li>
+                    <li><Link href="/area/yokohama/building/detached-house" className="text-xs text-brand-700 font-semibold hover:underline">戸建て住宅 →</Link></li>
+                    <li><Link href="/area/yokohama/building/old-building" className="text-xs text-brand-700 font-semibold hover:underline">築古物件・昭和の給湯器 →</Link></li>
+                    <li><Link href="/area/yokohama/building/new-construction" className="text-xs text-brand-700 font-semibold hover:underline">新築マンション・新築戸建て →</Link></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* 地域×症状・設置タイプページへの内部リンク */}
         <section className="py-10 bg-gray-50 border-t border-gray-200">
           <div className="max-w-4xl mx-auto px-4">
