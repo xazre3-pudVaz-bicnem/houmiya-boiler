@@ -13,6 +13,19 @@ export type YokohamaStation = {
   metaTitle: string
   metaDescription: string
   canonical: string
+
+  // 追加フィールド
+  stationCharacter: string
+  nearbyStationSlugs: string[]
+  nearbyStationNames: string[]
+  mansionDesc?: string
+  detachedDesc?: string
+  primaryInstallTypes: string[]
+  installTypeGuide: string
+  commonTroubles: string[]
+  recommendedProductSlugs: string[]
+  capacityGuideText: string
+  photoEstimateNote: string
 }
 
 // ---------- 共通FAQ（全駅共通の7-8問） ----------
@@ -119,15 +132,50 @@ function mixedFaqs(name: string): { q: string; a: string }[] {
   ]
 }
 
+// ---------- LP拡張用 追加FAQ（全駅共通の運用系） ----------
+function operationFaqs(name: string, wardName: string): { q: string; a: string }[] {
+  return [
+    {
+      q: `${name}駅周辺での工事当日の流れを教えてください。`,
+      a: `当日はまず作業前にガス・水道の元栓を閉め、既存給湯器とリモコンを取り外します。続いて新しい給湯器を設置し、給水・給湯・ガス配管を接続、リモコン配線を行います。最後に通水・点火の試運転で湯温や追い焚きの動作を確認し、お客様に操作方法をご説明して完了です。${name}駅周辺の標準的な交換であれば2〜4時間程度で、作業中は一時的にお湯と暖房（暖房付きの場合）が使えなくなります。`,
+    },
+    {
+      q: `${name}駅周辺で10年以上使った給湯器は交換した方がよいですか？`,
+      a: `給湯器の設計上の耐用年数はおおむね10〜15年です。${name}駅周辺でも使用10年を超えると、部品の供給が終了して故障時に修理できないケースが増えてきます。お湯の温度が安定しない・異音がする・着火に時間がかかるといった症状は交換のサインです。完全に壊れてお湯が止まる前の予防交換であれば、機種選びや工事日程にも余裕を持って進められます。`,
+    },
+    {
+      q: `${name}駅周辺で急にお湯が出なくなりました。当日対応できますか？`,
+      a: `${name}駅周辺を含む横浜市${wardName}全域で、在庫と作業スケジュールの空き状況によっては当日〜翌日の対応も可能です。まずはお電話またはLINEでご連絡ください。給湯器本体・型番シール・リモコンのエラー表示の写真をお送りいただけると、必要な機種と部材を準備して伺えるため、訪問1回での復旧につながりやすくなります。`,
+    },
+    {
+      q: `${name}駅周辺で追い焚き機能が付いた給湯器に交換できますか？`,
+      a: `はい。現在が給湯専用型（追い焚きなし）でも、浴槽に循環金具を取り付け、追い焚き配管を通すことで、自動湯はり・追い焚きができるオート/フルオートのふろ給湯器へ変更できる場合があります。${name}駅周辺の物件では浴室の構造や配管経路によって可否が変わるため、浴槽まわりと設置場所の写真でご確認します。`,
+    },
+    {
+      q: `${name}駅周辺での工事費込み価格はどのくらいですか？（目安）`,
+      a: `本体代に標準工事費（税抜38,000円／税込41,800円）を加えた工事費込み価格でご案内します。標準的な壁掛型の交換であれば、号数やメーカー・機能により総額の目安が変わります。${name}駅周辺の具体的な金額は、設置状況・配管状態・追加部材の有無で変動するため、写真または現地確認のうえ正式なお見積もりをご提示します。見積もりは無料です。`,
+    },
+    {
+      q: `${name}駅周辺で賃貸物件の給湯器交換にも対応していますか？`,
+      a: `はい。${name}駅周辺の賃貸物件の給湯器交換にも対応しています。オーナー様・管理会社様からのご依頼はもちろん、入居中の借主様からの「お湯が出ない」といったお急ぎのご相談も承ります。給湯専用型を含む機種選定や、複数台の一括交換・見積もりにも対応します。`,
+    },
+    {
+      q: `${name}駅周辺でエコジョーズへの交換でガス代節約になりますか？`,
+      a: `エコジョーズは排気熱を再利用する熱効率95%以上の省エネ型で、従来型と比べてガス代を約10〜15%削減できる場合があります。お湯の使用量が多いご家庭ほど効果が大きくなります。${name}駅周辺で交換する場合は、運転時に出る凝縮水（ドレン排水）の経路を確保できるかが条件となるため、設置状況を確認したうえでご案内します。`,
+    },
+  ]
+}
+
 function buildFaqs(
   name: string,
   wardName: string,
   housingType: 'mansion' | 'detached' | 'mixed',
 ): { q: string; a: string }[] {
   const common = commonFaqs(name, wardName)
-  if (housingType === 'mansion') return [...mansionFaqs(name), ...common]
-  if (housingType === 'detached') return [...detachedFaqs(name), ...common]
-  return [...mixedFaqs(name), ...common]
+  const operation = operationFaqs(name, wardName)
+  if (housingType === 'mansion') return [...mansionFaqs(name), ...operation, ...common]
+  if (housingType === 'detached') return [...detachedFaqs(name), ...operation, ...common]
+  return [...mixedFaqs(name), ...operation, ...common]
 }
 
 function makeInstallTypeNote(name: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
@@ -138,6 +186,94 @@ function makeInstallTypeNote(name: string, housingType: 'mansion' | 'detached' |
     return `${name}駅周辺は戸建て住宅が多く、屋外壁掛型・据置型が設置タイプの中心です。ドレン排水の経路を確保しやすいため、省エネ型のエコジョーズへの更新もスムーズなケースが多くなっています。設置タイプは型番末尾の記号や設置状況の写真で確認できます。`
   }
   return `${name}駅周辺はマンションと戸建てが混在し、マンションのPS設置型と戸建ての屋外壁掛型・据置型の両方の交換に対応しています。住宅タイプによって設置タイプが異なるため、設置状況の写真でご確認のうえ最適な機種をご提案します。`
+}
+
+// ---------- 設置タイプ（住宅タイプ別） ----------
+function makePrimaryInstallTypes(housingType: 'mansion' | 'detached' | 'mixed'): string[] {
+  if (housingType === 'mansion') return ['マンションPS設置型', 'PS扉内設置型', '壁掛け後面接続型']
+  if (housingType === 'detached') return ['屋外壁掛け型', '屋外据置型', 'エコジョーズ']
+  return ['屋外壁掛け型', 'マンションPS設置型', 'エコジョーズ']
+}
+
+function makeInstallTypeGuide(name: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
+  if (housingType === 'mansion') {
+    return `${name}駅周辺のマンションでは、玄関脇のパイプシャフト（PS）に給湯器を納めるPS設置型が主流です。PS標準設置型は扉のない開口部に設置するタイプ、PS扉内設置型は扉の中に納めるタイプ、PS扉内上方排気型は排気を上方向へ逃がすタイプで、扉の内寸と排気方向で適合機種が決まります。壁掛け後面接続型は配管が本体背面から出るタイプです。適合判断のため、PS扉を開けた状態と本体・型番シールの写真をお送りください。`
+  }
+  if (housingType === 'detached') {
+    return `${name}駅周辺の戸建てでは、外壁に設置する屋外壁掛け型と、地面に据え置く屋外据置型が中心です。屋外設置は作業スペースを確保しやすく、凝縮水（ドレン排水）の経路も取りやすいため、省エネ型のエコジョーズへの更新もスムーズなケースが多くなっています。据置型から壁掛け型への変更や、その逆も設置スペース次第で対応可能です。設置タイプは型番末尾の記号や設置場所全体の写真で確認できます。`
+  }
+  return `${name}駅周辺はマンションと戸建てが混在するため、設置タイプも多様です。マンションでは玄関脇のPSに納めるPS設置型・PS扉内設置型が中心で、扉の内寸と排気方向で適合機種が決まります。戸建てでは屋外壁掛け型・屋外据置型が主流で、エコジョーズへの更新もしやすい環境です。住宅タイプにより最適な設置タイプが変わるため、設置状況の写真でご確認のうえご提案します。`
+}
+
+// ---------- よくある症状 ----------
+function makeCommonTroubles(housingType: 'mansion' | 'detached' | 'mixed'): string[] {
+  if (housingType === 'mansion') {
+    return ['お湯が出ない', 'エラー111', '10年以上使用している給湯器の交換', '追い焚きができない', 'お湯の温度が安定しない']
+  }
+  if (housingType === 'detached') {
+    return ['お湯が出ない', '10年以上使用している給湯器の交換', '追い焚きができない', '水漏れ', '異音・着火不良']
+  }
+  return ['お湯が出ない', 'エラー111', '10年以上使用している給湯器の交換', '追い焚きができない', '水漏れ']
+}
+
+// ---------- 推奨商品スラッグ（products.ts に実在するもの） ----------
+function makeRecommendedProductSlugs(housingType: 'mansion' | 'detached' | 'mixed'): string[] {
+  // マンション系: 20号中心 / 戸建て系: 24号中心 / 混在: 20号・24号バランス
+  if (housingType === 'mansion') {
+    return [
+      'rinnai-ruf-a2005saw-c',
+      'noritz-gt-2070saw-1',
+      'paloma-fh-2023saw-1',
+      'rinnai-ruf-a2005aw-c',
+      'noritz-gt-2070aw-1',
+    ]
+  }
+  if (housingType === 'detached') {
+    return [
+      'rinnai-ruf-a2405aw-c',
+      'noritz-gt-2470aw-1',
+      'paloma-fh-2423fawl-1',
+      'rinnai-ruf-a2405saw-c',
+      'noritz-gt-2470saw-1',
+    ]
+  }
+  return [
+    'rinnai-ruf-a2405saw-c',
+    'noritz-gt-2470saw-1',
+    'paloma-fh-2423saw-1',
+    'rinnai-ruf-a2005saw-c',
+    'noritz-gt-2070saw-1',
+  ]
+}
+
+// ---------- 号数アドバイス ----------
+function makeCapacityGuideText(name: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
+  if (housingType === 'mansion') {
+    return `${name}駅周辺のマンションは単身〜ファミリーまで住戸タイプが幅広く、号数選びがポイントです。一人暮らしや同時使用の少ない世帯は16号、シャワーとキッチンを順番に使う2〜3人世帯は20号が標準です。4人以上やお風呂とキッチンを同時に使うご家庭は24号が安心ですが、PS設置型はスペースの制約で同号数の交換が基本となる場合があります。現状の号数を起点に、使い方に合わせてご提案します。`
+  }
+  if (housingType === 'detached') {
+    return `${name}駅周辺の戸建てはファミリー世帯が多く、お風呂とキッチンの同時使用に余裕のある24号が主流です。家族4人以上で湯量不足を避けたいご家庭は24号、夫婦2〜3人世帯であれば20号でも十分な場合があります。お子様の独立で使用人数が減ったご家庭では20号への号数ダウンも選択肢です。ご家族の人数と同時使用の頻度をうかがって最適な号数をご提案します。`
+  }
+  return `${name}駅周辺はマンションと戸建てが混在し、住戸タイプによって最適な号数が変わります。単身・コンパクトな住戸は16号、2〜3人世帯は20号、お風呂とキッチンの同時使用が多い4人以上のご家庭や戸建ては24号が目安です。現状の号数と日々の使い方をもとに、過不足のない号数をご提案します。`
+}
+
+// ---------- 写真見積もり注意点 ----------
+function makePhotoEstimateNote(name: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
+  if (housingType === 'mansion') {
+    return `${name}駅周辺のマンションでは、PS（パイプシャフト）扉を開けた状態の本体全体と型番シールの写真が特に重要です。扉の内寸や排気方向が分かる角度で撮影いただくと適合機種を正確に判断できます。`
+  }
+  if (housingType === 'detached') {
+    return `${name}駅周辺の戸建てでは、給排気口の状態確認のため設置場所全体の写真をお送りください。本体まわりの配管・ドレン排水の経路が分かると、エコジョーズへの交換可否も判断できます。`
+  }
+  return `${name}駅周辺は住宅タイプが分かれるため、戸建ては設置場所全体、マンションはPS扉を開けた状態の写真をお送りください。型番シールと配管まわりが分かると、より正確な見積もりが可能です。`
+}
+
+function makeMansionDesc(name: string): string {
+  return `${name}駅周辺のマンションは、玄関脇のパイプシャフト（PS）に給湯器を納めるPS設置型が中心です。PS扉の内寸や排気方向によって設置できる機種が限られるため、現行機種への適合確認が交換のポイントになります。築15〜25年を迎えた物件では更新需要が高く、管理規約で機種や排気方式、工事手順が定められているケースもあります。PS扉と本体・型番シールの写真をお送りいただければ、設置方式の確認から後継機種のご提案までスムーズです。`
+}
+
+function makeDetachedDesc(name: string): string {
+  return `${name}駅周辺の戸建ては、外壁に設置する屋外壁掛け型・地面に据え置く屋外据置型が中心です。屋外設置は作業スペースを確保しやすく、凝縮水（ドレン排水）の経路も取りやすいため、省エネ型のエコジョーズへの更新に適したケースが多くなっています。ファミリー世帯が多く24号への交換需要が高い一方、使用人数の変化に合わせた号数の見直しも承ります。設置場所全体と配管まわりの写真をお送りいただければ、交換可否と概算費用をご案内します。`
 }
 
 type StationInput = {
@@ -151,7 +287,16 @@ type StationInput = {
   areaDesc: string
 }
 
-function build(input: StationInput): YokohamaStation {
+// 駅固有の補足情報（駅・エリア特性と近隣駅）
+type StationExtra = {
+  stationCharacter: string
+  nearby: { slug: string; name: string }[]
+}
+
+function build(input: StationInput, extra: StationExtra): YokohamaStation {
+  const ht = input.housingType
+  const includeMansion = ht === 'mansion' || ht === 'mixed'
+  const includeDetached = ht === 'detached' || ht === 'mixed'
   return {
     slug: input.slug,
     name: input.name,
@@ -167,6 +312,17 @@ function build(input: StationInput): YokohamaStation {
     metaTitle: `${input.name}駅周辺の給湯器交換・販売なら株式会社宝宮設備｜${input.wardName}全域対応`,
     metaDescription: `${input.name}駅周辺の給湯器交換なら宝宮設備。${input.wardName}全域対応。マンション・戸建て・PS設置型・エコジョーズ対応。工事費込み価格で無料見積もり受付中。`,
     canonical: `https://www.houmiya-boiler.com/area/yokohama/station/${input.slug}`,
+    stationCharacter: extra.stationCharacter,
+    nearbyStationSlugs: extra.nearby.map((n) => n.slug),
+    nearbyStationNames: extra.nearby.map((n) => n.name),
+    mansionDesc: includeMansion ? makeMansionDesc(input.name) : undefined,
+    detachedDesc: includeDetached ? makeDetachedDesc(input.name) : undefined,
+    primaryInstallTypes: makePrimaryInstallTypes(input.housingType),
+    installTypeGuide: makeInstallTypeGuide(input.name, input.housingType),
+    commonTroubles: makeCommonTroubles(input.housingType),
+    recommendedProductSlugs: makeRecommendedProductSlugs(input.housingType),
+    capacityGuideText: makeCapacityGuideText(input.name, input.housingType),
+    photoEstimateNote: makePhotoEstimateNote(input.name, input.housingType),
   }
 }
 
@@ -480,9 +636,428 @@ const stationInputs: StationInput[] = [
   },
 ]
 
+// ---------- 駅固有の補足情報（stationCharacter・近隣駅） ----------
+const stationExtras: Record<string, StationExtra> = {
+  yokohama: {
+    stationCharacter:
+      '横浜駅は神奈川県最大のターミナルで、西口の高島屋・南幸エリアから東口のそごう・ポルタまで、百貨店・地下街・オフィスビルが密集する横浜の玄関口です。駅徒歩圏には再開発で建てられた高層マンション・タワーマンションが多く、単身者からファミリーまで幅広い世帯が暮らします。複数路線が交わる利便性ゆえ住み替えも活発で、入居・退去のタイミングでの給湯器交換ニーズも見られるエリアです。',
+    nearby: [
+      { slug: 'sakuragicho', name: '桜木町' },
+      { slug: 'minatomirai', name: 'みなとみらい' },
+      { slug: 'higashi-kanagawa', name: '東神奈川' },
+    ],
+  },
+  sakuragicho: {
+    stationCharacter:
+      '桜木町駅はみなとみらい地区の玄関口で、駅前の野毛の飲食街と、海側のランドマークタワー・大規模マンション群が共存する立地です。みなとみらい寄りは2000年前後に建設された分譲マンションが多く、子育て世帯から共働き世帯まで幅広く居住しています。観光・商業の中心に近い利便性の高さから、住戸の入れ替わりも見られ、給湯器の更新時期がまとまって訪れる傾向のあるエリアです。',
+    nearby: [
+      { slug: 'minatomirai', name: 'みなとみらい' },
+      { slug: 'bashamichi', name: '馬車道' },
+      { slug: 'kannai', name: '関内' },
+    ],
+  },
+  kannai: {
+    stationCharacter:
+      '関内駅は横浜スタジアム・横浜市役所を擁する官庁街・ビジネス街の中心で、平日はオフィスワーカー、休日は観戦客でにぎわう立地です。オフィスビルの合間に分譲マンションやヴィンテージマンションが点在し、都心への通勤利便性を重視する単身・DINKS世帯が多く暮らします。築年数を重ねた建物が多く、配管も含めた老朽化への対応が交換時の関心事となるエリアです。',
+    nearby: [
+      { slug: 'bashamichi', name: '馬車道' },
+      { slug: 'ishikawacho', name: '石川町' },
+      { slug: 'sakuragicho', name: '桜木町' },
+    ],
+  },
+  ishikawacho: {
+    stationCharacter:
+      '石川町駅は元町・中華街・山手の各エリアへの入口にあたり、元町商店街や外国人墓地など横浜らしい街並みに近い立地です。元町寄りには集合住宅・マンションが多く、山手側は坂の上に邸宅や低層マンションが広がります。古くからの住宅地のため築年数の経った物件が多く、落ち着いた住環境を好む世帯に支持されるエリアです。',
+    nearby: [
+      { slug: 'kannai', name: '関内' },
+      { slug: 'motomachi-chukagai', name: '元町・中華街' },
+      { slug: 'yamate', name: '山手' },
+    ],
+  },
+  'motomachi-chukagai': {
+    stationCharacter:
+      '元町・中華街駅はみなとみらい線の終点で、元町ショッピングストリート・中華街・山下公園に隣接する横浜随一の観光・商業エリアです。周辺にはデザイン性の高い高級マンションやヴィンテージマンションが立ち並び、ハイグレードな住環境を求める世帯が暮らします。管理規約が整備された分譲マンションが多く、機種や工事手順の事前確認が重視されるエリアです。',
+    nearby: [
+      { slug: 'ishikawacho', name: '石川町' },
+      { slug: 'bashamichi', name: '馬車道' },
+      { slug: 'yamate', name: '山手' },
+    ],
+  },
+  minatomirai: {
+    stationCharacter:
+      'みなとみらい駅はランドマークタワー・クイーンズスクエアの直下に位置し、横浜市内でも特に超高層タワーマンションが集中する未来都市型のエリアです。2000年代以降に建設された大規模物件が多く、共働き・子育て世帯を中心に幅広い層が居住しています。タワーマンションでは管理組合の承認手続きや指定機種・工事条件があることが多く、計画的な交換が求められるエリアです。',
+    nearby: [
+      { slug: 'sakuragicho', name: '桜木町' },
+      { slug: 'bashamichi', name: '馬車道' },
+      { slug: 'yokohama', name: '横浜' },
+    ],
+  },
+  bashamichi: {
+    stationCharacter:
+      '馬車道駅は歴史的建造物が残るレトロな馬車道通りと、みなとみらい地区の新しいマンション群の両方に近い立地です。景観保存地区に隣接しながら近年は分譲マンション・タワーマンションの建設が進み、新旧の住環境が混在します。文化施設やオフィスにも近く、都心型の暮らしを好む世帯に支持されるエリアです。',
+    nearby: [
+      { slug: 'sakuragicho', name: '桜木町' },
+      { slug: 'kannai', name: '関内' },
+      { slug: 'minatomirai', name: 'みなとみらい' },
+    ],
+  },
+  yamate: {
+    stationCharacter:
+      '山手駅は洋館が点在する横浜屈指の高級住宅地・山手エリアの最寄り駅で、丘陵地に低層の高級マンションと邸宅が混在します。古くからの邸宅地のため建物の築年数は長く、落ち着いた住環境と緑を求める世帯が暮らします。坂や階段の多い地形で搬入経路の確認が必要になる一方、ゆとりある敷地の物件も多いエリアです。',
+    nearby: [
+      { slug: 'ishikawacho', name: '石川町' },
+      { slug: 'motomachi-chukagai', name: '元町・中華街' },
+      { slug: 'kannai', name: '関内' },
+    ],
+  },
+  'shin-yokohama': {
+    stationCharacter:
+      '新横浜駅は新幹線も停車する広域交通の拠点で、2023年開業の東急新横浜線により都心アクセスがさらに向上しました。駅周辺はオフィスビルと大型マンションが集まるビジネス拠点、少し離れた篠原・大豆戸は落ち着いた戸建て住宅地という二面性を持ちます。出張・通勤に便利な立地から共働き世帯が多く、マンションと戸建ての両方で交換需要があるエリアです。',
+    nearby: [
+      { slug: 'kikuna', name: '菊名' },
+      { slug: 'nagatsuta', name: '長津田' },
+      { slug: 'kamoi', name: '鴨居' },
+    ],
+  },
+  kikuna: {
+    stationCharacter:
+      '菊名駅はJR横浜線と東急東横線が交わる乗換駅で、横浜・渋谷の双方へ出やすい利便性から人気の住宅地です。駅周辺にはマンション・アパートが集まり、坂道沿いには戸建て住宅地が広がります。単身者からファミリーまで世帯構成が幅広く、16号から24号まで様々な号数の需要があるエリアです。',
+    nearby: [
+      { slug: 'shin-yokohama', name: '新横浜' },
+      { slug: 'tsunashima', name: '綱島' },
+      { slug: 'okurayama', name: '大倉山' },
+    ],
+  },
+  hiyoshi: {
+    stationCharacter:
+      '日吉駅は慶應義塾大学のキャンパスを擁する学生街であり、東急東横線・目黒線が乗り入れる住宅地でもあります。駅近には学生向けのアパート・マンションが集まり、日吉台・日吉本町には閑静な戸建て住宅地が広がる二つの顔を持つエリアです。賃貸物件の給湯専用型から戸建てのファミリー向け機種まで、幅広い交換ニーズが見られます。',
+    nearby: [
+      { slug: 'tsunashima', name: '綱島' },
+      { slug: 'okurayama', name: '大倉山' },
+      { slug: 'kikuna', name: '菊名' },
+    ],
+  },
+  tsunashima: {
+    stationCharacter:
+      '綱島駅は東急東横線と2023年開業の東急新横浜線が乗り入れ、再開発で大きく注目を集めるエリアです。駅周辺では新しいマンションの建設が進む一方、鶴見川沿いには古くからの住宅地や戸建てが残ります。新旧の住環境が共存し、新築マンションの初回交換から築古物件の更新まで、交換時期の異なる需要が混在するエリアです。',
+    nearby: [
+      { slug: 'hiyoshi', name: '日吉' },
+      { slug: 'okurayama', name: '大倉山' },
+      { slug: 'kikuna', name: '菊名' },
+    ],
+  },
+  okurayama: {
+    stationCharacter:
+      '大倉山駅は大倉山記念館や梅林で知られる落ち着いた住宅地で、駅前の商店街から坂を上ると閑静な戸建て住宅地が広がります。1980〜90年代に造成された住宅地が多く、長く住み続けるファミリー世帯に支持されています。築30年前後を迎えた住宅が多く、エコジョーズへの省エネ化を含む更新需要が高まっているエリアです。',
+    nearby: [
+      { slug: 'kikuna', name: '菊名' },
+      { slug: 'tsunashima', name: '綱島' },
+      { slug: 'hiyoshi', name: '日吉' },
+    ],
+  },
+  aobadai: {
+    stationCharacter:
+      '青葉台駅は東急田園都市線沿線を代表する人気の住宅地で、駅前の商業施設の周囲に丘陵地を整然と区画した戸建て住宅地が広がります。教育環境や街並みの良さを重視するファミリー世帯が多く、長く住み続ける傾向があります。1980〜90年代開発の住宅が多く、24号・エコジョーズへの省エネ化更新の相談が多いエリアです。',
+    nearby: [
+      { slug: 'tama-plaza', name: 'たまプラーザ' },
+      { slug: 'azamino', name: 'あざみ野' },
+      { slug: 'nagatsuta', name: '長津田' },
+    ],
+  },
+  'tama-plaza': {
+    stationCharacter:
+      'たまプラーザ駅は計画的に開発された高級住宅地として知られ、駅前の大型商業施設の周囲にゆとりある区画の戸建て住宅地が広がります。広めの敷地にゆったりと建つ住宅が多く、教育・住環境を重視するファミリー世帯に支持されています。1970年代後半からの住宅地で、複数回の給湯器更新時期を迎えている世帯も多いエリアです。',
+    nearby: [
+      { slug: 'azamino', name: 'あざみ野' },
+      { slug: 'aobadai', name: '青葉台' },
+      { slug: 'center-kita', name: 'センター北' },
+    ],
+  },
+  azamino: {
+    stationCharacter:
+      'あざみ野駅は東急田園都市線と横浜市営地下鉄ブルーラインが乗り入れる乗換駅で、センター北・新横浜方面へも出やすい利便性の高い高級住宅地です。駅周辺には戸建て住宅地が広がり、一部にマンションも点在します。ファミリー世帯が中心で、24号・エコジョーズへの省エネ化更新の相談が多いエリアです。',
+    nearby: [
+      { slug: 'tama-plaza', name: 'たまプラーザ' },
+      { slug: 'aobadai', name: '青葉台' },
+      { slug: 'center-kita', name: 'センター北' },
+    ],
+  },
+  'center-kita': {
+    stationCharacter:
+      'センター北駅は横浜市営地下鉄ブルーライン・グリーンラインが乗り入れる港北ニュータウンの中心駅の一つで、大型ショッピング施設を核に大規模マンション群と計画的な戸建て住宅地が整然と整備されています。1990年代以降に同時期開発された物件が多く、給湯器の交換時期が地域でまとまって訪れる傾向があります。子育て世帯に人気のエリアです。',
+    nearby: [
+      { slug: 'center-minami', name: 'センター南' },
+      { slug: 'nakamachidai', name: '仲町台' },
+      { slug: 'azamino', name: 'あざみ野' },
+    ],
+  },
+  'center-minami': {
+    stationCharacter:
+      'センター南駅は区役所や大型商業施設が集まる港北ニュータウンの中心駅で、大規模マンションと整然とした戸建て住宅地が広がります。1990年代以降の計画開発による住宅が多く、初回〜2回目の給湯器交換時期を順次迎えています。生活利便施設が充実し、ファミリー世帯が長く暮らすエリアです。',
+    nearby: [
+      { slug: 'center-kita', name: 'センター北' },
+      { slug: 'nakamachidai', name: '仲町台' },
+      { slug: 'tama-plaza', name: 'たまプラーザ' },
+    ],
+  },
+  nakamachidai: {
+    stationCharacter:
+      '仲町台駅は緑道や公園が整備された港北ニュータウンの落ち着いた住宅エリアで、マンションと戸建て住宅がバランスよく混在します。住環境の良さからファミリー世帯に支持され、センター北・センター南と同様に1990年代以降の計画開発による住宅が多いのが特徴です。交換時期が地域でまとまる傾向のあるエリアです。',
+    nearby: [
+      { slug: 'center-minami', name: 'センター南' },
+      { slug: 'center-kita', name: 'センター北' },
+      { slug: 'tateba', name: '立場' },
+    ],
+  },
+  ryokuentoshi: {
+    stationCharacter:
+      '緑園都市駅は街路樹に囲まれた美しい街並みで知られる計画開発の戸建て住宅地で、ゆとりある区画の住宅が整然と並びます。1980年代後半から開発された住宅地で、教育・住環境を重視するファミリー世帯が長く暮らしています。築30年前後を迎えた住宅が多く、24号・エコジョーズへの省エネ化更新の相談が増えているエリアです。',
+    nearby: [
+      { slug: 'izumino', name: 'いずみ野' },
+      { slug: 'yayoi-dai', name: '弥生台' },
+      { slug: 'futamatagawa', name: '二俣川' },
+    ],
+  },
+  totsuka: {
+    stationCharacter:
+      '戸塚駅はJR東海道線・横須賀線・市営地下鉄に相鉄線も加わる戸塚区の交通拠点で、再開発で駅前にタワーマンション・商業施設が整備されています。駅から離れると広大な戸建て住宅地が広がり、駅前マンションと郊外戸建ての両方が共存します。新築タワーマンションの初回交換から郊外戸建てのエコジョーズ化まで、幅広い需要があるエリアです。',
+    nearby: [
+      { slug: 'higashi-totsuka', name: '東戸塚' },
+      { slug: 'maioka', name: '舞岡' },
+      { slug: 'ofuna', name: '大船' },
+    ],
+  },
+  'higashi-totsuka': {
+    stationCharacter:
+      '東戸塚駅は駅前の大型商業施設を中心に発展した住宅エリアで、駅周辺には大規模マンションが立ち並び、丘陵地には戸建て住宅地が広がります。1980年代後半以降に開発された物件が多く、マンション・戸建てともに給湯器の更新時期を迎えています。生活利便性の高さからファミリー世帯に人気のエリアです。',
+    nearby: [
+      { slug: 'totsuka', name: '戸塚' },
+      { slug: 'hodogaya', name: '保土ケ谷' },
+      { slug: 'maioka', name: '舞岡' },
+    ],
+  },
+  maioka: {
+    stationCharacter:
+      '舞岡駅は舞岡公園など自然豊かな環境に囲まれた落ち着いた戸建て住宅地で、駅周辺に閑静な住宅地が広がります。郊外の住宅地ゆえ敷地に余裕のある住宅が多く、ファミリー世帯が中心です。ドレン排水の経路を確保しやすくエコジョーズへの更新に適し、築20〜30年の住宅での24号・省エネ化更新の相談が多いエリアです。',
+    nearby: [
+      { slug: 'totsuka', name: '戸塚' },
+      { slug: 'higashi-totsuka', name: '東戸塚' },
+      { slug: 'shimonagaya', name: '下永谷' },
+    ],
+  },
+  kamiooka: {
+    stationCharacter:
+      '上大岡駅は京急本線と横浜市営地下鉄ブルーラインが乗り入れる港南区の中心的なターミナル駅で、駅前の大型商業施設を中心に再開発が進んでいます。周辺には高層マンション群と、坂道沿いの戸建て住宅地が広がります。再開発エリアのマンションから周辺の戸建てまで、住宅タイプの異なる交換需要が共存するエリアです。',
+    nearby: [
+      { slug: 'konandai', name: '港南台' },
+      { slug: 'yokodai', name: '洋光台' },
+      { slug: 'shimonagaya', name: '下永谷' },
+    ],
+  },
+  konandai: {
+    stationCharacter:
+      '港南台駅は計画的に開発された大規模な戸建て住宅地・港南台エリアの中心で、駅前の商業施設の周囲に丘陵地を整然と区画した戸建て住宅地が広がります。1970〜80年代開発の住宅が多く、長く住み続けるファミリー世帯に支持されています。築40年前後を迎えた住宅が多く、配管も含めた老朽化への対応とエコジョーズ化の相談が多いエリアです。',
+    nearby: [
+      { slug: 'kamiooka', name: '上大岡' },
+      { slug: 'yokodai', name: '洋光台' },
+      { slug: 'hongodai', name: '本郷台' },
+    ],
+  },
+  yokodai: {
+    stationCharacter:
+      '洋光台駅は1970年代に開発された大規模団地と戸建て住宅地が広がるエリアで、公団・公社の団地群と丘陵地の戸建て住宅地が混在します。開発から年数が経過した物件が多く、設備の更新需要が高い地域です。団地の設置スペースの制約と戸建てのエコジョーズ化という、異なる条件への対応が求められるエリアです。',
+    nearby: [
+      { slug: 'konandai', name: '港南台' },
+      { slug: 'hongodai', name: '本郷台' },
+      { slug: 'kamiooka', name: '上大岡' },
+    ],
+  },
+  'kanazawa-bunko': {
+    stationCharacter:
+      '金沢文庫駅は金沢区の中心的な住宅エリアで、駅周辺にマンション・集合住宅が集まり、丘陵地や海側には戸建て住宅地が広がります。海に近い立地のため潮風の影響を受けやすく、給湯器本体の劣化が早まるケースもあります。古くからの住宅地で築年数の経った物件が多く、早めの点検・更新が望まれるエリアです。',
+    nearby: [
+      { slug: 'kanazawa-hakkei', name: '金沢八景' },
+      { slug: 'konandai', name: '港南台' },
+      { slug: 'kamiooka', name: '上大岡' },
+    ],
+  },
+  'kanazawa-hakkei': {
+    stationCharacter:
+      '金沢八景駅は京急本線と金沢シーサイドラインが乗り入れる乗換駅で、大学や海に近い住宅エリアです。駅周辺には学生向けのアパート・マンションが集まり、海側・丘陵地には戸建て住宅地が広がります。海に近く潮風の影響を受けやすい立地で、賃貸物件の給湯専用型から戸建てまで幅広い交換需要があるエリアです。',
+    nearby: [
+      { slug: 'kanazawa-bunko', name: '金沢文庫' },
+      { slug: 'konandai', name: '港南台' },
+      { slug: 'kamiooka', name: '上大岡' },
+    ],
+  },
+  tsurumi: {
+    stationCharacter:
+      '鶴見駅はJR京浜東北線・鶴見線と京急本線が利用できる鶴見区の交通拠点で、東京都に隣接し都心へのアクセスが良好です。駅周辺にはマンション・集合住宅が集まり、周辺には戸建て住宅地や古くからの商店街が広がります。単身者からファミリーまで世帯構成が幅広く、16号から24号まで様々な号数の需要があるエリアです。',
+    nearby: [
+      { slug: 'namamugi', name: '生麦' },
+      { slug: 'higashi-kanagawa', name: '東神奈川' },
+      { slug: 'kikuna', name: '菊名' },
+    ],
+  },
+  namamugi: {
+    stationCharacter:
+      '生麦駅は京急本線の駅で、古くからの住宅街と工業地帯に近い立地です。戸建て住宅・アパート・小規模マンションが混在し、地域に長く暮らす世帯と賃貸の入居者が共存します。築年数の経った物件が多く、据置型や古い壁掛型からの交換相談が中心で、賃貸物件の給湯専用型の需要もあるエリアです。',
+    nearby: [
+      { slug: 'tsurumi', name: '鶴見' },
+      { slug: 'higashi-kanagawa', name: '東神奈川' },
+      { slug: 'hakuraku', name: '白楽' },
+    ],
+  },
+  'higashi-kanagawa': {
+    stationCharacter:
+      '東神奈川駅はJR京浜東北線・横浜線と京急本線が利用できる乗換駅で、横浜駅に近い利便性の高い住宅エリアです。駅周辺にはマンション・集合住宅が集まり、周辺には戸建て住宅地も広がります。横浜駅に近いことから単身者向けマンションも多く、16号・20号の交換相談が多いのが特徴のエリアです。',
+    nearby: [
+      { slug: 'yokohama', name: '横浜' },
+      { slug: 'hakuraku', name: '白楽' },
+      { slug: 'tsurumi', name: '鶴見' },
+    ],
+  },
+  hakuraku: {
+    stationCharacter:
+      '白楽駅は六角橋商店街で知られる活気ある住宅エリアで、大学に近く学生向けのアパート・マンションが集まる一方、坂道沿いには戸建て住宅地が広がります。商店街の賑わいと落ち着いた住宅地が共存し、賃貸の入居者から地域に長く暮らす世帯まで幅広く居住します。給湯専用型から戸建ての機種まで多様な需要があるエリアです。',
+    nearby: [
+      { slug: 'higashi-kanagawa', name: '東神奈川' },
+      { slug: 'kikuna', name: '菊名' },
+      { slug: 'tsurumi', name: '鶴見' },
+    ],
+  },
+  futamatagawa: {
+    stationCharacter:
+      '二俣川駅は相鉄本線といずみ野線が分岐する乗換駅で、運転免許センターでも知られる旭区の中心駅です。駅前の再開発で商業施設が整備される一方、周辺には広大な戸建て住宅地が広がります。1980〜90年代開発の住宅が多く、ファミリー世帯が長く暮らし、24号・エコジョーズへの省エネ化更新の相談が多いエリアです。',
+    nearby: [
+      { slug: 'tsurugamine', name: '鶴ヶ峰' },
+      { slug: 'nishiya', name: '西谷' },
+      { slug: 'ryokuentoshi', name: '緑園都市' },
+    ],
+  },
+  tsurugamine: {
+    stationCharacter:
+      '鶴ヶ峰駅は相鉄本線の駅で、駅前の商業施設の周辺から丘陵地に戸建て住宅地が広がる旭区の住宅エリアです。1980〜90年代に開発された住宅地が多く、ファミリー世帯が中心に暮らしています。坂の多い地形で搬入経路の確認が必要になる一方、24号・エコジョーズへの省エネ化更新の相談が増えているエリアです。',
+    nearby: [
+      { slug: 'futamatagawa', name: '二俣川' },
+      { slug: 'nishiya', name: '西谷' },
+      { slug: 'seya', name: '瀬谷' },
+    ],
+  },
+  nishiya: {
+    stationCharacter:
+      '西谷駅は相鉄・JR直通線の分岐点として近年利便性が大きく向上した住宅エリアで、駅周辺から丘陵地にかけて戸建て住宅地が広がります。直通線開業で都心アクセスが改善し住宅需要が高まる一方、古くからの住宅地では築30年前後の住宅が多く、24号・エコジョーズへの省エネ化更新の相談が増えているエリアです。',
+    nearby: [
+      { slug: 'tsurugamine', name: '鶴ヶ峰' },
+      { slug: 'futamatagawa', name: '二俣川' },
+      { slug: 'hakuraku', name: '白楽' },
+    ],
+  },
+  shimonagaya: {
+    stationCharacter:
+      '下永谷駅は横浜市営地下鉄ブルーラインの駅で、丘陵地に戸建て住宅地が広がり、マンション・集合住宅も点在する保土ケ谷区南部の住宅エリアです。古くからの住宅地で築年数の経った物件が多く、戸建てのエコジョーズ化からマンションのPS設置型まで対応が求められます。坂の多い地形で搬入経路の確認が必要になるエリアです。',
+    nearby: [
+      { slug: 'maioka', name: '舞岡' },
+      { slug: 'kamiooka', name: '上大岡' },
+      { slug: 'totsuka', name: '戸塚' },
+    ],
+  },
+  kamoi: {
+    stationCharacter:
+      '鴨居駅は大型商業施設に近い緑区の住宅エリアで、鶴見川沿いの平地と丘陵地に戸建て住宅地が広がります。買い物環境の良さからファミリー世帯が多く暮らし、24号・エコジョーズへの省エネ化更新の相談が多いのが特徴です。築20〜30年の戸建てが多く、鶴見川沿いの低地では設置場所・配管状況の確認も行うエリアです。',
+    nearby: [
+      { slug: 'nakayama', name: '中山' },
+      { slug: 'nagatsuta', name: '長津田' },
+      { slug: 'shin-yokohama', name: '新横浜' },
+    ],
+  },
+  nakayama: {
+    stationCharacter:
+      '中山駅はJR横浜線と横浜市営地下鉄グリーンラインが乗り入れる緑区の中心的な住宅エリアで、駅周辺にマンション・集合住宅が集まり、周辺には戸建て住宅地が広がります。グリーンライン開業で利便性が向上し駅近のマンション需要が高まる一方、周辺の戸建てでは築年数の経った給湯器の更新需要が高いエリアです。',
+    nearby: [
+      { slug: 'kamoi', name: '鴨居' },
+      { slug: 'nagatsuta', name: '長津田' },
+      { slug: 'center-kita', name: 'センター北' },
+    ],
+  },
+  nagatsuta: {
+    stationCharacter:
+      '長津田駅はJR横浜線・東急田園都市線・こどもの国線が乗り入れる緑区西部の交通の要衝で、複数路線が交わる利便性から駅周辺にマンション・集合住宅が集まり、丘陵地には戸建て住宅地が広がります。田園都市線沿線のファミリー向け住宅地で24号需要が高く、マンションと戸建ての両方で交換需要があるエリアです。',
+    nearby: [
+      { slug: 'nakayama', name: '中山' },
+      { slug: 'aobadai', name: '青葉台' },
+      { slug: 'kamoi', name: '鴨居' },
+    ],
+  },
+  seya: {
+    stationCharacter:
+      '瀬谷駅は横浜市最西端に位置する瀬谷区の中心駅で、駅周辺の商業エリアから落ち着いた戸建て住宅地が広がります。郊外の住宅地ゆえ敷地に余裕のある住宅が多く、ファミリー世帯が中心です。ドレン排水の経路を確保しやすくエコジョーズへの更新に適し、1980〜90年代開発の住宅での24号・省エネ化更新の相談が多いエリアです。',
+    nearby: [
+      { slug: 'mitsukyo', name: '三ツ境' },
+      { slug: 'tsurugamine', name: '鶴ヶ峰' },
+      { slug: 'futamatagawa', name: '二俣川' },
+    ],
+  },
+  mitsukyo: {
+    stationCharacter:
+      '三ツ境駅は瀬谷区と泉区にまたがる住宅エリアで、駅前の商業施設の周辺から戸建て住宅地が広がります。郊外の住宅地ゆえ敷地に余裕のある住宅が多く、ファミリー世帯が中心に暮らしています。1980〜90年代開発の住宅が多く、ドレン排水を確保しやすい環境を活かした24号・エコジョーズへの省エネ化更新の相談が多いエリアです。',
+    nearby: [
+      { slug: 'seya', name: '瀬谷' },
+      { slug: 'futamatagawa', name: '二俣川' },
+      { slug: 'tateba', name: '立場' },
+    ],
+  },
+  izumino: {
+    stationCharacter:
+      'いずみ野駅は緑豊かな環境に計画的に開発された戸建て住宅地が広がる泉区のエリアで、ゆとりある区画の住宅が整然と並びます。1980年代後半から開発された住宅地で、住環境を重視するファミリー世帯が長く暮らしています。築30年前後を迎えた住宅が多く、24号・エコジョーズへの省エネ化更新の相談が増えているエリアです。',
+    nearby: [
+      { slug: 'yayoi-dai', name: '弥生台' },
+      { slug: 'ryokuentoshi', name: '緑園都市' },
+      { slug: 'tateba', name: '立場' },
+    ],
+  },
+  tateba: {
+    stationCharacter:
+      '立場駅は横浜市営地下鉄ブルーラインの駅で、駅周辺の商業施設を中心にマンション・集合住宅と戸建て住宅地が混在する泉区の中心的な住宅エリアです。地下鉄沿線の利便性から駅近のマンション需要が高い一方、周辺の戸建てでは築年数の経った給湯器の更新需要が高く、両方への対応が求められるエリアです。',
+    nearby: [
+      { slug: 'mitsukyo', name: '三ツ境' },
+      { slug: 'nakamachidai', name: '仲町台' },
+      { slug: 'izumino', name: 'いずみ野' },
+    ],
+  },
+  'yayoi-dai': {
+    stationCharacter:
+      '弥生台駅は街路樹に囲まれた落ち着いた街並みの計画開発の戸建て住宅地が広がる泉区のエリアで、ゆとりある区画の住宅が並びます。1980年代後半から開発された住宅地で、住環境を重視するファミリー世帯が長く暮らしています。築30年前後を迎えた住宅が多く、24号・エコジョーズへの省エネ化更新の相談が増えているエリアです。',
+    nearby: [
+      { slug: 'izumino', name: 'いずみ野' },
+      { slug: 'ryokuentoshi', name: '緑園都市' },
+      { slug: 'tateba', name: '立場' },
+    ],
+  },
+  hongodai: {
+    stationCharacter:
+      '本郷台駅は計画的に造成された戸建て住宅地が広がる栄区の中心エリアで、駅周辺の落ち着いた環境にゆとりある区画の戸建て住宅地が整然と並びます。1980〜90年代開発の住宅が多く、ファミリー世帯が長く暮らしています。築30〜40年を迎えた住宅が多く、配管も含めた老朽化への対応とエコジョーズ化の相談が多いエリアです。',
+    nearby: [
+      { slug: 'ofuna', name: '大船' },
+      { slug: 'konandai', name: '港南台' },
+      { slug: 'yokodai', name: '洋光台' },
+    ],
+  },
+  ofuna: {
+    stationCharacter:
+      '大船駅はJR東海道線・横須賀線・根岸線・湘南モノレールが乗り入れる横浜市と鎌倉市の境に位置する交通の要衝です。栄区側の駅周辺にはマンション・集合住宅が集まり、周辺には戸建て住宅地が広がります。複数路線が交わる利便性から駅近のマンション需要が高く、戸建てのエコジョーズ化と合わせ幅広い交換需要があるエリアです。',
+    nearby: [
+      { slug: 'hongodai', name: '本郷台' },
+      { slug: 'totsuka', name: '戸塚' },
+      { slug: 'konandai', name: '港南台' },
+    ],
+  },
+}
+
 export const yokohamaStations: Record<string, YokohamaStation> = {}
 for (const input of stationInputs) {
-  yokohamaStations[input.slug] = build(input)
+  const extra = stationExtras[input.slug]
+  yokohamaStations[input.slug] = build(input, extra)
 }
 
 export const allYokohamaStations: { slug: string }[] = Object.keys(yokohamaStations).map((slug) => ({

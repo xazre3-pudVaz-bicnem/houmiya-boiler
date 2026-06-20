@@ -97,11 +97,13 @@ const yokohamaDistrictUrls = [
   priority: 0.6,
 }))
 
-// 横浜市 症状ページ（12件）
+// 横浜市 症状ページ（19件）
 const yokohamaTroubleUrls = [
   'no-hot-water', 'error-111', 'water-leak', 'no-ignition',
   'temperature-unstable', 'remote-control-error', 'exhaust-smell',
   'noise', 'pilot-off', 'freeze', 'bath-autofill', 'hot-water-flow',
+  'error-110', 'no-reheating', 'remote-controller', 'strange-noise',
+  'gas-smell', 'freezing', 'old-boiler',
 ].map(t => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/trouble/${t}`,
   lastModified: new Date(),
@@ -109,11 +111,13 @@ const yokohamaTroubleUrls = [
   priority: 0.75,
 }))
 
-// 横浜市 設置タイプページ（12件）
+// 横浜市 設置タイプページ（18件）
 const yokohamaTypeUrls = [
   'mansion-ps', 'wall-mounted', 'floor-standing', 'eco-jaws',
   'full-auto', 'auto', 'outdoor', 'indoor', 'propane',
   'city-gas', 'heat-pump', 'replacement-only',
+  'ps-standard', 'ps-door', 'ps-upper-exhaust', 'balcony',
+  'gas-furo', 'warm-water-heating',
 ].map(t => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/type/${t}`,
   lastModified: new Date(),

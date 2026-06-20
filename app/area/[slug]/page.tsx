@@ -6,7 +6,8 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import FaqAccordion from '@/components/FaqAccordion'
 import ProductCard from '@/components/ProductCard'
-import { getProductsByMaker } from '@/data/products'
+import { getProductsByMaker, getProductBySlug } from '@/data/products'
+import { casesData } from '@/data/cases'
 import { siteConfig } from '@/data/site'
 import { areaConfigs } from '@/data/area-configs'
 
@@ -83,10 +84,12 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
   const config = areaConfigs[slug]
   if (!config) notFound()
 
+  const allFaqs = [...config.faqs, ...(config.additionalFaqs || [])]
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: config.faqs.map((f) => ({
+    mainEntity: allFaqs.map((f) => ({
       '@type': 'Question',
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -127,7 +130,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
   const localBusinessJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: '株式会社宝宮設備',
+    name: siteConfig.name,
     telephone: siteConfig.phone,
     url: 'https://www.houmiya-boiler.com',
     address: {
@@ -135,11 +138,11 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
       streetAddress: '温水西1-4-39',
       addressLocality: '厚木市',
       addressRegion: '神奈川県',
-      postalCode: '243-0032',
+      postalCode: '243-0034',
       addressCountry: 'JP',
     },
     openingHours: 'Mo,Tu,We,Th,Fr,Sa,Su 09:00-18:00',
-    areaServed: config.name,
+    areaServed: { '@type': 'City', name: config.name },
   }
 
   return (
@@ -162,10 +165,12 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <span>{config.name}</span>
             </nav>
             <h1 className="text-3xl font-black mb-3">{config.name}の給湯器交換・販売</h1>
-            <p className="text-blue-100 text-sm mb-5 max-w-2xl leading-relaxed">
-              {config.name}で給湯器交換・販売なら株式会社宝宮設備。リンナイ・ノーリツ・パロマ対応。
-              戸建て・マンション・アパート対応。工事費込み価格で無料見積もり受付中。
+            <p className="text-blue-100 text-sm mb-5 max-w-3xl leading-relaxed">
+              {config.lpLeadText || `${config.name}で給湯器交換・販売なら株式会社宝宮設備。リンナイ・ノーリツ・パロマ対応。戸建て・マンション・アパート対応。工事費込み価格で無料見積もり受付中。`}
             </p>
+            {config.wards && (
+              <p className="text-blue-200 text-xs mb-4">対応エリア：{config.name}全{config.wards.length}区</p>
+            )}
             <div className="flex flex-wrap gap-3">
               <a href={siteConfig.phoneHref} className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-black text-base px-5 py-2.5 rounded-lg transition-colors">
                 {siteConfig.phone}
@@ -187,6 +192,17 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <div className="bg-white border border-gray-200 rounded-xl p-5">
                 <p className="text-xs font-black text-gray-700 mb-3 uppercase tracking-wider">目次</p>
                 <ol className="space-y-1.5 list-decimal list-inside columns-2">
+                  {config.targetPersonas && <li><a href="#target" className="text-xs text-brand-700 hover:underline">{config.name}で交換を検討している方へ</a></li>}
+                  {config.housingTypeGuide && <li><a href="#housing" className="text-xs text-brand-700 hover:underline">住宅タイプ別ガイド</a></li>}
+                  {config.installTypeDetails && <li><a href="#install-type" className="text-xs text-brand-700 hover:underline">設置タイプ別ガイド</a></li>}
+                  {config.capacityComparisonRows && <li><a href="#capacity" className="text-xs text-brand-700 hover:underline">号数の選び方</a></li>}
+                  {config.makerGuide && <li><a href="#makers" className="text-xs text-brand-700 hover:underline">対応メーカー・人気の機種</a></li>}
+                  {config.repairVsReplace && <li><a href="#repair-replace" className="text-xs text-brand-700 hover:underline">修理と交換の判断</a></li>}
+                  {config.troubleLinks && <li><a href="#trouble-links" className="text-xs text-brand-700 hover:underline">よくあるトラブル症状</a></li>}
+                  {config.photoEstimatePhotos && <li><a href="#estimate-photo" className="text-xs text-brand-700 hover:underline">写真見積もりの流れ</a></li>}
+                  {config.workflowSteps && <li><a href="#workflow-steps" className="text-xs text-brand-700 hover:underline">工事当日の流れ</a></li>}
+                  <li><a href="#city-cases" className="text-xs text-brand-700 hover:underline">施工事例</a></li>
+                  {config.wardsGuide && <li><a href="#wards-guide" className="text-xs text-brand-700 hover:underline">区・エリア別対応案内</a></li>}
                   {config.sections.map((s, i) => (
                     <li key={i}>
                       <a href={`#section-area-${i}`} className="text-xs text-brand-700 hover:underline">{s.heading}</a>
@@ -252,6 +268,162 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
         </section>
+
+        {/* LP: ターゲットペルソナ */}
+        {config.targetPersonas && config.targetPersonas.length > 0 && (
+          <section id="target" className="py-12 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}で給湯器交換を検討している方へ</h2>
+              <p className="text-sm text-gray-500 mb-8">以下のようなお悩み・ご状況の方からのご相談を多くいただいています。</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {config.targetPersonas.map((p) => (
+                  <div key={p.title} className="border border-blue-200 rounded-xl p-5 bg-blue-50">
+                    <p className="font-black text-brand-900 mb-2 flex items-start gap-2">
+                      <span className="text-brand-600 flex-shrink-0">{p.icon}</span>
+                      <span>{p.title}</span>
+                    </p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{p.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 住宅タイプ別ガイド */}
+        {config.housingTypeGuide && config.housingTypeGuide.length > 0 && (
+          <section id="housing" className="py-12 bg-gray-50 scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}の住宅タイプ別 給湯器交換ガイド</h2>
+              <p className="text-sm text-gray-500 mb-8">戸建て・マンション・賃貸物件それぞれの特徴と注意点をご案内します。</p>
+              <div className="space-y-4">
+                {config.housingTypeGuide.map((h) => (
+                  <div key={h.type} className="bg-white border border-gray-200 rounded-xl p-6">
+                    <h3 className="font-black text-gray-900 text-lg mb-3">{config.name}の{h.type}での給湯器交換</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-4">{h.desc}</p>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs font-black text-gray-500 mb-2 uppercase tracking-wider">多い設置タイプ</p>
+                        <div className="flex flex-wrap gap-2">
+                          {h.commonInstallTypes.map((t) => (
+                            <span key={t} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-2.5 py-1 rounded-lg font-medium">{t}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-gray-500 mb-2 uppercase tracking-wider">確認ポイント</p>
+                        <ul className="space-y-1">
+                          {h.notes.map((n) => (
+                            <li key={n} className="flex items-start gap-2 text-xs text-gray-600">
+                              <svg className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                              {n}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 設置タイプ別ガイド */}
+        {config.installTypeDetails && config.installTypeDetails.length > 0 && (
+          <section id="install-type" className="py-12 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}の設置タイプ別ガイド</h2>
+              <p className="text-sm text-gray-500 mb-8">設置タイプによって適合する機種や工事内容が変わります。それぞれの特徴をご案内します。</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {config.installTypeDetails.map((it) => (
+                  <div key={it.type} className="border border-gray-200 rounded-xl p-5">
+                    <h3 className="font-black text-gray-900 text-base mb-2">{it.type}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-3">{it.desc}</p>
+                    <p className="text-xs text-gray-500 mb-2"><span className="font-bold">多い住宅：</span>{it.commonIn}</p>
+                    <ul className="space-y-1">
+                      {it.notes.map((n) => (
+                        <li key={n} className="flex items-start gap-2 text-xs text-gray-600">
+                          <span className="text-brand-400 flex-shrink-0">・</span>{n}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 号数の選び方（比較表） */}
+        {config.capacityComparisonRows && config.capacityComparisonRows.length > 0 && (
+          <section id="capacity" className="py-12 bg-gray-50 scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}での号数の選び方</h2>
+              <p className="text-sm text-gray-500 mb-6">号数は1分間に沸かせるお湯の量の目安です。{config.name}の住宅傾向に合わせて比較しました。</p>
+              <div className="overflow-x-auto rounded-xl border border-gray-200">
+                <table className="w-full text-sm border-collapse">
+                  <thead className="bg-brand-700 text-white">
+                    <tr>
+                      <th className="p-3 text-left border border-brand-600 font-bold">項目</th>
+                      <th className="p-3 text-center border border-brand-600 font-bold">16号</th>
+                      <th className="p-3 text-center border border-brand-600 font-bold">20号</th>
+                      <th className="p-3 text-center border border-brand-600 font-bold">24号</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {config.capacityComparisonRows.map((row, i) => (
+                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        {row.map((cell, j) => (
+                          <td key={j} className={`p-3 border border-gray-200 text-sm ${j === 0 ? 'font-bold text-gray-800' : 'text-gray-600 text-center'}`}>{cell}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Link href="/guide/capacity" className="text-sm font-bold text-brand-700 hover:underline mt-4 inline-block">号数の選び方 詳しく見る →</Link>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 対応メーカー + 商品カード */}
+        {config.makerGuide && config.makerGuide.length > 0 && (
+          <section id="makers" className="py-12 bg-white scroll-mt-28">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}で対応している給湯器メーカー</h2>
+              <p className="text-sm text-gray-500 mb-8">リンナイ・ノーリツ・パロマの主要3メーカーを工事費込み価格で取り扱っています。</p>
+              <div className="space-y-10">
+                {config.makerGuide.map((maker) => {
+                  const makerProducts = maker.productSlugs
+                    .map((s) => getProductBySlug(s))
+                    .filter((p): p is NonNullable<typeof p> => Boolean(p))
+                  return (
+                    <div key={maker.maker}>
+                      <h3 className="font-black text-gray-900 text-lg mb-1">{maker.maker}</h3>
+                      <p className="text-sm text-gray-600 leading-relaxed mb-4 max-w-3xl">{maker.desc}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                        {makerProducts.map((product) => (
+                          <Link href={`/products/${product.slug}`} key={product.slug} className="block border border-gray-200 rounded-xl p-4 hover:border-brand-400 transition-colors">
+                            <p className="font-bold text-sm text-gray-900 mb-1">{product.model}</p>
+                            <p className="text-brand-700 font-black text-lg">{product.totalInTax.toLocaleString()}円<span className="text-xs font-bold">（税込）</span></p>
+                            <p className="text-xs text-gray-500 mt-1">{product.capacity}号 / {product.typeLabel} / {product.installationLabel}</p>
+                            <p className="text-[11px] text-gray-400 mt-0.5">本体＋リモコン＋標準工事費込み</p>
+                          </Link>
+                        ))}
+                      </div>
+                      <Link href={maker.makerHref} className="text-sm text-brand-700 font-bold hover:underline">
+                        {maker.maker}製品をすべて見る →
+                      </Link>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ④ 対応できる給湯器の種類 */}
         <section className="py-10 bg-gray-50">
@@ -418,6 +590,184 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
           </div>
         </section>
 
+        {/* LP: 修理 vs 交換 */}
+        {config.repairVsReplace && (
+          <section id="repair-replace" className="py-12 bg-gray-50 scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}で給湯器が故障｜修理と交換の判断</h2>
+              <p className="text-sm text-gray-500 mb-6">使用年数や症状の出方によって、修理で済むケースと交換を検討すべきケースが分かれます。</p>
+              <div className="overflow-x-auto rounded-xl border border-gray-200">
+                <table className="w-full text-sm border-collapse">
+                  <thead className="bg-gray-700 text-white">
+                    <tr>
+                      <th className="p-3 text-left border border-gray-600 font-bold w-1/2">修理で対応できる可能性があるケース</th>
+                      <th className="p-3 text-left border border-gray-600 font-bold w-1/2">交換を検討すべきケース</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.from({ length: Math.max(config.repairVsReplace.repairOk.length, config.repairVsReplace.replaceRecommended.length) }).map((_, i) => (
+                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        <td className="p-3 border border-gray-200 text-gray-700 align-top">{config.repairVsReplace?.repairOk[i] || ''}</td>
+                        <td className="p-3 border border-gray-200 text-gray-700 align-top">{config.repairVsReplace?.replaceRecommended[i] || ''}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Link href="/guide/lifespan" className="text-sm font-bold text-brand-700 hover:underline mt-4 inline-block">給湯器の寿命について詳しく見る →</Link>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 中間CTA */}
+        <section className="py-10 bg-brand-900 text-white text-center">
+          <div className="max-w-3xl mx-auto px-4">
+            <p className="text-lg font-black mb-4">{config.name}の給湯器交換、まずは無料見積もりから</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link href="/estimate" className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-black px-6 py-3 rounded-lg transition-colors w-full sm:w-auto">無料見積もりを依頼する</Link>
+              <a href={siteConfig.phoneHref} className="bg-white/20 hover:bg-white/30 text-white font-black px-6 py-3 rounded-lg transition-colors w-full sm:w-auto">{siteConfig.phone}</a>
+              <a href={siteConfig.lineUrl} target="_blank" rel="noopener noreferrer" className="text-white font-bold px-6 py-3 rounded-lg transition-colors w-full sm:w-auto" style={{ backgroundColor: '#00B900' }}>LINEで写真を送る</a>
+            </div>
+          </div>
+        </section>
+
+        {/* LP: よくあるトラブル症状 */}
+        {config.troubleLinks && config.troubleLinks.length > 0 && (
+          <section id="trouble-links" className="py-12 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}でよくある給湯器のトラブル症状</h2>
+              <p className="text-sm text-gray-500 mb-6">以下の症状がある場合はご相談ください。症状別の詳しい解説ページもご用意しています。</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                {config.troubleLinks.map((t) => (
+                  <Link key={t.href} href={t.href} className={`block rounded-xl p-4 border transition-colors ${t.priority === 'high' ? 'border-red-200 bg-red-50 hover:bg-red-100' : 'border-gray-200 bg-gray-50 hover:bg-blue-50'}`}>
+                    <p className="font-bold text-sm text-gray-900">{t.symptom}</p>
+                    <span className={`text-xs font-bold ${t.priority === 'high' ? 'text-red-600' : 'text-brand-700'}`}>{t.priority === 'high' ? '至急ご相談ください →' : '詳しく見る →'}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 写真見積もりで送る写真 */}
+        {config.photoEstimatePhotos && config.photoEstimatePhotos.length > 0 && (
+          <section id="estimate-photo" className="py-12 bg-gray-50 scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">写真見積もりで送る写真</h2>
+              <p className="text-sm text-gray-500 mb-6">{config.name}内であれば、現地確認なしでも以下の写真をお送りいただくだけで概算のお見積もりが可能です。</p>
+              <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <ul className="grid sm:grid-cols-2 gap-3">
+                  {config.photoEstimatePhotos.map((photo, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
+                      <span className="flex-shrink-0 w-6 h-6 bg-brand-700 text-white text-xs font-black flex items-center justify-center rounded-full mt-0.5">{i + 1}</span>
+                      <span className="leading-relaxed">{photo}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex flex-wrap gap-3 mt-5">
+                <a href={siteConfig.lineUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-white font-bold text-sm px-5 py-2.5 rounded-lg transition-colors" style={{ backgroundColor: '#00B900' }}>LINEで写真を送る</a>
+                <Link href="/estimate" className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black text-sm px-5 py-2.5 rounded-lg transition-colors">フォームで見積もり依頼</Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* LP: 工事当日の流れ */}
+        {config.workflowSteps && config.workflowSteps.length > 0 && (
+          <section id="workflow-steps" className="py-12 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">工事当日の流れ</h2>
+              <p className="text-sm text-gray-500 mb-8">到着から使用説明まで、当日の工事は以下の流れで進めます。標準工事で2〜4時間程度が目安です。</p>
+              <ol className="relative border-l-2 border-brand-200 ml-3 space-y-6">
+                {config.workflowSteps.map((s) => (
+                  <li key={s.step} className="ml-6">
+                    <span className="absolute -left-[15px] flex items-center justify-center w-7 h-7 bg-brand-700 text-white text-xs font-black rounded-full">{s.step}</span>
+                    <h3 className="font-black text-gray-900 text-base mb-1">{s.title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+        )}
+
+        {/* LP: この市の施工事例 */}
+        {(() => {
+          const cityCases = casesData.filter((c) => c.areaSlug === slug).slice(0, 6)
+          if (cityCases.length === 0) return null
+          return (
+            <section id="city-cases" className="py-12 bg-gray-50 scroll-mt-28">
+              <div className="max-w-6xl mx-auto px-4">
+                <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}の施工事例</h2>
+                <p className="text-sm text-gray-500 mb-6">{config.name}内での給湯器交換の施工事例をご紹介します。</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {cityCases.map((c) => (
+                    <Link href={`/cases/${c.slug}`} key={c.id} className="block border border-gray-200 rounded-xl p-4 bg-white hover:border-brand-400 transition-colors">
+                      <p className="text-xs text-gray-500">{c.area}</p>
+                      <p className="font-bold text-sm text-gray-900 mt-1">{c.buildingType} / {c.installationType}</p>
+                      <p className="text-xs text-gray-600 mt-1">{c.beforeModel} → {c.afterModel}</p>
+                      <p className="text-xs text-gray-400 mt-1">{c.maker} / {c.capacity}号 / {c.duration}</p>
+                    </Link>
+                  ))}
+                </div>
+                <Link href="/cases" className="text-sm text-brand-700 font-bold hover:underline mt-5 inline-block">施工事例一覧を見る →</Link>
+              </div>
+            </section>
+          )
+        })()}
+
+        {/* LP: 区・エリア別対応案内 */}
+        {config.wardsGuide && config.wardsGuide.length > 0 && (() => {
+          // 区ページが存在するのは横浜市・川崎市のみ。それ以外は地区紹介カード（リンクなし）として表示
+          const hasWardPages = slug === 'yokohama' || slug === 'kawasaki'
+          return (
+            <section id="wards-guide" className="py-12 bg-white scroll-mt-28">
+              <div className="max-w-6xl mx-auto px-4">
+                <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}の区・エリア別対応案内</h2>
+                <p className="text-sm text-gray-500 mb-6">{config.name}内の各エリアの住宅傾向に合わせて対応しています。</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {config.wardsGuide!.map((ward) => {
+                    const inner = (
+                      <>
+                        <p className="font-black text-brand-900">{config.name}{ward.name}</p>
+                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">{ward.summary}</p>
+                        {ward.stations && <p className="text-xs text-gray-400 mt-2">主要駅：{ward.stations}</p>}
+                      </>
+                    )
+                    return hasWardPages ? (
+                      <Link href={`/area/${slug}/${ward.slug}`} key={ward.slug} className="block border border-gray-200 rounded-xl p-4 hover:border-brand-400 transition-colors">
+                        {inner}
+                      </Link>
+                    ) : (
+                      <div key={ward.slug} className="border border-gray-200 rounded-xl p-4 bg-gray-50">
+                        {inner}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </section>
+          )
+        })()}
+
+        {/* LP: 主要駅別案内（横浜のみ） */}
+        {config.stationsGuide && config.stationsGuide.length > 0 && (
+          <section id="stations-guide" className="py-12 bg-gray-50 scroll-mt-28">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-2xl font-black text-gray-900 mb-2">{config.name}の主要駅周辺の給湯器交換</h2>
+              <p className="text-sm text-gray-500 mb-6">主要駅周辺エリアの給湯器交換に対応しています。</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                {config.stationsGuide.map((s) => (
+                  <Link href={`/area/${slug}/station/${s.slug}`} key={s.slug} className="text-xs text-brand-700 border border-brand-200 rounded px-3 py-2 hover:bg-brand-50 font-semibold transition-colors">
+                    {s.name}駅周辺（{s.wardName}）
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ⑬ 交換までの流れ */}
         <section className="py-10 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">
@@ -582,7 +932,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
         <section id="area-faq" className="py-10 bg-gray-50 scroll-mt-28">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-6">{config.name}の給湯器交換 よくある質問</h2>
-            <FaqAccordion faqs={config.faqs} />
+            <FaqAccordion faqs={allFaqs} />
           </div>
         </section>
 

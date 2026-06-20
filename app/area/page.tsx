@@ -66,19 +66,27 @@ const breadcrumbJsonLd = {
 const areaFeatures = [
   {
     name: '横浜市',
-    body: '神奈川県最大の都市で全18区に対応。港北区・神奈川区・西区・中区など駅近エリアはマンションのPS設置型が中心、青葉区・都筑区・戸塚区・旭区など郊外は戸建ての壁掛型・据置型が主流です。住宅タイプに合わせた機種をご提案します。',
+    href: '/area/yokohama',
+    body: '神奈川県最大の都市で全18区に対応しています。港北区・神奈川区・西区・中区など駅近エリアはマンションのPS設置型（PS標準設置型・PS扉内設置型・PS扉内上方排気型）が中心で、管理規約に沿った機種選定を行います。青葉区・都筑区・戸塚区・旭区・金沢区など郊外・ニュータウンエリアは戸建ての壁掛型・据置型が主流で、エコジョーズへの省エネ交換も増えています。住宅タイプと区ごとの傾向に合わせて、最適な号数・メーカー・機能の機種をご提案します。',
+    spots: ['新横浜・日吉（港北区）', 'たまプラーザ・青葉台（青葉区）', 'センター北・南（都筑区）', '戸塚・東戸塚（戸塚区）', '上大岡（港南区）', 'みなとみらい・関内（西区・中区）'],
   },
   {
     name: '川崎市',
-    body: '全7区に対応。中原区の武蔵小杉はタワーマンション群、川崎区・幸区も大型マンションが多くPS設置型が中心です。宮前区・多摩区・麻生区は戸建てが多く、エコジョーズへの省エネ交換のご相談が増えています。',
+    href: '/area/kawasaki',
+    body: '全7区に対応しています。中原区の武蔵小杉はタワーマンション群が集積し、川崎区・幸区も大型マンションが多くPS設置型が中心です。タワーマンションでは管理組合の承認手続きが必要な場合があるため、早めのご相談がスムーズです。宮前区・多摩区・麻生区は田園都市線・小田急線沿線の戸建てが多く、築20〜30年を迎えた住宅でのエコジョーズへの省エネ交換のご相談が増えています。',
+    spots: ['武蔵小杉（中原区）', '新川崎・鹿島田（幸区）', '溝の口（高津区）', '宮前平・鷺沼（宮前区）', '登戸・生田（多摩区）', '新百合ヶ丘（麻生区）'],
   },
   {
     name: '厚木市',
-    body: '本社（厚木市温水西）がある地元密着エリア。戸建て住宅が多く屋外壁掛型・据置型が中心です。在庫確認・スケジュール調整がスムーズで、市内であれば最短30〜60分程度でお伺いできる場合があり、緊急時も最優先で対応します。',
+    href: '/area/atsugi',
+    body: '本社（厚木市温水西1-4-39）がある地元密着エリアです。温水・愛甲・妻田・林・森の里などの戸建て住宅が多く、屋外壁掛型・据置型の交換、24号への号数アップ、ドレン排水経路を確保しやすい戸建てでのエコジョーズへの交換が中心です。本厚木駅周辺のマンション・アパートのPS設置型にも対応。在庫確認・スケジュール調整を自社で行えるため、市内であれば最短30〜60分程度でお伺いできる場合があり、緊急時も最優先で対応します。',
+    spots: ['本厚木駅周辺', '温水・妻田周辺', '愛甲石田周辺', '森の里・七沢', '林・戸田（相模川沿い）', '厚木駅周辺'],
   },
   {
     name: '海老名市',
-    body: '厚木市の拠点から15〜20分程度と近く迅速に対応できるエリア。新興住宅地が多く、購入から10〜15年を迎えた戸建ての初回交換が中心です。ファミリー向けの24号が多く選ばれています。',
+    href: '/area/ebina',
+    body: '厚木市の拠点から15〜20分程度と近く迅速に対応できるエリアです。近年の宅地開発で新興住宅地が急増し、購入から10〜15年を迎えた戸建ての初回交換が中心となっています。新築から一度も交換していない場合、型番が分からない方も写真でこちらが確認します。ファミリー向けの24号が多く、設置環境が整った新築・築浅の戸建てではエコジョーズへの省エネ交換も人気です。海老名駅周辺のマンションのPS設置型にも対応します。',
+    spots: ['海老名駅周辺', '相模大塚周辺', 'さがみ野周辺', 'かしわ台周辺', '社家・門沢橋周辺'],
   },
 ]
 
@@ -102,6 +110,10 @@ const indexFaqs = [
   { q: '工事費込みの価格ですか？', a: 'はい。給湯器本体・リモコン・標準工事費を含めた工事費込み価格でご提示しています。設置状況によって追加費用が発生する場合は、工事前に必ずご説明します。' },
   { q: '急な故障にも対応してもらえますか？', a: '在庫・スケジュールの状況によりますが、できる限り迅速に対応します。お湯が出ないなどお急ぎの場合は、まずお電話またはLINEでご連絡ください。' },
   { q: 'エコジョーズへの交換もできますか？', a: 'はい。設置条件が合えば省エネ型のエコジョーズへの交換に対応しています。戸建てはドレン排水の経路を確保しやすく適しています。マンションでは管理規約の確認が必要です。' },
+  { q: 'リンナイ・ノーリツ・パロマ以外のメーカーも対応できますか？', a: '主にリンナイ・ノーリツ・パロマの3メーカーを取り扱っています。現在お使いのメーカーがこの3社以外でも、後継機種への変更で対応できる場合があります。型番をお知らせいただくかお問い合わせください。' },
+  { q: '土日や祝日も対応していますか？', a: 'はい。年中無休で対応しています。土日祝日のお見積もり・工事も承りますので、ご希望の日程をお知らせください。スケジュールの状況により調整させていただきます。' },
+  { q: 'プロパンガスの給湯器も交換できますか？', a: 'はい。都市ガス・プロパンガスのどちらにも対応しています。ガス種によって適合機種が異なるため、現在のガス種をお知らせいただくか、型番シールの写真をお送りください。' },
+  { q: '号数アップ・ダウンはできますか？', a: '可能な場合があります。号数を上げる際はガス管径や供給圧力の確認が必要です。現在の型番をお知らせいただければ対応可否をご案内します。配管対応が必要な場合は追加費用が発生することがあります。' },
 ]
 
 const faqJsonLd = {
@@ -140,10 +152,25 @@ export default function AreaIndexPage() {
               <span>対応エリア</span>
             </nav>
             <h1 className="text-3xl font-black mb-3">給湯器交換 対応エリア一覧</h1>
-            <p className="text-blue-100 text-sm max-w-2xl leading-relaxed">
-              株式会社宝宮設備は横浜市・川崎市・厚木市・海老名市（神奈川県）の給湯器交換・販売に対応しています。
-              戸建て・マンション・アパートを問わず、リンナイ・ノーリツ・パロマ各メーカーの工事費込み価格で対応します。
+            <p className="text-blue-100 text-sm max-w-3xl leading-relaxed">
+              株式会社宝宮設備は神奈川県厚木市温水西1-4-39を拠点に、横浜市（全18区）・川崎市（全7区）・厚木市・海老名市の給湯器交換・販売に対応しています。
+              戸建ての屋外壁掛型・据置型、マンションのPS設置型、賃貸物件の給湯専用型まで、設置タイプを問わず対応。
+              リンナイ・ノーリツ・パロマ各メーカーを工事費込み価格で取り扱い、LINEで写真を送るだけの無料見積もりに対応しています。
             </p>
+          </div>
+        </section>
+
+        {/* イントロ */}
+        <section className="py-10 bg-white border-b border-gray-100">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 space-y-4">
+              <p className="text-sm text-gray-700 leading-relaxed">
+                給湯器の寿命は一般的に10〜15年とされており、10年を超えると故障が増え始めます。「お湯が出ない」「エラーコードが頻発する」「追い焚きができない」「お湯の温度が安定しない」といった症状が出始めたら、修理よりも交換が適切なケースが多くなります。冬場の急な故障を避けるためにも、症状が出始めたら早めのご相談をおすすめします。
+              </p>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                宝宮設備は対応エリア内であれば、給湯器本体・型番シール・設置状況の写真をLINEまたはフォームでお送りいただくだけで、現地確認なしでも概算のお見積もりをご案内できます。本体・リモコン・標準工事費（撤去・取付・試運転・使用説明）を含めた工事費込み価格でご提示し、追加費用が発生する場合は工事前に必ずご説明します。事前説明なく追加費用を請求することはありません。
+              </p>
+            </div>
           </div>
         </section>
 
@@ -189,13 +216,44 @@ export default function AreaIndexPage() {
         {/* 対応エリアの特徴 */}
         <section className="py-12 bg-white">
           <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-xl font-black text-gray-900 mb-2">対応エリアの特徴</h2>
-            <p className="text-sm text-gray-500 mb-6">各エリアの住宅傾向に合わせて、最適な給湯器・設置タイプをご提案します。</p>
+            <h2 className="text-xl font-black text-gray-900 mb-2">対応エリアの特徴と主要エリア</h2>
+            <p className="text-sm text-gray-500 mb-6">各エリアの住宅傾向に合わせて、最適な給湯器・設置タイプをご提案します。横浜市・川崎市はマンションのPS設置型、厚木市・海老名市は戸建ての屋外壁掛型・エコジョーズのご相談が中心です。</p>
             <div className="grid sm:grid-cols-2 gap-4">
               {areaFeatures.map((area) => (
                 <div key={area.name} className="border border-gray-200 rounded-xl p-6">
-                  <h3 className="font-black text-gray-900 text-base mb-2">{area.name}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{area.body}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-black text-gray-900 text-base">{area.name}の給湯器交換</h3>
+                    <Link href={area.href} className="text-xs font-bold text-brand-700 hover:underline flex-shrink-0">詳しく見る →</Link>
+                  </div>
+                  <p className="text-sm text-gray-600 leading-relaxed mb-4">{area.body}</p>
+                  <p className="text-xs font-black text-gray-500 mb-2 uppercase tracking-wider">主要エリア</p>
+                  <div className="flex flex-wrap gap-2">
+                    {area.spots.map((s) => (
+                      <span key={s} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-2.5 py-1 rounded-lg font-medium">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 給湯器交換の流れ・写真見積もり */}
+        <section className="py-12 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-2">対応エリア内ならLINE写真で無料見積もり</h2>
+            <p className="text-sm text-gray-500 mb-6">横浜市・川崎市・厚木市・海老名市のいずれのエリアでも、現地確認なしで給湯器の写真を送るだけで概算のお見積もりが可能です。見積もりは完全無料で、ご依頼いただかなくても費用はかかりません。</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { step: '01', title: 'お問い合わせ', body: '電話・LINE・フォームからご連絡ください。給湯器の写真があればよりスムーズです。' },
+                { step: '02', title: '写真確認・お見積もり', body: '本体・型番シール・設置状況の写真から概算見積もりをご案内。費用は無料です。' },
+                { step: '03', title: '工事日時の確定', body: 'ご納得いただけたら工事日時を調整。最短翌日から対応可能な場合があります。' },
+                { step: '04', title: '工事・アフター対応', body: '撤去・取付・試運転まで一貫対応。工事後の保証・アフターも行います。' },
+              ].map((s) => (
+                <div key={s.step} className="bg-white border border-gray-200 rounded-xl p-5">
+                  <div className="text-3xl font-black text-brand-200 mb-2">{s.step}</div>
+                  <div className="font-black text-gray-900 text-sm mb-1.5">{s.title}</div>
+                  <p className="text-xs text-gray-500 leading-relaxed">{s.body}</p>
                 </div>
               ))}
             </div>
@@ -278,6 +336,29 @@ export default function AreaIndexPage() {
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-6">対応エリアについて よくあるご質問</h2>
             <FaqAccordion faqs={indexFaqs} />
+          </div>
+        </section>
+
+        {/* 給湯器の基礎知識・関連ページ */}
+        <section className="py-12 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-base font-black text-gray-700 mb-4">給湯器の基礎知識・関連ページ</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {[
+                { href: '/guide/capacity', label: '号数の選び方' },
+                { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
+                { href: '/guide/full-auto-auto', label: 'オートとフルオートの違い' },
+                { href: '/guide/lifespan', label: '給湯器の寿命' },
+                { href: '/guide/error-code', label: 'エラーコード一覧' },
+                { href: '/guide/installation-type', label: '設置タイプの種類' },
+                { href: '/trouble', label: 'トラブル症状一覧' },
+                { href: '/cases', label: '施工事例一覧' },
+              ].map((link) => (
+                <Link key={link.href} href={link.href} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-brand-700 transition-colors text-center">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 

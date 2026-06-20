@@ -24,13 +24,26 @@ export type WardConfig = {
   metaTitle: string
   metaDescription: string
   canonical: string
+  // 追加フィールド（LP化）
+  wardCharacter: string
+  nearbyStations: string
+  nearbyWardSlugs: string[]
+  stationPageSlugs: string[]
+  mansionNote?: string
+  detachedNote?: string
+  rentalNote?: string
+  commonTroubles: string[]
+  recommendedProductSlugs: string[]
+  // ファクトリ生成セクション（LP用）
+  capacitySection: string
+  installTypeSection: { title: string; desc: string; items: string[] }[]
+  repairReplaceSection: { repairOk: string[]; replaceRecommended: string[] }
+  photoEstimateSection: { title: string; photos: string[] }[]
+  workflowSection: { step: number; title: string; desc: string }[]
 }
 
-function makeFaqs(
-  cityName: string,
-  wardName: string,
-  housingType: 'mansion' | 'detached' | 'mixed',
-): { q: string; a: string }[] {
+function makeFaqs(ward: WardInput): { q: string; a: string }[] {
+  const { cityName, wardName, housingType } = ward
   const full = `${cityName}${wardName}`
   const common = [
     {
@@ -91,6 +104,18 @@ function makeFaqs(
       q: 'マンションの管理組合への申請書類のサポートはありますか？',
       a: '工事に必要な書類の準備についてご相談いただけます。申請の要否はマンションにより異なるため、事前に管理組合へご確認ください。',
     },
+    {
+      q: `${full}のマンションPS設置型の交換は何時間かかりますか？`,
+      a: '標準的なPS設置型の交換工事は2〜3時間程度です。PS扉内のスペースが限られる場合や、号数変更を伴う場合は作業時間が長くなることがあります。事前に写真でPS内の状況を確認しておくと当日の作業がスムーズです。',
+    },
+    {
+      q: `${full}のマンションで管理組合への届出は必要ですか？`,
+      a: '分譲マンションの場合は管理組合へのお届けが必要な場合があります。機種・排気方式・工事日程の届出が求められるケースがあるため、交換前に管理規約をご確認ください。必要な書類の準備についてはご相談いただけます。',
+    },
+    {
+      q: `${full}のマンションで号数アップは可能ですか？`,
+      a: 'PS（パイプスペース）の寸法や給排気条件によります。扉内に収まる範囲であれば16号から20号への号数アップが可能なケースもありますが、寸法・排気方式の確認が必要です。PS扉を開けた写真をお送りいただければ可否を確認します。',
+    },
   ]
   const detachedFaqs = [
     {
@@ -100,6 +125,14 @@ function makeFaqs(
     {
       q: '既存給湯器の撤去・廃棄も対応していますか？',
       a: 'はい。既存給湯器の撤去・廃棄処分も標準工事費に含まれています。別途廃棄費用は発生しません。',
+    },
+    {
+      q: `${full}の戸建てで給湯器の設置場所を変えることはできますか？`,
+      a: '設置場所の変更は可能ですが、ガス管・給排水管の移設が必要になる場合があります。据置型から壁掛型への変更など、設置タイプの変更を伴うケースでは追加工事費が発生することがあります。現地確認のうえご提案します。',
+    },
+    {
+      q: `${full}の戸建てで16号から24号に号数アップできますか？`,
+      a: 'ガスの供給量・配管サイズなどの確認が必要ですが、多くの場合は交換可能です。号数アップにより、シャワーとキッチンの同時使用でもお湯切れしにくくなります。現在の型番をお知らせいただければ最適な号数をご提案します。',
     },
   ]
   const mixedFaqs = [
@@ -111,10 +144,70 @@ function makeFaqs(
       q: 'アパート・賃貸物件の給湯器交換も依頼できますか？',
       a: '賃貸物件のオーナー様・管理会社様からのご依頼も歓迎しています。複数台の見積もりや一括交換もご相談ください。',
     },
+    {
+      q: `${full}のマンションPS設置型の交換は何時間かかりますか？`,
+      a: '標準的なPS設置型の交換工事は2〜3時間程度です。PS扉内のスペースが限られる場合や号数変更を伴う場合は長くなることがあります。事前に写真でPS内の状況を確認しておくと当日の作業がスムーズです。',
+    },
+    {
+      q: `${full}の戸建てでエコジョーズへの交換はできますか？`,
+      a: 'はい、対応可能です。エコジョーズへの交換にはドレン配管が必要で、排水先の確認が必要になります。戸建てはドレン排水の経路を確保しやすいため、エコジョーズへの移行に適したケースが多くなっています。',
+    },
   ]
-  if (housingType === 'mansion') return [...common, ...mansionFaqs]
-  if (housingType === 'detached') return [...common, ...detachedFaqs]
-  return [...common, ...mixedFaqs]
+  const housingFaqs =
+    housingType === 'mansion' ? mansionFaqs : housingType === 'detached' ? detachedFaqs : mixedFaqs
+
+  const commonFaqs = [
+    {
+      q: `${full}でよくある給湯器トラブルは何ですか？`,
+      a: `${full}では${ward.commonTroubles.join('・')}などのご相談が多くいただいています。使用年数10年を超えた給湯器は故障が増え始める目安で、複数の症状が出ている場合は交換をおすすめするケースが多くなります。`,
+    },
+    {
+      q: `${full}でお湯が急に出なくなりました。どうすれば？`,
+      a: 'まずガスの元栓・エラーコード・リモコン表示を確認してください。ガス会社の供給状況や、寒冷期は配管の凍結も原因になります。リセット操作で復旧しない場合は故障の可能性があるため、本体の型番とリモコン表示の写真をお送りください。',
+    },
+    {
+      q: `${full}でエラー111が出ています。交換が必要ですか？`,
+      a: 'エラー111は点火不良を示すコードです。一時的な要因であればリセットで復旧することもありますが、頻発する場合は点火装置やセンサーの劣化が考えられます。使用年数10年以上で繰り返し出る場合は交換をご検討ください。',
+    },
+    {
+      q: `${full}でリンナイ・ノーリツ・パロマの違いは何ですか？`,
+      a: '3社いずれも高品質で、性能面では大きな差はありません。リンナイは国内シェアが高くRUF-Aシリーズが定番、ノーリツはGTシリーズやエコジョーズが豊富、パロマはコストパフォーマンスで選ばれています。現在の型番から最適な後継機種をご提案します。',
+    },
+    {
+      q: `${full}でエコジョーズへの交換でガス代は節約できますか？`,
+      a: 'エコジョーズは従来型に比べ熱効率が約13%高く、ガス代の節約が期待できます。お湯の使用量が多いご家庭ほど効果が大きくなります。ドレン排水の経路が確保できれば設置可能ですので、設置状況の写真をお送りください。',
+    },
+    {
+      q: `${full}で写真だけで見積もりしてもらえますか？`,
+      a: '可能です。LINEで給湯器本体・型番シール・配管周り・設置場所全体の写真をお送りください。概算のお見積もりを提示します。マンションのPS設置型の場合はPS扉を開けた写真もあると正確です。',
+    },
+    {
+      q: `${full}で工事の保証はありますか？`,
+      a: 'メーカー保証に加えて、弊社の工事保証もご提供しています。交換後に不具合があった場合はご連絡いただければ対応します。保証内容は機種・工事内容により異なりますので、詳しくはお問い合わせください。',
+    },
+    {
+      q: `${full}で賃貸物件の給湯器交換も対応できますか？`,
+      a: '対応可能です。大家様・管理会社様からのご依頼も承っています。入居者様がいる状態での工事や、複数物件の一括交換・一括管理もご相談いただけます。',
+    },
+    {
+      q: `${full}で支払い方法は何がありますか？`,
+      a: '現金・お振込に対応しています。工事完了後の確認をいただいてからのお支払いとなります。お支払い方法でご不明な点はお問い合わせ時にご確認ください。',
+    },
+    {
+      q: `${full}で給湯器の寿命はどのくらいですか？`,
+      a: '一般的に10〜15年が目安とされています。10年を超えると部品の劣化が進み、故障やエラーが増え始めます。完全に壊れる前の予防交換にすることで、お湯が使えない期間を避けられます。',
+    },
+    {
+      q: `${full}で追加費用が発生するのはどんなケースですか？`,
+      a: '既存の給排気筒の交換・配管の延長・電気配線の修正・据置台の交換・エコジョーズのドレン排水工事などが必要な場合に追加費用が発生することがあります。追加費用が見込まれる場合は工事前に必ずご説明します。',
+    },
+    {
+      q: `${full}で工事当日に不在でも大丈夫ですか？`,
+      a: '工事中は立会いをお願いしています。お湯やガスの動作確認、使用方法のご説明を行うため、作業の前後はご在宅いただけるようご調整ください。やむを得ない場合は事前にご相談ください。',
+    },
+  ]
+
+  return [...common, ...housingFaqs, ...commonFaqs]
 }
 
 type WardInput = {
@@ -129,6 +222,16 @@ type WardInput = {
   uniqueBody: string
   metaTitle: string
   metaDescription: string
+  // 追加フィールド（LP化）
+  wardCharacter: string
+  nearbyStations: string
+  nearbyWardSlugs: string[]
+  stationPageSlugs: string[]
+  mansionNote?: string
+  detachedNote?: string
+  rentalNote?: string
+  commonTroubles: string[]
+  recommendedProductSlugs: string[]
 }
 
 function makeIntroBody(full: string, housingType: 'mansion' | 'detached' | 'mixed'): string {
@@ -238,6 +341,91 @@ function makeSections(full: string, housingType: 'mansion' | 'detached' | 'mixed
   return [mixedType, mixedManage, cost, photo, capacity, ecoMixed, maker, repair, flow]
 }
 
+function makeCapacitySection(ward: WardInput): string {
+  const full = `${ward.cityName}${ward.wardName}`
+  if (ward.housingType === 'mansion') {
+    return `${full}はマンション・集合住宅が多いため、20号・24号のオート／フルオートが主流です。単身向けマンションでは16号、ファミリー向けでは20号、複数人が同時にお湯を使うご家庭では24号が目安となります。号数アップを検討する場合はPS（パイプスペース）の寸法や給排気条件の確認が必要なため、現在お使いの型番をお知らせいただくとスムーズです。基本は現在の号数を基準に同等以上を選ぶのが安心です。`
+  }
+  if (ward.housingType === 'detached') {
+    return `${full}は戸建て住宅が多く、4人以上のご家族が暮らすケースも多いため、24号への号数アップのご相談が多いエリアです。お風呂とキッチンでお湯を同時に使うご家庭では24号、2〜3人世帯では20号、単身では16号が目安です。戸建ては配管やガス供給に余裕があるケースが多く、16号や20号から24号への号数アップにも対応しやすい環境です。現在の型番から最適な号数をご提案します。`
+  }
+  return `${full}は戸建てとマンションが混在するため、住宅タイプによって最適な号数が変わります。単身向け集合住宅では16号、2〜3人世帯では20号、4人以上の戸建てでは24号が目安です。号数を上げる場合はガス供給量・配管径（戸建て）やPS寸法（マンション）の確認が必要です。現在の号数を基準に、ライフスタイルに合わせて同等以上の号数をご提案します。`
+}
+
+function makeInstallTypeSection(
+  ward: WardInput,
+): { title: string; desc: string; items: string[] }[] {
+  const detached = {
+    title: '屋外壁掛け型・据置型（戸建て）',
+    desc: `${ward.wardName}の戸建て住宅で最も多い設置タイプです。外壁に取り付ける壁掛け型と、地面に据え置く据置型があります。`,
+    items: ['給排気口・配管の劣化確認が重要', '号数アップ（24号）に対応しやすい', 'エコジョーズへの切り替えがしやすい', '据置型から壁掛型への変更も相談可'],
+  }
+  const mansion = {
+    title: 'マンションPS設置型',
+    desc: `${ward.wardName}のマンション・集合住宅で多い設置タイプです。PS（パイプスペース）扉の内側に給湯器が設置されています。`,
+    items: ['PS標準設置型・PS扉内設置型に対応', '管理規約・設置寸法の確認が必要', '管理組合への届出サポート', '20号・フルオートが主流'],
+  }
+  const rental = {
+    title: 'アパート・賃貸物件',
+    desc: `${ward.wardName}の賃貸物件の給湯器交換です。大家様・管理会社様からのご依頼に対応しています。`,
+    items: ['給湯専用型・オート型に対応', '入居者がいる状態での工事も可', '複数物件の一括交換も相談可', '事前に費用明細を提示'],
+  }
+  if (ward.housingType === 'mansion') return [mansion, rental, detached]
+  if (ward.housingType === 'detached') return [detached, rental, mansion]
+  return [detached, mansion, rental]
+}
+
+function makeRepairReplaceSection(_ward: WardInput): {
+  repairOk: string[]
+  replaceRecommended: string[]
+} {
+  return {
+    repairOk: [
+      'リモコンの不具合のみ',
+      'パッキンなど消耗品の交換',
+      '点火プラグの清掃・交換',
+      'フィルター詰まりの清掃',
+      'センサーの調整',
+    ],
+    replaceRecommended: [
+      '10年以上使用している',
+      '同じ症状が繰り返し起きている',
+      '修理費用が交換費用の半額以上',
+      '部品の製造終了が近い',
+      '複数の故障が重なっている',
+    ],
+  }
+}
+
+function makePhotoEstimateSection(): { title: string; photos: string[] }[] {
+  return [
+    {
+      title: '写真見積もりで送っていただく写真',
+      photos: [
+        '給湯器本体全体（給湯器全体が入るように撮影）',
+        '型番シール（本体側面または天板。数字・文字が読める状態で）',
+        '配管まわり（ガス管・給水管・給湯管の接続部）',
+        'リモコン（浴室・台所。エラーコード表示中はその状態で）',
+        '設置場所全体（ベランダ・外壁・PS内など）',
+        'マンションPS内（PS内の奥行き・幅・高さが分かるよう撮影）',
+      ],
+    },
+  ]
+}
+
+function makeWorkflowSection(): { step: number; title: string; desc: string }[] {
+  return [
+    { step: 1, title: 'ご挨拶・状況確認', desc: '到着後、既存給湯器の設置状況・型番・不具合内容を確認します。' },
+    { step: 2, title: '既存機器の撤去', desc: 'ガス・水の元栓を閉め、既存給湯器を安全に取り外します。' },
+    { step: 3, title: '新機器の設置', desc: '取り付け金具を確認・調整し、新しい給湯器を設置します。' },
+    { step: 4, title: '配管・ガス管の接続', desc: 'ガス管・給水管・給湯管・追い焚き配管を接続します。' },
+    { step: 5, title: 'リモコン設置', desc: '浴室・台所のリモコンを交換・接続します。' },
+    { step: 6, title: '試運転・安全確認', desc: 'ガス漏れ確認、試運転を行い、全機能の動作を確認します。' },
+    { step: 7, title: '使い方のご説明', desc: '新機器の操作方法・注意事項をご説明します。' },
+    { step: 8, title: 'お支払い・完了', desc: '工事完了確認後、お支払いをいただいて終了です。' },
+  ]
+}
+
 function build(input: WardInput): WardConfig {
   const full = `${input.cityName}${input.wardName}`
   return {
@@ -247,8 +435,13 @@ function build(input: WardInput): WardConfig {
     installTypeNote: makeInstallTypeNote(input.housingType),
     troubleNote: makeTroubleNote(full),
     sections: makeSections(full, input.housingType),
-    faqs: makeFaqs(input.cityName, input.wardName, input.housingType),
+    faqs: makeFaqs(input),
     canonical: `https://www.houmiya-boiler.com/area/${input.citySlug}/${input.wardSlug}`,
+    capacitySection: makeCapacitySection(input),
+    installTypeSection: makeInstallTypeSection(input),
+    repairReplaceSection: makeRepairReplaceSection(input),
+    photoEstimateSection: makePhotoEstimateSection(),
+    workflowSection: makeWorkflowSection(),
   }
 }
 
@@ -263,6 +456,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '日吉・綱島・新横浜周辺のマンション・戸建てが混在するエリアです。新横浜駅周辺の再開発によるマンション増加とともに、日吉・綱島エリアの古い戸建て住宅からの交換需要も高まっています。PS型設置工事の実績が多い区で、マンションのPS設置型から戸建ての壁掛型まで幅広く対応しています。',
     metaTitle: '横浜市港北区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市港北区（新横浜・日吉・綱島・大倉山）の給湯器交換は宝宮設備。PS設置型・マンション対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '港北区は新横浜のビジネス拠点と、日吉・綱島・菊名の住宅地が共存する横浜市有数の人口密集区です。新横浜駅周辺の高層マンション群と、日吉台・菊名周辺の落ち着いた戸建て住宅地では給湯器の設置タイプが大きく異なります。マンションのPS設置型から戸建ての壁掛型まで、住宅タイプに応じた交換に幅広く対応しています。',
+    nearbyStations: '新横浜・日吉・綱島・菊名・大倉山',
+    nearbyWardSlugs: ['tsurumi', 'kanagawa', 'tsuzuki', 'midori', 'totsuka'],
+    stationPageSlugs: ['shin-yokohama', 'hiyoshi', 'tsunashima', 'kikuna', 'okurayama'],
+    commonTroubles: ['お湯が出ない', 'エラー111', 'マンションPS設置型の交換', '10年以上使用中の給湯器', '追い焚きができない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'noritz-gt-2470saw-1'],
+    mansionNote: '港北区のマンション（特に新横浜・大倉山周辺）ではPS設置型が多く、管理組合への届出が必要な場合があります。PS扉の寸法と排気方式を写真で確認のうえ機種を選定します。',
+    detachedNote: '日吉台・菊名・錦が丘周辺の戸建てでは屋外壁掛け型が主流です。給排気口の劣化確認も重要で、エコジョーズへの省エネ化交換にも対応します。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -274,6 +475,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '戸塚駅周辺の再開発で新しいマンションが増える一方、郊外には広大な戸建て住宅地が広がるエリアです。マンションのPS設置型と戸建ての壁掛型・据置型の両方に対応しています。築年数の経った戸建てでは、省エネ型のエコジョーズへの交換を検討される方も増えています。',
     metaTitle: '横浜市戸塚区の給湯器交換・販売なら株式会社宝宮設備｜戸建て・エコジョーズ対応',
     metaDescription: '横浜市戸塚区（戸塚・東俣野・品濃）の給湯器交換は宝宮設備。戸建て壁掛型・エコジョーズ対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '戸塚区は横浜市南部に広がる人口最多クラスの区で、戸塚駅・東戸塚駅周辺の再開発マンションと、東俣野・品濃・名瀬などの郊外の戸建て住宅地が共存します。築25〜35年を迎えた戸建てが多く、壁掛型の同型交換やエコジョーズへの省エネ化交換のご相談が多いエリアです。広い区域のため、地域ごとに設置環境が異なる点が特徴です。',
+    nearbyStations: '戸塚・東戸塚・舞岡・踊場',
+    nearbyWardSlugs: ['izumi', 'sakae', 'konan', 'hodogaya', 'kohoku'],
+    stationPageSlugs: ['totsuka', 'higashi-totsuka', 'maioka'],
+    commonTroubles: ['10年以上使用中の給湯器', 'お湯が出ない', 'エコジョーズへの交換', '号数アップ（24号）', '追い焚きができない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2423saw-1'],
+    detachedNote: '戸塚・東戸塚・品濃周辺の戸建てでは屋外壁掛け型が主流です。ドレン排水の経路を確保しやすく、エコジョーズへの交換に適した環境が多いエリアです。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -285,6 +493,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: 'たまプラーザ・あざみ野・市が尾など閑静な高級住宅地が広がる青葉区です。戸建て住宅が多く、エコジョーズへの省エネ化交換を検討される方が多いエリアです。ドレン排水を確保しやすい戸建てが多い地域のため、エコジョーズの設置に適したケースが多くなっています。',
     metaTitle: '横浜市青葉区の給湯器交換・販売なら株式会社宝宮設備｜たまプラーザ・青葉台対応',
     metaDescription: '横浜市青葉区（たまプラーザ・青葉台・市が尾・あざみ野）の給湯器交換は宝宮設備。戸建て・エコジョーズ対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '青葉区は東急田園都市線沿線の人気住宅地で、たまプラーザ・青葉台・あざみ野・市が尾の閑静な戸建て住宅地が広がります。1980〜90年代に開発されたニュータウンが多く、築30〜40年を迎えた戸建てでの給湯器交換が増えています。ドレン排水を確保しやすい戸建てが多く、エコジョーズへの省エネ化交換に適した区です。',
+    nearbyStations: 'たまプラーザ・青葉台・あざみ野・市が尾・江田',
+    nearbyWardSlugs: ['tsuzuki', 'midori', 'miyamae', 'asao', 'kohoku'],
+    stationPageSlugs: ['tama-plaza', 'aobadai', 'azamino', 'ichigao'],
+    commonTroubles: ['10年以上使用中の給湯器', 'エコジョーズへの交換', '号数アップ（24号）', 'お湯が出ない', '温度が安定しない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'rinnai-ruf-a2405aw-c'],
+    detachedNote: 'たまプラーザ・あざみ野・青葉台周辺の戸建てでは屋外壁掛け型が主流です。長年使用した給湯器からエコジョーズへの省エネ化交換のご相談が多いエリアです。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -296,6 +511,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: 'センター北・センター南を中心に計画的に整備された比較的新しいエリアです。2000年前後に建てられたマンション・戸建てが多く、初回給湯器交換のご相談が増えているエリアです。同時期に建設された住宅が多いため、区内で一斉に交換時期を迎えるケースもあります。',
     metaTitle: '横浜市都筑区の給湯器交換・販売なら株式会社宝宮設備｜センター南・センター北対応',
     metaDescription: '横浜市都筑区（センター南・センター北・港北ニュータウン）の給湯器交換は宝宮設備。戸建て・マンション対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '都筑区は港北ニュータウンとして計画的に整備された区で、センター南・センター北を中心に大型マンションと区画整理された戸建て住宅地が美しく混在します。2000年前後に建てられた住宅が多く、初回の給湯器交換を迎えるご家庭が増えています。同時期に造成されたため、区内で一斉に交換時期を迎えるのも特徴です。',
+    nearbyStations: 'センター南・センター北・仲町台・都筑ふれあいの丘',
+    nearbyWardSlugs: ['aoba', 'midori', 'kohoku', 'tsurumi', 'totsuka'],
+    stationPageSlugs: ['center-minami', 'center-kita', 'nakamachidai'],
+    commonTroubles: ['初回の給湯器交換', 'お湯が出ない', 'マンションPS設置型の交換', 'エコジョーズへの交換', '10年以上使用中の給湯器'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1'],
+    mansionNote: 'センター南・センター北周辺のマンションではPS設置型が多く、管理組合への届出が必要な場合があります。PS扉の寸法確認が重要です。',
+    detachedNote: '区画整理された戸建て住宅地では屋外壁掛け型が主流です。築20〜25年での初回交換のご相談が多く、エコジョーズへの切り替えも対応します。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -307,6 +530,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜駅から近く、集合住宅やマンションが多い神奈川区です。PS設置型の交換が多く、管理規約の確認が必要なケースも多いエリアです。利便性が高く単身向けマンションも多いため、16号・20号の交換のご相談も多くいただいています。',
     metaTitle: '横浜市神奈川区の給湯器交換・販売なら株式会社宝宮設備｜マンション・PS型対応',
     metaDescription: '横浜市神奈川区（大口・反町・東神奈川）の給湯器交換は宝宮設備。マンションPS設置型対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '神奈川区は横浜駅の北側に位置し、京急・JR・東急の各線が交差する交通利便性の高い区です。大口・反町・東神奈川・子安周辺にはマンション・集合住宅が密集し、PS設置型の給湯器交換が中心となります。横浜駅至近で単身向けマンションも多いため、16号・20号の交換のご相談も多くいただくエリアです。',
+    nearbyStations: '東神奈川・大口・反町・神奈川新町・子安',
+    nearbyWardSlugs: ['tsurumi', 'nishi', 'kohoku', 'naka', 'hodogaya'],
+    stationPageSlugs: ['higashi-kanagawa', 'oguchi', 'tammachi'],
+    commonTroubles: ['マンションPS設置型の交換', 'お湯が出ない', 'エラー111', '10年以上使用中の給湯器', '追い焚きができない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'rinnai-ruf-a1615saw-c'],
+    mansionNote: '大口・反町・東神奈川周辺のマンションではPS設置型が多く、管理規約で機種が指定されている場合があります。PS扉と本体の写真で適合機種を確認します。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -318,6 +548,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '工業地帯と住宅地が共存する鶴見区です。古い据置型給湯器の交換や、マンションのPS型交換まで幅広く対応しています。駅周辺の集合住宅と郊外の戸建て両方のニーズに対応しており、東京寄りの立地で交通利便性が高いエリアです。',
     metaTitle: '横浜市鶴見区の給湯器交換・販売なら株式会社宝宮設備｜マンション・戸建て対応',
     metaDescription: '横浜市鶴見区（鶴見・生麦・末広町）の給湯器交換は宝宮設備。マンション・戸建て対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '鶴見区は東京都に隣接する横浜市北東部の区で、臨海部の工業地帯と内陸の住宅地が共存します。鶴見中央・末広町周辺にはマンション・集合住宅が多く、生麦・岸谷・馬場の高台には戸建て住宅が広がります。築年数の経った集合住宅でのPS設置型交換や、古い据置型の更新のご相談が多いエリアです。',
+    nearbyStations: '鶴見・生麦・国道・鶴見市場・京急鶴見',
+    nearbyWardSlugs: ['kanagawa', 'kohoku', 'nishi', 'naka', 'midori'],
+    stationPageSlugs: ['tsurumi', 'namamugi', 'keikyu-tsurumi'],
+    commonTroubles: ['マンションPS設置型の交換', '古い据置型の交換', 'お湯が出ない', '10年以上使用中の給湯器', '水漏れ'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'paloma-fh-2023saw-1'],
+    mansionNote: '鶴見中央・末広町周辺のマンションではPS設置型が中心です。築年数の長い物件では配管状況の確認も重要になります。',
+    detachedNote: '生麦・岸谷・馬場周辺の戸建てでは屋外壁掛け型・据置型が多く、古い据置型からの交換のご相談が多いエリアです。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -329,6 +567,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜中心部・元町・中華街・みなとみらい周辺を含む中区です。高層マンションや老舗マンションのPS型交換が中心となります。セキュリティの高いマンションでの工事にも対応しており、築年数の経った物件では配管状況の確認も含めて丁寧に対応します。',
     metaTitle: '横浜市中区の給湯器交換・販売なら株式会社宝宮設備｜元町・山手・本牧対応',
     metaDescription: '横浜市中区（元町・山手・本牧・中華街）の給湯器交換は宝宮設備。マンション・戸建て対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '中区は横浜の中心部で、みなとみらい・関内・元町・中華街・山手・本牧を擁する区です。みなとみらい周辺の高層タワーマンションから、山手のヴィンテージマンション、本牧の住宅地まで多彩な住環境が広がります。築年数の経ったマンションのPS設置型更新が中心で、セキュリティの高い物件での工事にも対応します。',
+    nearbyStations: '関内・石川町・元町中華街・桜木町・山手',
+    nearbyWardSlugs: ['nishi', 'minami', 'kanagawa', 'isogo', 'naka'],
+    stationPageSlugs: ['kannai', 'ishikawacho', 'motomachi-chukagai', 'sakuragicho'],
+    commonTroubles: ['マンションPS設置型の交換', '10年以上使用中の給湯器', 'お湯が出ない', '追い焚きができない', '水漏れ'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'rinnai-ruf-a2005aw-c'],
+    mansionNote: 'みなとみらい・山手周辺のマンションではPS設置型が中心で、築年数の長い物件は配管状況の確認が重要です。管理組合への届出が必要な場合があります。',
+    detachedNote: '山手・本牧周辺の戸建てでは屋外壁掛け型が多く、設置環境に応じた機種選定を行います。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -340,6 +586,15 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '弘明寺・吉野町周辺の昔ながらの住宅街が広がる南区です。築年数の経った据置型給湯器の交換ご相談が多いエリアです。戸建て・アパート・古いマンションと幅広い住宅タイプに対応しており、賃貸物件オーナー様からのご依頼も多くいただいています。',
     metaTitle: '横浜市南区の給湯器交換・販売なら株式会社宝宮設備｜弘明寺・蒔田対応',
     metaDescription: '横浜市南区（弘明寺・蒔田・井土ケ谷）の給湯器交換は宝宮設備。戸建て・マンション・アパート対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '南区は横浜市内屈指の住宅密集地で、弘明寺・蒔田・井土ケ谷・六ツ川などに戸建て・アパート・古いマンションが入り組んで建ち並びます。昔ながらの住宅街が多く、築年数の経った据置型給湯器の交換ご相談が多いエリアです。賃貸物件のオーナー様・管理会社様からのご依頼も多くいただく区です。',
+    nearbyStations: '弘明寺・蒔田・井土ケ谷・吉野町・南太田',
+    nearbyWardSlugs: ['minami', 'konan', 'isogo', 'naka', 'hodogaya'],
+    stationPageSlugs: ['gumyoji', 'maita', 'idogaya', 'yoshinocho'],
+    commonTroubles: ['古い据置型の交換', 'お湯が出ない', '賃貸物件の交換', '10年以上使用中の給湯器', '水漏れ'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'paloma-fh-2023saw-1', 'noritz-gt-1670saw-1'],
+    mansionNote: '南区の古いマンション・アパートではPS設置型や古い設置タイプが混在します。設置状況の写真で適合機種を確認します。',
+    detachedNote: '弘明寺・蒔田周辺の戸建てでは屋外壁掛け型・据置型が多く、古い据置型からの交換のご相談が多いエリアです。',
+    rentalNote: '南区はアパート・賃貸物件が多く、オーナー様・管理会社様からの複数台交換や一括管理のご相談を多くいただいています。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -351,6 +606,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '二俣川・希望ヶ丘・三ツ境など住宅地が広がる旭区です。戸建て住宅が多く、エコジョーズへの省エネ交換や24号ファミリー向け交換の需要が高いエリアです。相鉄沿線に1980〜90年代の戸建てが多く、給湯器の交換時期を迎える物件が増えています。',
     metaTitle: '横浜市旭区の給湯器交換・販売なら株式会社宝宮設備｜二俣川・鶴ケ峰対応',
     metaDescription: '横浜市旭区（二俣川・鶴ケ峰・希望ケ丘・白根）の給湯器交換は宝宮設備。戸建て・エコジョーズ対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '旭区は相鉄線沿線に広がる横浜市北西部の郊外区で、二俣川・鶴ケ峰・希望ケ丘・三ツ境を中心に戸建て住宅地が広がります。1980〜90年代に開発された住宅が多く、給湯器の交換時期を迎える物件が増えています。戸建てが中心のため、エコジョーズへの省エネ化交換や24号への号数アップのご相談が多いエリアです。',
+    nearbyStations: '二俣川・鶴ケ峰・希望ケ丘・三ツ境',
+    nearbyWardSlugs: ['seya', 'hodogaya', 'izumi', 'midori', 'totsuka'],
+    stationPageSlugs: ['futamatagawa', 'tsurugamine', 'kibogaoka', 'mitsukyo'],
+    commonTroubles: ['エコジョーズへの交換', '号数アップ（24号）', '10年以上使用中の給湯器', 'お湯が出ない', '温度が安定しない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2423saw-1'],
+    detachedNote: '二俣川・希望ケ丘・三ツ境周辺の戸建てでは屋外壁掛け型が主流です。ドレン排水を確保しやすく、エコジョーズへの省エネ化交換に適した環境が多いエリアです。',
   },
   {
     citySlug: 'yokohama', cityName: '横浜市',
@@ -362,6 +624,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '金沢文庫・金沢八景周辺に戸建てが多く、海岸沿いには大型マンションも立地する金沢区です。戸建ての壁掛型・据置型とマンションのPS型の両方に対応しています。海に近い地域では潮風の影響で本体の劣化が早まることがあるため、使用年数10年前後での早めの点検をおすすめしています。',
     metaTitle: '横浜市金沢区の給湯器交換・販売なら株式会社宝宮設備｜金沢文庫・金沢八景対応',
     metaDescription: '横浜市金沢区（金沢文庫・金沢八景・六浦）の給湯器交換は宝宮設備。戸建て・マンション対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '金沢区は横浜市南東部の海に面した区で、金沢文庫・金沢八景・六浦・釜利谷の閑静な住宅地が広がります。京急線沿線の戸建て住宅地と、海岸沿いの大型マンションが混在します。海に近いため潮風による給湯器本体の劣化が早まることがあり、使用年数10年前後での早めの点検・交換をおすすめする区です。',
+    nearbyStations: '金沢文庫・金沢八景・能見台・六浦・並木中央',
+    nearbyWardSlugs: ['isogo', 'konan', 'minami', 'naka', 'sakae'],
+    stationPageSlugs: ['kanazawa-bunko', 'kanazawa-hakkei', 'nokendai', 'mutsuura'],
+    commonTroubles: ['潮風による本体劣化', '10年以上使用中の給湯器', 'お湯が出ない', 'マンションPS設置型の交換', '水漏れ'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2070saw-1', 'paloma-fh-2023saw-1'],
+    mansionNote: '海岸沿いの大型マンションではPS設置型が多く、潮風による劣化を踏まえた早めの交換をおすすめします。管理規約の確認も行います。',
+    detachedNote: '金沢文庫・金沢八景周辺の戸建てでは屋外壁掛け型・据置型が多く、潮風の影響で劣化が早まるケースがあります。給排気口の状態確認が重要です。',
   },
   {
     citySlug: 'yokohama',
@@ -375,6 +645,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜駅西口・南幸・岡野・浅間町・戸部など横浜市の中心部に位置する西区は、高層マンション・大規模マンションが多く集まるエリアです。PS（パイプシャフト）設置型の給湯器交換が中心で、管理組合への届出が必要なケースも多くあります。マンション管理規約で指定機種が定められている場合もありますので、交換前にご確認いただき、写真をLINEでお送りいただければ対応可否をご案内します。',
     metaTitle: '横浜市西区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市西区の給湯器交換なら宝宮設備。横浜駅周辺のマンションPS設置型交換に対応。リンナイ・ノーリツ・パロマ対応。工事費込み価格で無料見積もり受付中。',
+    wardCharacter: '西区は横浜駅西口を中心とする横浜の商業・都市機能の集積地で、みなとみらいの一部や南幸・岡野・浅間町・戸部を含みます。横浜駅周辺の再開発で建てられた高層マンション・大規模マンションが多く、PS設置型の給湯器交換が中心となります。管理組合への届出や管理規約での指定機種の確認が必要なケースが多い区です。',
+    nearbyStations: '横浜・高島町・戸部・西横浜・南幸',
+    nearbyWardSlugs: ['naka', 'kanagawa', 'minami', 'hodogaya', 'tsurumi'],
+    stationPageSlugs: ['yokohama', 'takashimacho', 'tobe', 'nishi-yokohama'],
+    commonTroubles: ['マンションPS設置型の交換', '管理組合への届出', 'お湯が出ない', '10年以上使用中の給湯器', '追い焚きができない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'rinnai-ruf-a2005aw-c'],
+    mansionNote: '横浜駅周辺の高層マンション・大規模マンションではPS設置型が中心で、管理組合への届出や指定機種の確認が必要なケースが多くあります。PS扉の写真で適合機種を確認します。',
   },
   {
     citySlug: 'yokohama',
@@ -388,6 +665,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '上大岡駅周辺の商業エリアとマンション群、港南台・日野・野庭エリアの広大な戸建て住宅地が共存する港南区。上大岡周辺ではPS設置型の交換が多く、港南台・芹が谷・野庭エリアでは屋外壁掛型・据置型の交換が多い傾向にあります。大規模団地も多く、集合住宅のまとめて交換のご相談も歓迎します。',
     metaTitle: '横浜市港南区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市港南区の給湯器交換なら宝宮設備。上大岡・港南台・日野エリア全域対応。戸建て・マンション問わず対応。工事費込み価格で無料見積もり受付中。',
+    wardCharacter: '港南区は上大岡の商業エリアと、港南台・日野・野庭・芹が谷の広大な戸建て住宅地・大規模団地が共存する区です。上大岡駅周辺ではマンションのPS設置型交換が多く、港南台・芹が谷・野庭では屋外壁掛け型・据置型の交換が中心です。大規模団地での一括交換のご相談も多くいただくエリアです。',
+    nearbyStations: '上大岡・港南中央・港南台・上永谷・下永谷',
+    nearbyWardSlugs: ['minami', 'isogo', 'totsuka', 'konan', 'sakae'],
+    stationPageSlugs: ['kamiooka', 'konan-chuo', 'konandai', 'kaminagaya'],
+    commonTroubles: ['マンションPS設置型の交換', '団地の一括交換', '10年以上使用中の給湯器', 'お湯が出ない', 'エコジョーズへの交換'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2023saw-1'],
+    mansionNote: '上大岡駅周辺のマンションや大規模団地ではPS設置型が多く、管理組合への届出や一括交換のご相談に対応します。',
+    detachedNote: '港南台・日野・芹が谷周辺の戸建てでは屋外壁掛け型・据置型が主流です。号数アップやエコジョーズへの交換も対応します。',
   },
   {
     citySlug: 'yokohama',
@@ -401,6 +686,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '保土ケ谷区は横浜の西側の住宅地として発展したエリアで、星川・和田・帷子川沿いには古くからの戸建て住宅街が広がっています。屋外壁掛型や据置型の給湯器が多く、エコジョーズへの省エネ化交換のご相談が多いエリアです。使用年数10年以上の給湯器をお使いの戸建て住宅からのご依頼が多く、交換前の無料点検も承っています。',
     metaTitle: '横浜市保土ケ谷区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市保土ケ谷区の給湯器交換なら宝宮設備。星川・和田・帷子町エリア全域対応。戸建て壁掛型・エコジョーズ交換も対応。工事費込み価格で無料見積もり。',
+    wardCharacter: '保土ケ谷区は横浜の西側で旧東海道の宿場町として発展した区で、星川・和田・天王町・帷子町の住宅地が丘陵地に広がります。古くからの戸建て住宅街が多く、屋外壁掛け型・据置型の給湯器が主流です。使用年数10年以上の給湯器をお使いの戸建てが多く、エコジョーズへの省エネ化交換のご相談が多いエリアです。',
+    nearbyStations: '星川・天王町・和田町・西谷・保土ケ谷',
+    nearbyWardSlugs: ['asahi', 'kanagawa', 'nishi', 'minami', 'midori'],
+    stationPageSlugs: ['hoshikawa', 'tennocho', 'wadamachi', 'nishiya'],
+    commonTroubles: ['10年以上使用中の給湯器', 'エコジョーズへの交換', '古い据置型の交換', 'お湯が出ない', '号数アップ（24号）'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2423saw-1'],
+    detachedNote: '星川・和田・帷子町周辺の戸建てでは屋外壁掛け型・据置型が主流です。築年数の経った住宅が多く、エコジョーズへの省エネ化交換に適した環境です。',
   },
   {
     citySlug: 'yokohama',
@@ -414,6 +706,14 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '磯子区は洋光台・上中里・岡村など丘陵部の戸建て住宅地・大規模団地と、磯子・杉田周辺の工業地帯に近い集合住宅が共存するエリアです。大規模団地では一括交換のご依頼も多く、戸建ての屋外壁掛型からマンションのPS型まで幅広く対応しています。洋光台エリアは1970年代に開発された団地・住宅地が多く、給湯器の老朽化交換が増えているエリアです。',
     metaTitle: '横浜市磯子区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市磯子区の給湯器交換なら宝宮設備。洋光台・杉田・磯子エリア全域対応。戸建て・団地・マンション問わず対応。工事費込み価格で無料見積もり受付中。',
+    wardCharacter: '磯子区は洋光台・上中里・岡村など丘陵部の戸建て住宅地・大規模団地と、磯子・杉田周辺の臨海部に近い集合住宅が共存する区です。洋光台エリアは1970年代に開発された団地・住宅地が多く、給湯器の老朽化交換が増えています。大規模団地での一括交換のご依頼から戸建ての壁掛型まで幅広く対応する区です。',
+    nearbyStations: '磯子・新杉田・洋光台・屏風浦・根岸',
+    nearbyWardSlugs: ['konan', 'kanazawa', 'minami', 'naka', 'sakae'],
+    stationPageSlugs: ['isogo', 'shin-sugita', 'yokodai', 'negishi'],
+    commonTroubles: ['団地の老朽化交換', '据置型の交換', '10年以上使用中の給湯器', 'お湯が出ない', 'マンションPS設置型の交換'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'paloma-fh-2023saw-1'],
+    mansionNote: '磯子・杉田周辺の集合住宅や大規模団地ではPS設置型が多く、団地での一括交換のご相談に対応します。',
+    detachedNote: '洋光台・上中里・岡村周辺の戸建てでは屋外壁掛け型・据置型が主流です。築年数の経った住宅が多く、老朽化に伴う交換のご相談が多いエリアです。',
   },
   {
     citySlug: 'yokohama',
@@ -427,6 +727,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜市緑区は長津田・鴨居・十日市場・中山など駅周辺に戸建て住宅地が広がるエリアで、4人以上のファミリー世帯向け24号給湯器の交換が多いエリアです。エコジョーズへの省エネ化交換も戸建て住宅が多いため設置しやすい環境が多く、ドレン排水の工事も比較的スムーズなケースが多いです。青葉区・都筑区に隣接する新興住宅地で、築15〜20年の給湯器初回交換のご相談も増えています。',
     metaTitle: '横浜市緑区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市緑区の給湯器交換なら宝宮設備。長津田・鴨居・中山エリア全域対応。戸建て壁掛型・エコジョーズ・24号交換対応。工事費込み価格で無料見積もり。',
+    wardCharacter: '緑区は長津田・鴨居・十日市場・中山など駅周辺に戸建て住宅地が広がる横浜市北西部の区です。青葉区・都筑区に隣接する新興住宅地で、4人以上のファミリー世帯向け24号給湯器の交換が多いエリアです。戸建てが中心でドレン排水を確保しやすく、エコジョーズへの省エネ化交換に適した環境が整っています。',
+    nearbyStations: '長津田・十日市場・中山・鴨居・川和町',
+    nearbyWardSlugs: ['aoba', 'tsuzuki', 'asahi', 'totsuka', 'kohoku'],
+    stationPageSlugs: ['nagatsuta', 'tokaichiba', 'nakayama', 'kamoi'],
+    commonTroubles: ['号数アップ（24号）', 'エコジョーズへの交換', '初回の給湯器交換', 'お湯が出ない', '10年以上使用中の給湯器'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'rinnai-ruf-a2405aw-c'],
+    detachedNote: '長津田・鴨居・十日市場周辺の戸建てでは屋外壁掛け型が主流です。ファミリー世帯が多く、24号への号数アップやエコジョーズへの交換のご相談が多いエリアです。',
   },
   {
     citySlug: 'yokohama',
@@ -440,6 +747,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜市栄区は本郷台・笠間・公田・桂台など1980〜90年代に開発された住宅地が多く、ゆったりとした戸建て住宅地が広がるエリアです。使用年数15〜20年の給湯器の交換時期を迎えているご家庭も多く、エコジョーズへの省エネ化交換のご相談が増えているエリアです。戸建て住宅ではドレン排水の経路を確保しやすく、エコジョーズへの切り替えがスムーズなケースが多いです。',
     metaTitle: '横浜市栄区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市栄区の給湯器交換なら宝宮設備。本郷台・笠間・桂台エリア全域対応。戸建て壁掛型・エコジョーズ・24号交換対応。工事費込み価格で無料見積もり。',
+    wardCharacter: '栄区は本郷台・笠間・公田・桂台など1980〜90年代に丘陵地に造成された閑静な住宅地が広がる区です。ゆったりとした戸建て住宅地が中心で、使用年数15〜20年の給湯器の交換時期を迎えるご家庭が多いエリアです。ドレン排水の経路を確保しやすく、エコジョーズへの切り替えがスムーズなケースが多い区です。',
+    nearbyStations: '本郷台・大船（隣接）・港南台（隣接）',
+    nearbyWardSlugs: ['totsuka', 'konan', 'kanazawa', 'izumi', 'isogo'],
+    stationPageSlugs: ['hongodai'],
+    commonTroubles: ['エコジョーズへの交換', '号数アップ（24号）', '10年以上使用中の給湯器', 'お湯が出ない', '温度が安定しない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2423saw-1'],
+    detachedNote: '本郷台・笠間・桂台周辺の戸建てでは屋外壁掛け型が主流です。ドレン排水を確保しやすく、エコジョーズへの省エネ化交換に適した環境が多いエリアです。',
   },
   {
     citySlug: 'yokohama',
@@ -453,6 +767,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜市泉区は立場・いずみ中央・踊場・弥生台などに戸建て住宅地が広がるエリアです。戸塚区・瀬谷区に隣接し、比較的新しい住宅地もある一方で、築20年超の住宅からの給湯器交換のご相談も増えています。ファミリー世帯向け24号のエコジョーズへの交換が多く、戸建て住宅では標準的な工事で対応できるケースが多いです。写真をLINEでお送りいただければ、概算見積もりをご案内します。',
     metaTitle: '横浜市泉区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市泉区の給湯器交換なら宝宮設備。いずみ中央・踊場・立場エリア全域対応。戸建て壁掛型・エコジョーズ・24号交換対応。工事費込み価格で無料見積もり。',
+    wardCharacter: '泉区は相鉄いずみ野線沿線に広がる横浜市西部の区で、立場・いずみ中央・踊場・弥生台などに戸建て住宅地が広がります。戸塚区・瀬谷区に隣接し、比較的新しい住宅地もある一方、築20年超の住宅からの交換ご相談も増えています。ファミリー世帯向け24号のエコジョーズ交換が多く、戸建てで標準工事に対応しやすいエリアです。',
+    nearbyStations: 'いずみ中央・立場・踊場・弥生台・いずみ野',
+    nearbyWardSlugs: ['totsuka', 'seya', 'asahi', 'sakae', 'midori'],
+    stationPageSlugs: ['izumi-chuo', 'tateba', 'odoriba', 'yayoidai'],
+    commonTroubles: ['エコジョーズへの交換', '号数アップ（24号）', '10年以上使用中の給湯器', 'お湯が出ない', '追い焚きができない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2423saw-1'],
+    detachedNote: '立場・いずみ中央・弥生台周辺の戸建てでは屋外壁掛け型が主流です。ファミリー世帯が多く、24号エコジョーズへの交換のご相談が多いエリアです。',
   },
   {
     citySlug: 'yokohama',
@@ -466,6 +787,13 @@ const yokohamaWards: WardInput[] = [
     uniqueBody: '横浜市瀬谷区は横浜市の西端に位置し、瀬谷・三ツ境・せやホームタウンなど戸建て住宅地が広がるエリアです。旭区の二俣川・大和市に隣接するこのエリアでは、落ち着いた戸建て住宅地が多く、屋外壁掛型・据置型の給湯器交換が中心です。エコジョーズへの省エネ交換もご相談が増えており、ドレン排水の工事も戸建て住宅では比較的スムーズです。まずは給湯器の写真をLINEでお送りください。',
     metaTitle: '横浜市瀬谷区の給湯器交換・販売なら株式会社宝宮設備｜工事費込み無料見積もり',
     metaDescription: '横浜市瀬谷区の給湯器交換なら宝宮設備。瀬谷・三ツ境エリア全域対応。戸建て壁掛型・エコジョーズ・24号交換対応。工事費込み価格で無料見積もり受付中。',
+    wardCharacter: '瀬谷区は横浜市の最西端に位置し、相鉄線の瀬谷・三ツ境を中心に落ち着いた戸建て住宅地が広がる区です。大和市・旭区に隣接し、ゆとりのある住環境が特徴です。屋外壁掛け型・据置型の給湯器交換が中心で、エコジョーズへの省エネ交換のご相談も増えています。戸建てが多くドレン排水の工事も比較的スムーズに対応できるエリアです。',
+    nearbyStations: '瀬谷・三ツ境・南町田（隣接）',
+    nearbyWardSlugs: ['asahi', 'izumi', 'totsuka', 'midori', 'sakae'],
+    stationPageSlugs: ['seya', 'mitsukyo'],
+    commonTroubles: ['エコジョーズへの交換', '号数アップ（24号）', '据置型の交換', '10年以上使用中の給湯器', 'お湯が出ない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2423saw-1'],
+    detachedNote: '瀬谷・三ツ境周辺の戸建てでは屋外壁掛け型・据置型が主流です。ドレン排水を確保しやすく、エコジョーズへの省エネ化交換に適した環境が多いエリアです。',
   },
 ]
 
@@ -480,6 +808,14 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '川崎の中心部・川崎駅周辺を含む川崎区です。マンション・集合住宅が多く、古い給湯器の交換需要が高いエリアです。多国籍な住民構成で幅広いニーズに対応しており、PS設置型から給湯専用型まで対応しています。賃貸物件のオーナー様・管理会社様からのご依頼も歓迎しています。',
     metaTitle: '川崎市川崎区の給湯器交換・販売なら株式会社宝宮設備｜マンション・PS型対応',
     metaDescription: '川崎市川崎区の給湯器交換は宝宮設備。マンション・集合住宅PS設置型対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '川崎区は川崎市南部に位置し、JR川崎駅周辺に大型マンション・集合住宅が密集する区です。臨海部の工業地帯に隣接しながらも住宅地として発展しており、PS設置型から給湯専用型まで幅広い設置タイプが見られます。多国籍な住民構成で多様なニーズがあり、賃貸物件のオーナー様・管理会社様からのご依頼も多くいただくエリアです。',
+    nearbyStations: '川崎・京急川崎・八丁畷・小田栄・浜川崎',
+    nearbyWardSlugs: ['saiwai', 'nakahara', 'takatsu', 'tama', 'asao'],
+    stationPageSlugs: [],
+    commonTroubles: ['マンションPS設置型の交換', '賃貸物件の交換', 'お湯が出ない', '10年以上使用中の給湯器', '給湯専用型の交換'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'paloma-fh-2023saw-1'],
+    mansionNote: '川崎駅周辺のマンション・集合住宅ではPS設置型が中心です。給湯専用型（追い焚きなし）のアパート向け機種にも対応します。',
+    rentalNote: '川崎区はアパート・賃貸物件が多く、オーナー様・管理会社様からの複数台交換や一括管理のご相談を多くいただいています。',
   },
   {
     citySlug: 'kawasaki', cityName: '川崎市',
@@ -491,6 +827,13 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '川崎駅から近く集合住宅・マンションが多い幸区です。工場跡地の再開発で新しいマンションも増えています。PS型の交換事例が多いエリアで、築15〜20年のマンションでの更新依頼や、築浅マンションでの初回交換のご相談が増えています。',
     metaTitle: '川崎市幸区の給湯器交換・販売なら株式会社宝宮設備｜新川崎・鹿島田対応',
     metaDescription: '川崎市幸区（新川崎・鹿島田）の給湯器交換は宝宮設備。マンションPS設置型対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '幸区は川崎駅の北西側に位置し、JR南武線・新川崎・鹿島田周辺に大型マンション・集合住宅が多い区です。工場跡地の再開発で建てられた新しいマンションが増えており、築浅マンションでの初回交換から、築15〜20年のマンションでの更新まで幅広いPS設置型交換のご依頼があるエリアです。',
+    nearbyStations: '新川崎・鹿島田・矢向・川崎新町',
+    nearbyWardSlugs: ['kawasaki-ku', 'nakahara', 'takatsu', 'tsurumi', 'asao'],
+    stationPageSlugs: [],
+    commonTroubles: ['マンションPS設置型の交換', '初回の給湯器交換', 'お湯が出ない', 'エラー111', '10年以上使用中の給湯器'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'rinnai-ruf-a2005aw-c'],
+    mansionNote: '新川崎・鹿島田周辺のマンションではPS設置型が中心です。築浅マンションでは管理組合への届出が必要な場合があり、PS扉の写真で適合機種を確認します。',
   },
   {
     citySlug: 'kawasaki', cityName: '川崎市',
@@ -502,6 +845,14 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '武蔵小杉の高層タワーマンション群で知られる中原区です。タワーマンションでは管理組合の承認手続きが必要なケースが多く、対応機種の確認が重要です。武蔵新城・武蔵中原エリアには戸建てもあり、築15年前後を迎えた物件での交換が増えています。',
     metaTitle: '川崎市中原区の給湯器交換・販売なら株式会社宝宮設備｜武蔵小杉・マンション対応',
     metaDescription: '川崎市中原区（武蔵小杉・元住吉・新丸子）の給湯器交換は宝宮設備。タワーマンション・PS型対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '中原区は武蔵小杉のタワーマンション建設ラッシュで大きく変貌した区です。武蔵小杉・元住吉・新丸子周辺には高層タワーマンションと大型集合住宅が密集し、PS設置型の給湯器交換需要が高いエリアです。武蔵新城・武蔵中原周辺には戸建ても残り、タワーマンションでは管理組合の承認手続きが必要なケースが多い区です。',
+    nearbyStations: '武蔵小杉・元住吉・新丸子・武蔵中原・武蔵新城',
+    nearbyWardSlugs: ['takatsu', 'saiwai', 'kawasaki-ku', 'miyamae', 'asao'],
+    stationPageSlugs: [],
+    commonTroubles: ['タワーマンションPS設置型の交換', '管理組合への届出', 'お湯が出ない', '10年以上使用中の給湯器', 'エラー111'],
+    recommendedProductSlugs: ['rinnai-ruf-a2005saw-c', 'noritz-gt-2070saw-1', 'rinnai-ruf-a2405aw-c'],
+    mansionNote: '武蔵小杉周辺のタワーマンションではPS設置型が中心で、管理組合の承認手続きが必要なケースが多くあります。PS扉の寸法・排気方式の確認が重要です。',
+    detachedNote: '武蔵新城・武蔵中原周辺の戸建てでは屋外壁掛け型が多く、築15年前後を迎えた物件での交換のご相談が増えています。',
   },
   {
     citySlug: 'kawasaki', cityName: '川崎市',
@@ -513,6 +864,14 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '溝の口・武蔵新城周辺に集合住宅と戸建てが混在するエリアです。駅周辺の新旧マンションと、郊外の戸建て住宅地が共存しています。マンションのPS設置型と戸建ての壁掛型・エコジョーズの両方に対応しており、住宅タイプに合わせた機種選定をサポートします。',
     metaTitle: '川崎市高津区の給湯器交換・販売なら株式会社宝宮設備｜溝の口・マンション・戸建て対応',
     metaDescription: '川崎市高津区（溝の口・二子新地・津田山）の給湯器交換は宝宮設備。マンション・戸建て対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '高津区は溝の口・武蔵溝ノ口を中心とする区で、JR南武線・東急田園都市線の交差する交通の要衝です。駅周辺の新旧マンションと、津田山・久地・坂戸の戸建て住宅地が共存します。マンションのPS設置型と戸建ての壁掛型・エコジョーズの両方のご依頼があり、住宅タイプに応じた機種選定が重要なエリアです。',
+    nearbyStations: '溝の口・武蔵溝ノ口・二子新地・高津・津田山',
+    nearbyWardSlugs: ['nakahara', 'miyamae', 'tama', 'saiwai', 'asao'],
+    stationPageSlugs: [],
+    commonTroubles: ['マンションPS設置型の交換', 'エコジョーズへの交換', 'お湯が出ない', '10年以上使用中の給湯器', '号数アップ（24号）'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'noritz-gt-2470saw-1'],
+    mansionNote: '溝の口周辺のマンションではPS設置型が中心で、管理組合への届出が必要な場合があります。PS扉の写真で適合機種を確認します。',
+    detachedNote: '津田山・久地・坂戸周辺の戸建てでは屋外壁掛け型が主流です。号数アップやエコジョーズへの省エネ化交換にも対応します。',
   },
   {
     citySlug: 'kawasaki', cityName: '川崎市',
@@ -524,6 +883,13 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '鷺沼・宮前平・溝の口周辺に閑静な戸建て住宅地が広がる宮前区です。ファミリー向け戸建てが多く、24号のエコジョーズ交換の相談が多いエリアです。田園都市線沿線の住宅地で、戸建てはドレン排水の経路を確保しやすく省エネ型への移行がスムーズなケースが多くなっています。',
     metaTitle: '川崎市宮前区の給湯器交換・販売なら株式会社宝宮設備｜宮前平・鷺沼・エコジョーズ対応',
     metaDescription: '川崎市宮前区（宮前平・鷺沼・野川）の給湯器交換は宝宮設備。戸建て・エコジョーズ対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '宮前区は東急田園都市線沿線の郊外区で、宮前平・鷺沼・野川・土橋などに閑静な戸建て住宅地が広がります。ファミリー向け住宅地として人気が高く、築20〜30年の戸建てでの給湯器交換ニーズが高いエリアです。戸建てはドレン排水の設置スペースを確保しやすく、24号エコジョーズへの省エネ化交換に適した環境が整っています。',
+    nearbyStations: '宮前平・鷺沼・たまプラーザ（隣接）・梶が谷',
+    nearbyWardSlugs: ['takatsu', 'nakahara', 'asao', 'tama', 'saiwai'],
+    stationPageSlugs: [],
+    commonTroubles: ['エコジョーズへの交換', '号数アップ（24号）', '10年以上使用中の給湯器', 'お湯が出ない', '温度が安定しない'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'rinnai-ruf-a2405aw-c'],
+    detachedNote: '鷺沼・宮前平周辺の戸建てでは屋外壁掛け型が主流です。ドレン排水を確保しやすく、24号エコジョーズへの省エネ化交換に適した環境が多いエリアです。',
   },
   {
     citySlug: 'kawasaki', cityName: '川崎市',
@@ -535,6 +901,14 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '登戸・向ヶ丘遊園・生田周辺に戸建てと集合住宅が混在する多摩区です。大学が多く学生向け賃貸物件も点在するエリアです。多摩川沿いの低地から生田緑地周辺の高台まで、設置環境に応じた対応が可能で、戸建てのエコジョーズ交換実績も豊富です。',
     metaTitle: '川崎市多摩区の給湯器交換・販売なら株式会社宝宮設備｜登戸・向ケ丘遊園対応',
     metaDescription: '川崎市多摩区（登戸・向ケ丘遊園・中野島・生田）の給湯器交換は宝宮設備。戸建て・エコジョーズ対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '多摩区は多摩川と生田緑地に囲まれた丘陵地で、向ケ丘遊園・登戸・中野島・生田などの戸建て住宅地が広がる区です。自然豊かな住環境が人気で、ファミリー向けの戸建てが多く存在します。大学が多く学生向け賃貸物件も点在します。多摩川沿いの低地から生田緑地周辺の高台まで、設置環境に応じた対応が必要なエリアです。',
+    nearbyStations: '登戸・向ケ丘遊園・中野島・生田・宿河原',
+    nearbyWardSlugs: ['asao', 'miyamae', 'takatsu', 'nakahara', 'saiwai'],
+    stationPageSlugs: [],
+    commonTroubles: ['エコジョーズへの交換', '10年以上使用中の給湯器', 'お湯が出ない', '賃貸物件の交換', '号数アップ（24号）'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'noritz-gt-2470saw-1', 'paloma-fh-2023saw-1'],
+    detachedNote: '登戸・向ケ丘遊園・生田周辺の戸建てでは屋外壁掛け型が主流です。丘陵地での設置にも対応し、エコジョーズへの省エネ化交換のご相談が多いエリアです。',
+    rentalNote: '多摩区は大学が多く学生向け賃貸物件が点在します。オーナー様・管理会社様からの給湯器交換のご依頼にも対応します。',
   },
   {
     citySlug: 'kawasaki', cityName: '川崎市',
@@ -546,6 +920,14 @@ const kawasakiWards: WardInput[] = [
     uniqueBody: '新百合ヶ丘・柿生周辺に高級住宅地が広がる麻生区です。閑静な戸建て住宅が多く、長年使用した給湯器の交換需要が高いエリアです。新百合ヶ丘周辺のマンションではPS設置型の交換にも対応しており、住宅タイプに応じた機種選定をサポートします。',
     metaTitle: '川崎市麻生区の給湯器交換・販売なら株式会社宝宮設備｜新百合ヶ丘・柿生対応',
     metaDescription: '川崎市麻生区（新百合ヶ丘・柿生・百合丘・はるひ野）の給湯器交換は宝宮設備。戸建て・マンション対応。リンナイ・ノーリツ・パロマ。工事費込み無料見積もり受付中。',
+    wardCharacter: '麻生区は小田急線沿線の新百合ヶ丘を中心とする閑静な住宅地で、百合丘・柿生・はるひ野・王禅寺などに戸建て住宅とマンションが混在します。新百合ヶ丘周辺のマンションではPS設置型の交換、柿生・王禅寺の戸建てエリアでは壁掛型・エコジョーズへの交換と、住宅タイプに応じた対応が必要な区です。長年使用した給湯器の交換需要が高いエリアです。',
+    nearbyStations: '新百合ヶ丘・百合ヶ丘・柿生・はるひ野・五月台',
+    nearbyWardSlugs: ['tama', 'miyamae', 'takatsu', 'nakahara', 'saiwai'],
+    stationPageSlugs: [],
+    commonTroubles: ['エコジョーズへの交換', 'マンションPS設置型の交換', '10年以上使用中の給湯器', 'お湯が出ない', '号数アップ（24号）'],
+    recommendedProductSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'noritz-gt-2470saw-1'],
+    mansionNote: '新百合ヶ丘周辺のマンションではPS設置型が多く、管理組合への届出が必要な場合があります。PS扉の写真で適合機種を確認します。',
+    detachedNote: '柿生・王禅寺・はるひ野周辺の戸建てでは屋外壁掛け型が主流です。エコジョーズへの省エネ化交換のご相談が多いエリアです。',
   },
 ]
 

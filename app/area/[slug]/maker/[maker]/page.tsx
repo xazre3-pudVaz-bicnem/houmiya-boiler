@@ -6,6 +6,8 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import FaqAccordion from '@/components/FaqAccordion'
 import { siteConfig } from '@/data/site'
+import { productsData } from '@/data/products'
+import { casesData } from '@/data/cases'
 import {
   yokohamaMakers,
   allYokohamaMakers,
@@ -45,12 +47,29 @@ export default async function YokohamaMakerPage({ params }: Props) {
   const config = yokohamaMakers[maker]
   if (!config) notFound()
 
+  const recommendedProducts = productsData.filter((p) =>
+    config.recommendedProductSlugs.includes(p.slug),
+  )
+  const targetCases = casesData
+    .filter((c) => c.areaSlug === 'yokohama' && c.maker === config.makerName)
+    .slice(0, 3)
+  const fallbackCases = casesData.filter((c) => c.areaSlug === 'yokohama').slice(0, 3)
+  const displayCases = targetCases.length > 0 ? targetCases : fallbackCases
+
   const toc = [
     { id: 'maker-overview', label: `${config.makerName}とは（横浜市での実績）` },
+    { id: 'maker-strength', label: `${config.makerName}の強み` },
+    { id: 'maker-suitable', label: 'どんな方に向いているか' },
+    { id: 'maker-capacity', label: '号数別ラインナップ' },
+    { id: 'maker-eco', label: 'エコジョーズ製品' },
+    { id: 'maker-mansion', label: 'マンション向け商品' },
+    { id: 'maker-change', label: '他メーカーからの乗り換え' },
+    { id: 'maker-products', label: '推奨商品' },
     { id: 'maker-series', label: '人気シリーズの特徴' },
     { id: 'maker-notes', label: '交換・修理の注意点' },
     { id: 'maker-remote', label: 'リモコンの互換性' },
     { id: 'maker-warranty', label: '保証について' },
+    { id: 'maker-cases', label: '施工事例' },
     { id: 'maker-faq', label: 'よくある質問' },
   ]
 
@@ -116,7 +135,12 @@ export default async function YokohamaMakerPage({ params }: Props) {
               <span className="text-blue-400">›</span>
               <span>{config.makerName}</span>
             </nav>
-            <h1 className="text-2xl sm:text-3xl font-black mb-4 leading-snug">{config.pageTitle}</h1>
+            <h1 className="text-2xl sm:text-3xl font-black mb-3 leading-snug">
+              {CITY_NAME}の{config.makerName}製給湯器交換
+            </h1>
+            <p className="text-blue-100 text-sm mb-5 leading-relaxed max-w-3xl">
+              横浜市全18区対応。{config.makerName}（{config.makerNameEn}）製給湯器の交換・販売・撤去・処分まで一貫対応。工事費込みの明朗価格で、写真を送るだけの無料見積もりを受け付けています。
+            </p>
             <CtaButtons />
           </div>
         </section>
@@ -149,8 +173,115 @@ export default async function YokohamaMakerPage({ params }: Props) {
           </div>
         </section>
 
+        {/* 強み */}
+        <section id="maker-strength" className="py-10 bg-white scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-5">{config.makerName}の強み</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {config.strengthPoints.map((s, i) => (
+                <div key={i} className="bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-brand-700 text-white text-xs font-black flex items-center justify-center rounded-full mt-0.5">
+                    {i + 1}
+                  </span>
+                  <p className="text-sm text-gray-700 leading-relaxed">{s}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* どんな方に向いているか */}
+        <section id="maker-suitable" className="py-10 bg-gray-50 scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">{config.makerName}はどんな方に向いているか</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed">{config.suitableFor}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 号数別ラインナップ */}
+        <section id="maker-capacity" className="py-10 bg-white scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-5">{config.makerName}の号数別ラインナップ</h2>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="border border-gray-200 rounded-xl p-5">
+                <h3 className="font-black text-brand-700 mb-2 text-base">16号</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{config.capacity16Desc}</p>
+              </div>
+              <div className="border border-gray-200 rounded-xl p-5">
+                <h3 className="font-black text-brand-700 mb-2 text-base">20号</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{config.capacity20Desc}</p>
+              </div>
+              <div className="border border-gray-200 rounded-xl p-5">
+                <h3 className="font-black text-brand-700 mb-2 text-base">24号</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{config.capacity24Desc}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* エコジョーズ製品 */}
+        <section id="maker-eco" className="py-10 bg-gray-50 scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">{config.makerName}のエコジョーズ製品</h2>
+            <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed">{config.ecoJawsDesc}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* マンション向け商品 */}
+        <section id="maker-mansion" className="py-10 bg-white scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">{config.makerName}のマンション向け商品</h2>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed">{config.mansionProductDesc}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 他メーカーからの乗り換え */}
+        <section id="maker-change" className="py-10 bg-gray-50 scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">他メーカーからの乗り換え時の注意点</h2>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed">{config.changeFromOtherMakerNote}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 推奨商品 */}
+        {recommendedProducts.length > 0 && (
+          <section id="maker-products" className="py-10 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-2">{CITY_NAME}でおすすめの{config.makerName}製給湯器</h2>
+              <p className="text-gray-500 text-sm mb-5">
+                価格は工事費込み（税込）の目安です。設置状況により変動する場合があります。
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {recommendedProducts.map((product) => (
+                  <Link href={`/products/${product.slug}`} key={product.slug}>
+                    <div className="border border-gray-200 rounded-xl p-4 hover:border-brand-400 transition-colors h-full">
+                      <p className="text-xs text-gray-500 mb-1">{product.makerLabel} / {product.capacity}号 / {product.typeLabel}</p>
+                      <p className="font-bold text-sm text-gray-900 mb-2">{product.model}</p>
+                      <p className="text-brand-700 font-black text-lg">{product.totalInTax.toLocaleString()}円</p>
+                      <p className="text-xs text-gray-400">工事費込み・税込</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-5 text-center">
+                <Link href="/products" className="text-sm font-bold text-brand-700 hover:underline">
+                  すべての商品を見る →
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* 人気シリーズ */}
-        <section id="maker-series" className="py-10 bg-white scroll-mt-28">
+        <section id="maker-series" className="py-10 bg-gray-50 scroll-mt-28">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-2">{config.makerName}の人気シリーズの特徴</h2>
             <p className="text-gray-500 text-sm mb-5">
@@ -158,7 +289,7 @@ export default async function YokohamaMakerPage({ params }: Props) {
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               {config.popularSeries.map((s, i) => (
-                <div key={i} className="border border-gray-200 rounded-xl p-5">
+                <div key={i} className="border border-gray-200 bg-white rounded-xl p-5">
                   <h3 className="font-black text-gray-900 mb-2 text-base">{s.name}</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
                 </div>
@@ -166,6 +297,9 @@ export default async function YokohamaMakerPage({ params }: Props) {
             </div>
           </div>
         </section>
+
+        {/* 中間CTA */}
+        <MidEstimateCta heading={`${CITY_NAME}の${config.makerName}製給湯器交換はお任せください`} />
 
         {/* 交換・修理の注意点 */}
         <section id="maker-notes" className="py-10 bg-gray-50 scroll-mt-28">
@@ -207,11 +341,33 @@ export default async function YokohamaMakerPage({ params }: Props) {
           </div>
         </section>
 
-        {/* 中間CTA */}
-        <MidEstimateCta heading={`${CITY_NAME}の${config.makerName}製給湯器交換はお任せください`} />
+        {/* 施工事例 */}
+        {displayCases.length > 0 && (
+          <section id="maker-cases" className="py-10 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-5">{CITY_NAME}の施工事例</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {displayCases.map((c) => (
+                  <Link href={`/cases/${c.slug}`} key={c.id}>
+                    <div className="border border-gray-200 rounded-xl p-4 bg-white hover:border-brand-400 transition-colors h-full">
+                      <p className="text-xs text-gray-500">{c.area}</p>
+                      <p className="font-bold text-sm text-gray-900 mb-1">{c.buildingType}</p>
+                      <p className="text-xs text-gray-600">{c.maker} / {c.capacity}号 / {c.duration}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-5 text-center">
+                <Link href="/cases" className="text-sm font-bold text-brand-700 hover:underline">
+                  施工事例をもっと見る →
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* FAQ */}
-        <section id="maker-faq" className="py-10 bg-white scroll-mt-28">
+        <section id="maker-faq" className="py-10 bg-gray-50 scroll-mt-28">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-6">
               {CITY_NAME}の{config.makerName}製給湯器 よくある質問
@@ -221,7 +377,7 @@ export default async function YokohamaMakerPage({ params }: Props) {
         </section>
 
         {/* 関連内部リンク */}
-        <section className="py-10 bg-gray-50">
+        <section className="py-10 bg-white">
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid sm:grid-cols-2 gap-6">
               <div>

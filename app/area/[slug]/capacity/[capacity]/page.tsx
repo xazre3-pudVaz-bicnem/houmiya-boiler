@@ -6,6 +6,8 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import FaqAccordion from '@/components/FaqAccordion'
 import { siteConfig } from '@/data/site'
+import { productsData } from '@/data/products'
+import { casesData } from '@/data/cases'
 import {
   yokohamaCapacities,
   allYokohamaCapacities,
@@ -39,18 +41,41 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const CITY_NAME = '横浜市'
 const CITY_SLUG = 'yokohama'
 
+// 16/20/24号 比較表データ
+const comparisonRows = [
+  { label: '目安の世帯', '16': '単身〜2人', '20': '2〜3人', '24': '4人以上' },
+  { label: '同時使用', '16': '苦手', '20': '順番ならOK', '24': '得意' },
+  { label: '冬場の湯量', '16': 'やや不足しやすい', '20': '標準', '24': '余裕あり' },
+  { label: '本体サイズ', '16': 'コンパクト', '20': '標準', '24': 'やや大きい' },
+  { label: '主な設置', '16': '単身マンション', '20': 'ファミリーマンション', '24': '戸建て' },
+]
+
 export default async function YokohamaCapacityPage({ params }: Props) {
   const { slug, capacity } = await params
   if (slug !== CITY_SLUG) notFound()
   const config = yokohamaCapacities[capacity]
   if (!config) notFound()
 
+  const recommendedProducts = productsData.filter((p) =>
+    config.recommendedProductSlugs.includes(p.slug),
+  )
+  const targetCases = casesData
+    .filter((c) => c.areaSlug === 'yokohama' && c.capacity === config.capacityNum)
+    .slice(0, 3)
+  const fallbackCases = casesData.filter((c) => c.areaSlug === 'yokohama').slice(0, 3)
+  const displayCases = targetCases.length > 0 ? targetCases : fallbackCases
+
   const toc = [
     { id: 'cap-overview', label: `${config.capacityLabel}とは` },
     { id: 'cap-suitable', label: '向いているご家庭' },
     { id: 'cap-notsuitable', label: '向いていないケース' },
+    { id: 'cap-house', label: '住宅タイプ別の選び方' },
+    { id: 'cap-winter', label: '冬場・同時使用の注意' },
+    { id: 'cap-compare', label: '16/20/24号 比較表' },
     { id: 'cap-usecases', label: `${CITY_NAME}での利用シーン` },
     { id: 'cap-change', label: '号数変更時の注意' },
+    { id: 'cap-products', label: '推奨商品' },
+    { id: 'cap-cases', label: '施工事例' },
     { id: 'cap-faq', label: 'よくある質問' },
   ]
 
@@ -116,7 +141,12 @@ export default async function YokohamaCapacityPage({ params }: Props) {
               <span className="text-blue-400">›</span>
               <span>{config.capacityLabel}</span>
             </nav>
-            <h1 className="text-2xl sm:text-3xl font-black mb-4 leading-snug">{config.pageTitle}</h1>
+            <h1 className="text-2xl sm:text-3xl font-black mb-3 leading-snug">
+              {CITY_NAME}の{config.capacityLabel}給湯器交換
+            </h1>
+            <p className="text-blue-100 text-sm mb-5 leading-relaxed max-w-3xl">
+              横浜市全18区対応。{config.capacityLabel}給湯器の特徴・選び方から交換まで。工事費込みの明朗価格で、写真を送るだけの無料見積もりを受け付けています。
+            </p>
             <CtaButtons />
           </div>
         </section>
@@ -181,8 +211,77 @@ export default async function YokohamaCapacityPage({ params }: Props) {
           </div>
         </section>
 
+        {/* 住宅タイプ別の選び方 */}
+        <section id="cap-house" className="py-10 bg-white scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-5">住宅タイプ別の{config.capacityLabel}の選び方</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="border border-gray-200 rounded-xl p-5">
+                <h3 className="font-black text-gray-900 mb-2 text-base">マンションでの選び方</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{config.mansionNote}</p>
+              </div>
+              <div className="border border-gray-200 rounded-xl p-5">
+                <h3 className="font-black text-gray-900 mb-2 text-base">戸建てでの選び方</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{config.detachedNote}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 冬場・同時使用の注意 */}
+        <section id="cap-winter" className="py-10 bg-gray-50 scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-5">冬場・同時使用の注意点</h2>
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h3 className="font-bold text-gray-900 mb-2 text-sm">冬場の湯量について</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{config.winterNote}</p>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h3 className="font-bold text-gray-900 mb-2 text-sm">同時使用について</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{config.simultaneousUseNote}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 比較表 */}
+        <section id="cap-compare" className="py-10 bg-white scroll-mt-28">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-2">16号・20号・24号の比較表</h2>
+            <p className="text-gray-500 text-sm mb-5">
+              現在お使いの{config.capacityLabel}を基準に、他の号数との違いをご確認ください。
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="p-3 text-left font-black text-gray-700 border-b border-gray-200"></th>
+                    <th className={`p-3 text-center font-black border-b border-gray-200 ${config.slug === '16' ? 'bg-brand-700 text-white' : 'text-gray-700'}`}>16号</th>
+                    <th className={`p-3 text-center font-black border-b border-gray-200 ${config.slug === '20' ? 'bg-brand-700 text-white' : 'text-gray-700'}`}>20号</th>
+                    <th className={`p-3 text-center font-black border-b border-gray-200 ${config.slug === '24' ? 'bg-brand-700 text-white' : 'text-gray-700'}`}>24号</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row, i) => (
+                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="p-3 font-bold text-gray-700 border-b border-gray-100">{row.label}</td>
+                      <td className={`p-3 text-center text-gray-700 border-b border-gray-100 ${config.slug === '16' ? 'bg-blue-50 font-bold' : ''}`}>{row['16']}</td>
+                      <td className={`p-3 text-center text-gray-700 border-b border-gray-100 ${config.slug === '20' ? 'bg-blue-50 font-bold' : ''}`}>{row['20']}</td>
+                      <td className={`p-3 text-center text-gray-700 border-b border-gray-100 ${config.slug === '24' ? 'bg-blue-50 font-bold' : ''}`}>{row['24']}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-gray-400 mt-3">
+              号数は1分間に作れるお湯の量（水温＋25℃時）の目安です。数字が大きいほど一度に多くのお湯を使えます。
+            </p>
+          </div>
+        </section>
+
         {/* 横浜市での利用シーン */}
-        <section id="cap-usecases" className="py-10 bg-white scroll-mt-28">
+        <section id="cap-usecases" className="py-10 bg-gray-50 scroll-mt-28">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-xl font-black text-gray-900 mb-4">{CITY_NAME}での{config.capacityLabel}の利用シーン</h2>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
@@ -197,12 +296,76 @@ export default async function YokohamaCapacityPage({ params }: Props) {
         {/* 号数変更時の注意 */}
         <section id="cap-change" className="py-10 bg-gray-50 scroll-mt-28">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-xl font-black text-gray-900 mb-4">号数変更（アップ・ダウン）時の注意</h2>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+            <h2 className="text-xl font-black text-gray-900 mb-5">号数変更（アップ・ダウン）時の注意</h2>
+            <div className="grid sm:grid-cols-2 gap-4 mb-4">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                <h3 className="font-bold text-gray-900 mb-2 text-sm">号数アップ時の注意</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{config.upgradeNote}</p>
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                <h3 className="font-bold text-gray-900 mb-2 text-sm">号数ダウン時の注意</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{config.downgradeNote}</p>
+              </div>
+            </div>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
               <p className="text-sm text-gray-700 leading-relaxed">{config.changeNote}</p>
             </div>
           </div>
         </section>
+
+        {/* 推奨商品 */}
+        {recommendedProducts.length > 0 && (
+          <section id="cap-products" className="py-10 bg-white scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-2">{CITY_NAME}でおすすめの{config.capacityLabel}給湯器</h2>
+              <p className="text-gray-500 text-sm mb-5">
+                価格は工事費込み（税込）の目安です。設置状況により変動する場合があります。
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {recommendedProducts.map((product) => (
+                  <Link href={`/products/${product.slug}`} key={product.slug}>
+                    <div className="border border-gray-200 rounded-xl p-4 hover:border-brand-400 transition-colors h-full">
+                      <p className="text-xs text-gray-500 mb-1">{product.makerLabel} / {product.capacity}号 / {product.typeLabel}</p>
+                      <p className="font-bold text-sm text-gray-900 mb-2">{product.model}</p>
+                      <p className="text-brand-700 font-black text-lg">{product.totalInTax.toLocaleString()}円</p>
+                      <p className="text-xs text-gray-400">工事費込み・税込</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-5 text-center">
+                <Link href="/products" className="text-sm font-bold text-brand-700 hover:underline">
+                  すべての商品を見る →
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 施工事例 */}
+        {displayCases.length > 0 && (
+          <section id="cap-cases" className="py-10 bg-gray-50 scroll-mt-28">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-xl font-black text-gray-900 mb-5">{CITY_NAME}の施工事例</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {displayCases.map((c) => (
+                  <Link href={`/cases/${c.slug}`} key={c.id}>
+                    <div className="border border-gray-200 rounded-xl p-4 bg-white hover:border-brand-400 transition-colors h-full">
+                      <p className="text-xs text-gray-500">{c.area}</p>
+                      <p className="font-bold text-sm text-gray-900 mb-1">{c.buildingType}</p>
+                      <p className="text-xs text-gray-600">{c.maker} / {c.capacity}号 / {c.duration}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-5 text-center">
+                <Link href="/cases" className="text-sm font-bold text-brand-700 hover:underline">
+                  施工事例をもっと見る →
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* FAQ */}
         <section id="cap-faq" className="py-10 bg-white scroll-mt-28">
