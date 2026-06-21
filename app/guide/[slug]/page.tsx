@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import FaqAccordion from '@/components/FaqAccordion'
 import { guidesData, getGuideBySlug } from '@/data/guides'
+import { productsData, formatPrice } from '@/data/products'
 import { siteConfig } from '@/data/site'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
@@ -167,12 +168,62 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                   <FaqAccordion faqs={guide.faqs} />
                 </div>
 
+                {/* 関連商品 */}
+                {guide.relatedProductSlugs && guide.relatedProductSlugs.length > 0 && (() => {
+                  const guideProducts = productsData.filter((p) => guide.relatedProductSlugs!.includes(p.slug))
+                  return guideProducts.length > 0 ? (
+                    <div className="mt-8 border-t border-gray-100 pt-8">
+                      <h2 className="text-base font-black text-gray-900 mb-3">関連商品</h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {guideProducts.map((p) => (
+                          <Link href={p.detailUrl} key={p.id}>
+                            <div className="border border-gray-200 rounded-xl p-3 hover:border-brand-300 transition-colors">
+                              <p className="text-xs text-gray-500">{p.makerLabel} / {p.capacity}号 / {p.typeLabel}</p>
+                              <p className="font-bold text-sm text-gray-900">{p.model}</p>
+                              <p className="text-brand-700 font-black text-sm">{formatPrice(p.totalInTax)}円（工事費込・税込）</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                      <Link href="/products" className="text-xs text-brand-700 font-bold hover:underline mt-2 inline-block">全商品を見る →</Link>
+                    </div>
+                  ) : null
+                })()}
+
                 {/* 関連ページ */}
                 {guide.relatedLinks && guide.relatedLinks.length > 0 && (
                   <div className="mt-10">
                     <h2 className="text-base font-black text-gray-700 mb-3">関連する基礎知識・トラブル</h2>
                     <div className="grid grid-cols-2 gap-2">
                       {guide.relatedLinks.map((link) => (
+                        <Link key={link.href} href={link.href} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-brand-700 transition-colors text-center">
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* トラブル関連リンク */}
+                {guide.relatedTroubleLinks && guide.relatedTroubleLinks.length > 0 && (
+                  <div className="mt-6">
+                    <h2 className="text-base font-black text-gray-700 mb-3">関連するトラブル・症状</h2>
+                    <div className="grid grid-cols-2 gap-2">
+                      {guide.relatedTroubleLinks.map((link) => (
+                        <Link key={link.href} href={link.href} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-colors text-center">
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 対応エリア */}
+                {guide.relatedAreaLinks && guide.relatedAreaLinks.length > 0 && (
+                  <div className="mt-6">
+                    <h2 className="text-base font-black text-gray-700 mb-3">対応エリア</h2>
+                    <div className="grid grid-cols-2 gap-2">
+                      {guide.relatedAreaLinks.map((link) => (
                         <Link key={link.href} href={link.href} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-brand-700 transition-colors text-center">
                           {link.label}
                         </Link>

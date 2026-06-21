@@ -144,6 +144,24 @@ export default async function ProductDetailPage({
     '都市ガス／プロパンガスの種類の確認',
   ]
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `${product.makerLabel} ${product.model} ${product.capacity}号 ${product.typeLabel}`,
+    description: `${product.makerLabel} ${product.model}。${product.capacity}号${product.typeLabel}。${product.installationLabel}。`,
+    brand: { '@type': 'Brand', name: product.makerLabel },
+    model: product.model,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'JPY',
+      price: product.totalInTax,
+      priceValidUntil: '2026-12-31',
+      availability: 'https://schema.org/InStock',
+      seller: { '@type': 'Organization', name: '株式会社宝宮設備' },
+      url: `https://www.houmiya-boiler.com${product.detailUrl}`,
+    },
+  }
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -166,6 +184,7 @@ export default async function ProductDetailPage({
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />

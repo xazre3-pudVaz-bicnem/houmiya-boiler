@@ -27,8 +27,18 @@ export const metadata: Metadata = {
 
 const FALLBACK_IMAGE = '/hero-banner.png'
 
+const EXCLUDED_SLUGS = ['hello-world', 'test', 'sample-page']
+const EXCLUDED_CATEGORIES = ['uncategorized', '未分類']
+
 export default async function BlogPage() {
-  const posts = await getPosts(12)
+  const rawPosts = await getPosts(20)
+  const posts = rawPosts.filter((post) => {
+    if (EXCLUDED_SLUGS.includes(post.slug)) return false
+    const cats = getCategories(post)
+    if (cats.length === 0) return false
+    if (cats.every((cat) => EXCLUDED_CATEGORIES.includes(cat.slug) || EXCLUDED_CATEGORIES.includes(cat.name))) return false
+    return true
+  }).slice(0, 12)
 
   return (
     <>

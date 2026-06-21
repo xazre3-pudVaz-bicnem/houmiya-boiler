@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/_next/'],
       },
     ],
-    sitemap: 'https://houmiya-boiler.com/sitemap.xml',
-    host: 'https://houmiya-boiler.com',
+    sitemap: 'https://www.houmiya-boiler.com/sitemap.xml',
+    host: 'https://www.houmiya-boiler.com',
   }
 }
