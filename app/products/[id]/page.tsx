@@ -33,6 +33,122 @@ function getProductFeatureText(capacity: number, type: string, maker: string): s
   return `${makerText}${capText}の${typeText}`
 }
 
+// 設置タイプ別の説明文
+function getInstallationDescription(installationType: string): {
+  summary: string
+  points: string[]
+  note?: string
+} {
+  switch (installationType) {
+    case 'floor-mounted':
+      return {
+        summary:
+          '据置型は地面やコンクリートブロックの上に据置台を使って設置するタイプです。浴槽の横や屋外の地面に設置されることが多く、配管が下方から接続される構造です。',
+        points: [
+          '据置台（脚部）の上に本体を固定して設置します',
+          '主に戸建ての浴室横・屋外の地面に設置されます',
+          '既存が据置型の場合は同じ据置型での交換がスムーズです',
+          '壁掛型へ変更する場合は据置台の撤去・壁面金具の新設が必要です',
+        ],
+        note: '据置台が劣化している場合は据置台の交換費用が別途発生することがあります。',
+      }
+    case 'ps-standard':
+      return {
+        summary:
+          'PS標準設置型は、マンションの玄関脇などにあるパイプスペース（PS）に設置する規格化されたタイプです。扉の前面に給湯器の操作面が露出する形で設置されます。',
+        points: [
+          'マンションのパイプスペース（PS）内に設置します',
+          'PS扉の内寸（幅・奥行き・高さ）に収まる機種を選ぶ必要があります',
+          '排気方向（前方排気・上方排気）の確認が必要です',
+          '号数を上げる場合はPS内寸に収まるかの確認が必須です',
+        ],
+        note: 'マンションでは管理規約で機種・メーカーが指定されている場合があります。事前に管理組合へご確認ください。',
+      }
+    case 'ps-door':
+    case 'ps-door-top':
+      return {
+        summary:
+          'PS扉内設置型は、マンションのパイプスペースの扉の内側に給湯器を収めるタイプです。扉を閉めると本体が隠れるため見た目がすっきりしますが、設置スペースの制約が大きい設置方式です。',
+        points: [
+          'パイプスペースの扉の内側に本体を収納して設置します',
+          'PS扉の内寸に厳密に適合する機種を選ぶ必要があります',
+          '排気の方向（前方・上方）に対応した機種を選定します',
+          '狭い作業スペースでの施工となるため経験が重要です',
+        ],
+        note: 'PS扉内設置は管理規約の確認が特に重要です。扉を開けた全体写真と寸法のわかる写真をいただくと適合機種をご提案できます。',
+      }
+    case 'balcony':
+      return {
+        summary:
+          'ベランダ壁掛型は、マンションのベランダ（バルコニー）の壁面に取り付けるタイプです。屋外の壁面に固定し、給排気を直接外気に行います。',
+        points: [
+          'ベランダの壁面に金具で固定して設置します',
+          '給排気のクリアランス（周囲の空間）の確保が必要です',
+          'マンションの管理規約の確認が必要な場合があります',
+          '避難経路を妨げない設置位置の確認が必要です',
+        ],
+        note: 'ベランダは共用部扱いの場合があります。管理規約をご確認ください。',
+      }
+    case 'balanced-flue':
+      return {
+        summary:
+          'BF式（バランス型）は、屋内に設置し、給排気を一体の筒で屋外と行う方式です。古い住宅で見られる設置方式で、現在は後継機種が限られます。',
+        points: [
+          '屋内設置で給排気筒を屋外へ通す方式です',
+          '給排気筒の状態確認が必要です',
+          '後継機種が限られるため設置可否の確認が重要です',
+          '安全のため給排気経路の点検が欠かせません',
+        ],
+        note: '現在の設置状況を写真でご確認のうえ、適合する後継機種をご提案します。',
+      }
+    case 'wall-mounted':
+    default:
+      return {
+        summary:
+          '壁掛型（壁掛屋外型）は、住宅の外壁に金具で固定して設置する最も一般的なタイプです。戸建て・マンションを問わず広く採用されており、設置の自由度が高いのが特徴です。',
+        points: [
+          '住宅の外壁に取付金具で固定して設置します',
+          '戸建て・マンションのいずれにも広く採用されています',
+          '同じ壁掛型からの交換であれば既存金具を流用できる場合が多いです',
+          '給排気のクリアランスを確保できる位置に設置します',
+        ],
+        note: '据置型やPS設置型からの変更を伴う場合は、追加工事が発生することがあります。',
+      }
+  }
+}
+
+// マンション適合性の説明
+function getMansionFit(installationType: string): string {
+  switch (installationType) {
+    case 'ps-standard':
+    case 'ps-door':
+    case 'ps-door-top':
+      return 'こちらはマンションのパイプスペース（PS）設置に対応したタイプです。PS扉の内寸に収まり、排気方向が適合すれば設置できます。管理規約で機種が指定されている場合があるため、PS扉を開けた全体写真と寸法のわかる写真をお送りいただければ適合機種をご提案します。'
+    case 'balcony':
+      return 'こちらはベランダ（バルコニー）壁掛けでの設置に対応したタイプです。マンションのベランダに設置スペースと給排気のクリアランスが確保でき、管理規約で認められていれば設置できます。設置位置の写真をお送りいただければ可否をご案内します。'
+    case 'wall-mounted':
+      return 'こちらは壁掛屋外型です。マンションでも外壁に設置スペースがある住戸では設置できますが、多くのマンションはパイプスペース（PS）設置型が標準です。PS設置のマンションの場合は、PS扉まわりの写真をお送りいただければ適合するPS用の機種をご提案します。'
+    default:
+      return 'マンションへの設置可否は設置方式によって異なります。パイプスペース（PS）設置型のマンションの場合は、PS扉まわりの写真をお送りいただければ適合機種をご提案します。'
+  }
+}
+
+// 戸建て適合性の説明
+function getKodateFit(installationType: string): string {
+  switch (installationType) {
+    case 'wall-mounted':
+      return 'こちらは壁掛屋外型で、戸建て住宅に最も多く採用されている設置タイプです。外壁に取付金具で固定でき、同じ壁掛型からの交換であれば既存金具を流用できる場合が多く、標準工事でスムーズに交換できます。'
+    case 'floor-mounted':
+      return 'こちらは据置型で、浴室横や屋外の地面に据置台を使って設置する戸建て向きのタイプです。既存が据置型であれば同じ据置型での交換がスムーズです。壁掛型へ変更する場合は据置台の撤去・壁面金具の新設が必要になります。'
+    case 'ps-standard':
+    case 'ps-door':
+    case 'ps-door-top':
+      return 'こちらはマンションのパイプスペース（PS）向けの設置タイプです。戸建てで使用する場合は、設置場所に応じて壁掛型・据置型などの方が適しているケースが多いため、設置状況の写真をお送りいただければ最適な機種をご提案します。'
+    default:
+      return '戸建てへの設置は、外壁への壁掛けや地面への据置など設置場所に応じて選定します。設置状況の写真をお送りいただければ最適な機種をご提案します。'
+  }
+}
+
 export function generateStaticParams() {
   return productsData.map((p) => ({ id: p.slug }))
 }
@@ -85,6 +201,20 @@ export default async function ProductDetailPage({
 
   // 関連商品（同メーカー・別機種、最大3件）
   const related = seriesProducts.filter((p) => p.slug !== product.slug).slice(0, 3)
+
+  // 設置タイプ別の説明
+  const installInfo = getInstallationDescription(product.installationType)
+
+  // 工事費の税込（標準工事費 税抜38,000円 → 税込）
+  const constructionFeeInTax = Math.round(product.constructionFee * 1.1)
+
+  // 関連エリアリンク
+  const areaLinks = [
+    { href: '/area/yokohama', label: `横浜市での${product.model}交換`, city: '横浜市' },
+    { href: '/area/kawasaki', label: `川崎市での${product.model}交換`, city: '川崎市' },
+    { href: '/area/atsugi', label: `厚木市での${product.model}交換`, city: '厚木市' },
+    { href: '/area/ebina', label: `海老名市での${product.model}交換`, city: '海老名市' },
+  ]
 
   const faqs = [
     {
@@ -242,7 +372,7 @@ export default async function ProductDetailPage({
                 </div>
                 <div className="text-xs text-gray-500 mb-1">{product.series}シリーズ / {product.installationLabel}</div>
                 <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-1 leading-tight">
-                  {product.model}
+                  {product.model}（{product.makerLabel} {product.capacity}号{product.typeLabel}）
                 </h1>
                 <div className="flex items-center gap-2 mb-3">
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${color.light}`}>{product.capacity}号</span>
@@ -368,6 +498,310 @@ export default async function ProductDetailPage({
                 設置タイプは{product.installationLabel}で、{product.series}シリーズのモデルです。
                 本体・リモコンセット・標準取付費をすべて含んだ工事費込み税込価格{formatPrice(product.totalInTax)}円でご提供しています。
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 型番SEO：型番の特徴と詳細 */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">{product.model}の特徴と詳細</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-6">
+
+              {/* 型番の意味 */}
+              <div>
+                <h3 className="font-black text-gray-900 text-base mb-2">型番「{product.model}」の意味</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {product.makerLabel}の{product.model}は、{product.series}シリーズの給湯器です。
+                  型番の中の数字「{product.capacity}」が給湯能力を表す<strong className="font-bold">{product.capacity}号</strong>を示しています。
+                  {product.capacity}号は、水温を25℃上昇させたお湯を1分間に約{product.capacity}リットル作れる能力です。
+                  あわせて、この機種は自動湯はり・追い焚きに対応した<strong className="font-bold">{product.typeLabel}タイプ</strong>で、
+                  設置方式は<strong className="font-bold">{product.installationLabel}</strong>です。
+                  {product.category === 'eco-jaws'
+                    ? 'さらに省エネ性能の高いエコジョーズ対応機種です。'
+                    : '従来型のガスふろ給湯器です。'}
+                  型番ラベルには号数のほか、ガスの種類（都市ガス／LPガス）も記載されているため、交換時はガス種の確認も大切です。
+                </p>
+              </div>
+
+              {/* この機種の特徴 */}
+              <div>
+                <h3 className="font-black text-gray-900 text-base mb-2">この機種の特徴（{product.capacity}号・{product.typeLabel}・{product.installationLabel}）</h3>
+                <p className="text-sm text-gray-700 leading-relaxed mb-2">
+                  {getProductFeatureText(product.capacity, product.type, product.makerLabel)}
+                </p>
+                <ul className="space-y-1.5">
+                  {[
+                    `給湯能力は${product.capacity}号。${product.capacity === 16 ? '単独使用に向いた少人数向けの号数です。' : product.capacity === 20 ? 'シャワーと洗面の同時使用に対応する標準的な号数です。' : 'シャワーとキッチンの同時使用にも余裕のある大容量です。'}`,
+                    product.type === 'full-auto'
+                      ? '自動湯はり・自動追い焚き・自動保温に加え、自動たし湯・配管自動洗浄まで全自動で行うフルオートタイプです。'
+                      : '自動湯はり・自動追い焚き・自動保温に対応したオートタイプです。たし湯は手動操作になります。',
+                    `${product.installationLabel}で、${product.installationType === 'wall-mounted' ? '戸建て・マンションを問わず広く採用されています。' : 'マンションのパイプスペースなど設置環境に合わせた方式です。'}`,
+                    `リモコン（${product.remoteModel}）がセットになっています。`,
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                      <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* どんな家庭に向いているか */}
+              <div>
+                <h3 className="font-black text-gray-900 text-base mb-2">{product.model}はどんなご家庭に向いているか</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {product.capacity}号の{product.model}は、
+                  {product.capacity === 16
+                    ? '一人暮らしやご夫婦のみの1〜2人世帯に向いています。シャワー中心の使い方で、お湯の同時使用が少ないご家庭に最適です。'
+                    : product.capacity === 20
+                    ? '2〜3人のご家族に向いています。シャワーと洗面の同時使用に対応でき、マンション・戸建てのいずれにも採用しやすい標準的な号数です。'
+                    : '4人以上のファミリー世帯に向いています。お風呂とキッチンを同時に使っても湯量・湯温が安定し、家族が続けて入浴してもお湯切れしにくいのが魅力です。'}
+                  {product.type === 'full-auto'
+                    ? ' フルオートタイプのため、入浴時間がバラバラなご家庭や、小さなお子さま・ご高齢の方がいるご家庭にも安心です。'
+                    : ' オートタイプのため、本体価格を抑えたい方やシンプルな操作を好む方にも適しています。'}
+                </p>
+              </div>
+
+              {/* 交換前に確認すること */}
+              <div>
+                <h3 className="font-black text-gray-900 text-base mb-2">{product.model}に交換する前に確認すること</h3>
+                <ul className="space-y-1.5">
+                  {[
+                    '現在お使いの給湯器の型番（本体のシールに記載）',
+                    `号数（この機種は${product.capacity}号）。号数を変更する場合は配管口径・ガス供給量の確認が必要です。`,
+                    `タイプ（この機種は${product.typeLabel}）。給湯専用からの変更は追い焚き配管工事が必要なことがあります。`,
+                    `設置タイプ（この機種は${product.installationLabel}）。設置方式を変える場合は追加工事が発生することがあります。`,
+                    'ガスの種類（都市ガス／LPガス）。ガス種が異なる機種は使用できません。',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                      <svg className="w-4 h-4 text-brand-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-gray-400 mt-3">
+                  型番の読み方や確認方法は <Link href="/guide/model-number" className="text-brand-600 hover:underline font-bold">給湯器の型番の見方</Link> のページもご覧ください。
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* 同シリーズ・同メーカー比較表 */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-2">{product.makerLabel} 給湯器の比較</h2>
+            <p className="text-gray-500 text-sm mb-6">
+              {product.makerLabel}の号数別ラインナップを工事費込み税込価格で比較。家族構成に合わせてお選びいただけます。
+            </p>
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[640px]">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 border-r border-gray-100">型番</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 border-r border-gray-100">号数</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 border-r border-gray-100">タイプ</th>
+                      <th className="px-4 py-3 text-right text-xs font-bold text-gray-900 border-r border-gray-100">工事費込み税込価格</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-gray-600">向いている家族構成</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {seriesProducts.map((p, i) => (
+                      <tr
+                        key={p.id}
+                        className={`border-t border-gray-100 ${p.slug === product.slug ? 'bg-yellow-50' : i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                      >
+                        <td className="px-4 py-3 text-xs border-r border-gray-100">
+                          <Link href={p.detailUrl} className={`font-bold hover:underline ${color.text}`}>{p.model}</Link>
+                          {p.slug === product.slug && <span className="ml-1 text-[10px] bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded font-black">表示中</span>}
+                        </td>
+                        <td className="px-4 py-3 text-center font-black text-gray-900 border-r border-gray-100">{p.capacity}号</td>
+                        <td className="px-4 py-3 text-center text-gray-600 text-xs border-r border-gray-100">{p.typeLabel}</td>
+                        <td className="px-4 py-3 text-right font-black text-red-600 border-r border-gray-100">{formatPrice(p.totalInTax)}円</td>
+                        <td className="px-4 py-3 text-gray-600 text-xs">
+                          {p.capacity === 16 ? '1〜2人（一人暮らし・夫婦）' : p.capacity === 20 ? '2〜3人（標準的な家族）' : '4人以上（ファミリー）'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3">※ 全て本体・リモコン・標準取付費（処分費込）を含む工事費込み税込価格です。</p>
+          </div>
+        </section>
+
+        {/* 設置タイプの説明 */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">設置タイプ：{product.installationLabel}</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed mb-4">{installInfo.summary}</p>
+              <ul className="space-y-2 mb-4">
+                {installInfo.points.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                    <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              {installInfo.note && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-xs text-yellow-700">
+                  {installInfo.note}
+                </div>
+              )}
+              <p className="text-xs text-gray-400 mt-3">
+                設置タイプの詳しい解説は <Link href="/guide/installation-type" className="text-brand-600 hover:underline font-bold">給湯器の設置タイプの違い</Link> のページもご覧ください。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* マンション・戸建て別の適合性 */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h2 className="text-lg font-black text-gray-900 mb-3">{product.model}はマンションに設置できますか？</h2>
+                <div className="bg-white border border-gray-200 rounded-xl p-5 h-full">
+                  <p className="text-sm text-gray-700 leading-relaxed">{getMansionFit(product.installationType)}</p>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-lg font-black text-gray-900 mb-3">{product.model}は戸建てに設置できますか？</h2>
+                <div className="bg-white border border-gray-200 rounded-xl p-5 h-full">
+                  <p className="text-sm text-gray-700 leading-relaxed">{getKodateFit(product.installationType)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 工事費込み価格の内訳説明 */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">工事費込み価格の内訳</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                {product.model}の工事費込み税込価格は<strong className="font-bold text-red-600">{formatPrice(product.totalInTax)}円</strong>です。
+                この価格には、給湯器本体・リモコン・標準工事費がすべて含まれており、追加の費用が発生しない明朗会計です。内訳は以下のとおりです。
+              </p>
+              <div className="space-y-3 mb-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 font-black text-sm flex-shrink-0 mt-0.5">①</span>
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">本体代（{product.makerLabel} {product.model} / {product.capacity}号 {product.typeLabel}）</div>
+                    <p className="text-xs text-gray-600 leading-relaxed">
+                      メーカー希望小売価格{formatPrice(product.listPrice)}円のところ、{product.discountRate}%OFFの本体特価{formatPrice(product.salePrice)}円（税抜）でご提供。号数が大きいほど本体価格はやや上がる傾向があります。
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 font-black text-sm flex-shrink-0 mt-0.5">②</span>
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">リモコン代（{product.remoteModel}）</div>
+                    <p className="text-xs text-gray-600 leading-relaxed">
+                      台所リモコン・浴室リモコンのセットで{formatPrice(product.remoteSalePrice)}円（税抜）。取付工事費も含みます。
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 font-black text-sm flex-shrink-0 mt-0.5">③</span>
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">標準工事費（税抜{formatPrice(product.constructionFee)}円 → 税込{formatPrice(constructionFeeInTax)}円）</div>
+                    <p className="text-xs text-gray-600 leading-relaxed">
+                      既存給湯器の取付・配管接続・試運転などの標準作業をすべて含みます。
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 font-black text-sm flex-shrink-0 mt-0.5">④</span>
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">撤去・廃棄費用（標準工事費に含む）</div>
+                    <p className="text-xs text-gray-600 leading-relaxed">
+                      既存給湯器の撤去・処分費用は標準工事費に含まれており、別途請求はありません。
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="font-bold text-yellow-800 text-sm mb-2">追加費用が発生するケース</div>
+                <p className="text-xs text-yellow-700 leading-relaxed">
+                  配管延長・高所作業・PS扉内設置・据置台交換・号数変更に伴うガス管引き直し・特殊な設置環境などの場合は追加費用が発生することがあります。
+                  いずれも事前にお見積もりでご説明し、ご確認なしに追加請求することはありません。
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 関連エリアページへの内部リンク */}
+        <section className="py-10 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">横浜市・川崎市での{product.model}交換</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed mb-5">
+                株式会社宝宮設備は、横浜市・川崎市・厚木市・海老名市を中心に{product.makerLabel} {product.model}（{product.capacity}号 {product.typeLabel}）の交換を自社施工で承っています。
+                各エリアの給湯器交換の詳細は、以下のエリアページをご覧ください。
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {areaLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="flex items-center justify-between gap-2 border border-gray-200 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors group"
+                  >
+                    <span className="text-sm font-bold text-gray-800 group-hover:text-brand-600">{link.label}</span>
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 写真見積もりCTA */}
+        <section className="py-10 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-xl font-black text-gray-900 mb-4">写真3点を送るだけで概算見積もり</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-sm text-gray-700 leading-relaxed mb-5">
+                {product.model}への交換をご検討中の方は、現地調査の前に写真3点をお送りいただくだけで概算見積もりをご案内できます。
+                LINEでの写真相談なら、最短即日で工事費込みの概算金額をお伝えします。
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                {[
+                  { n: '1', title: '給湯器本体の正面写真', desc: '本体全体が分かるように正面から撮影してください。設置状況の把握に使います。' },
+                  { n: '2', title: '型番ラベルの写真', desc: '本体前面・側面のシールに記載された型番を撮影。号数・ガス種・設置タイプを確認します。' },
+                  { n: '3', title: '設置場所周辺の写真', desc: '配管・ガス管の取り回しや周囲のスペースが分かる写真。追加工事の有無を判断します。' },
+                ].map((step) => (
+                  <div key={step.n} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                    <div className="w-8 h-8 bg-brand-600 text-white rounded-full flex items-center justify-center font-black text-sm mb-3">{step.n}</div>
+                    <h3 className="font-black text-gray-900 text-sm mb-2">{step.title}</h3>
+                    <p className="text-xs text-gray-600 leading-relaxed">{step.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href={siteConfig.lineUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-[#00B900] hover:bg-[#009a00] text-white font-bold text-sm py-3 px-6 rounded-lg transition-colors flex-1"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.07 9.437-6.975C23.176 14.393 24 12.458 24 10.314" /></svg>
+                  LINEで写真を送って相談
+                </a>
+                <Link
+                  href={`/estimate?product=${product.slug}`}
+                  className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-sm py-3 px-6 rounded-lg transition-colors flex-1"
+                >
+                  フォームから無料見積もり
+                </Link>
+              </div>
             </div>
           </div>
         </section>
