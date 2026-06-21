@@ -1204,6 +1204,10 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
                 { href: '/guide/lifespan', label: '給湯器の寿命' },
                 { href: '/guide/error-code', label: 'エラーコード一覧' },
                 { href: '/guide/installation-type', label: '設置タイプの種類' },
+                { href: '/guide/cost', label: '交換費用の相場' },
+                { href: '/guide/photo-estimate', label: '写真見積もりの手順' },
+                { href: '/guide/warranty', label: '保証・アフターサービス' },
+                { href: '/guide/mansion-ps', label: 'マンションPS型の選び方' },
                 { href: '/cases', label: '施工事例一覧' },
                 { href: '/blog', label: '給湯器コラム' },
               ].map((link) => (

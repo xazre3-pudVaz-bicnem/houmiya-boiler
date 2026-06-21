@@ -340,6 +340,32 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
 
+        {/* 中間CTA: 写真見積もり */}
+        <section className="py-8 bg-green-50 border-y border-green-200">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex-1">
+                <div className="font-black text-gray-900 text-base mb-1">給湯器の写真をLINEで送るだけで概算見積もり</div>
+                <p className="text-sm text-gray-600">型番・配管まわり・設置場所の写真3〜5枚をお送りください。横浜市・川崎市・厚木市・海老名市対応。</p>
+              </div>
+              <div className="flex gap-3 flex-shrink-0">
+                <a
+                  href={siteConfig.lineUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-white font-bold px-5 py-3 rounded-lg text-sm"
+                  style={{ backgroundColor: '#00B900' }}
+                >
+                  LINEで写真を送る
+                </a>
+                <Link href="/guide/photo-estimate" className="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 font-bold px-4 py-3 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                  撮り方ガイド
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 使用年数の注意 */}
         <section className="py-8 bg-white">
           <div className="max-w-6xl mx-auto px-4">
@@ -405,6 +431,8 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
                 { href: '/guide/error-code', label: 'エラーコード一覧' },
                 { href: '/guide/capacity', label: '号数の選び方' },
                 { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
+                { href: '/guide/cost', label: '交換費用の相場' },
+                { href: '/guide/photo-estimate', label: '写真見積もりの手順' },
                 { href: '/products', label: '給湯器の商品一覧' },
                 { href: '/cases', label: '施工事例一覧' },
                 { href: '/estimate', label: '無料見積もり' },

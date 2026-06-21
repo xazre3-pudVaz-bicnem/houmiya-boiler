@@ -1315,6 +1315,8 @@ function AreaInstalltypePage({ config }: { config: AreaInstalltypeConfig }) {
                     { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
                     { href: '/guide/lifespan', label: '給湯器の寿命' },
                     { href: '/guide/full-auto-auto', label: 'オートとフルオート' },
+                    { href: '/guide/cost', label: '交換費用の相場' },
+                    { href: '/guide/photo-estimate', label: '写真見積もりの手順' },
                     { href: '/cases', label: '施工事例' },
                   ].map((link) => (
                     <Link
