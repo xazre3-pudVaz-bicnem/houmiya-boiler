@@ -82,6 +82,11 @@ const relatedLinks = [
   { href: '/category/ps-standard', label: 'PS標準設置型（マンション）' },
   { href: '/guide/capacity', label: '号数の選び方' },
   { href: '/guide/full-auto-auto', label: 'フルオートとオートの違い' },
+  { href: '/guide/cost', label: '交換費用の相場' },
+  { href: '/guide/photo-estimate', label: '写真見積もりの手順' },
+  { href: '/guide/warranty', label: '保証・アフターサービス' },
+  { href: '/guide/lifespan', label: '給湯器の寿命' },
+  { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
 ]
 
 const areaLinks = [

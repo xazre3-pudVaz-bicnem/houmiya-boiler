@@ -28,9 +28,53 @@ const voices = [
   { area: '川崎市麻生区', building: '戸建て', rating: 5, title: '見積もりから工事まで対応が速い', body: '問い合わせ当日に写真確認で概算を教えてもらえ、翌日には工事完了。スピードが早く、かつ丁寧で満足しています。', name: 'N様（40代）' },
 ]
 
+const aggregateRatingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: '株式会社宝宮設備',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5',
+    reviewCount: '6',
+    bestRating: '5',
+    worstRating: '1',
+  },
+  review: voices.map((v) => ({
+    '@type': 'Review',
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: String(v.rating),
+      bestRating: '5',
+    },
+    name: v.title,
+    reviewBody: v.body,
+    author: {
+      '@type': 'Person',
+      name: v.name,
+    },
+  })),
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
+    { '@type': 'ListItem', position: 2, name: 'お客様の声', item: 'https://www.houmiya-boiler.com/voice' },
+  ],
+}
+
 export default function VoicePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Header />
       <main className="pt-16">
         <Breadcrumb items={[{ label: 'ホーム', href: '/' }, { label: 'お客様の声' }]} />

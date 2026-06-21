@@ -140,6 +140,7 @@ export const guidesData: GuideItem[] = [
       { href: '/guide/model-number', label: '型番の見方' },
       { href: '/guide/lifespan', label: '給湯器の寿命' },
     ],
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'capacity',
@@ -422,7 +423,10 @@ export const guidesData: GuideItem[] = [
       'paloma-fh-2423saw-1',
       'paloma-fh-2423fawl-1',
     ],
-    relatedAreaLinks: areaLinksAll,
+    relatedAreaLinks: [
+      ...areaLinksAll,
+      { href: '/area/yokohama/type/eco-jaws', label: '横浜市エコジョーズ交換' },
+    ],
     relatedTroubleLinks: [
       { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
       { href: '/trouble/temperature-unstable', label: 'お湯の温度が安定しない' },
@@ -508,6 +512,7 @@ export const guidesData: GuideItem[] = [
       { q: '古い機種の型番で後継機種はわかりますか？', a: '多くの場合、号数・設置タイプ・機能をもとに後継機種を特定できます。廃番から長期間経過している場合も、現行の相当機種をご提案します。' },
     ],
     relatedLinks: commonRelatedLinks.filter((l) => l.href !== '/guide/model-number'),
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'color-variation',
@@ -560,6 +565,7 @@ export const guidesData: GuideItem[] = [
       { href: '/guide/model-number', label: '型番の見方' },
       { href: '/guide/lifespan', label: '給湯器の寿命' },
     ],
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'installation-type',
@@ -638,6 +644,7 @@ export const guidesData: GuideItem[] = [
       { href: '/guide/model-number', label: '型番の見方' },
       { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
     ],
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'error-code',
@@ -721,6 +728,7 @@ export const guidesData: GuideItem[] = [
       { href: '/trouble/error-110', label: 'エラーコード110' },
       { href: '/guide/lifespan', label: '給湯器の寿命' },
     ],
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'lifespan',
@@ -805,6 +813,7 @@ export const guidesData: GuideItem[] = [
       { href: '/guide/error-code', label: 'エラーコード一覧' },
       { href: '/guide/capacity', label: '号数の選び方' },
     ],
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'cost',
@@ -1011,6 +1020,7 @@ export const guidesData: GuideItem[] = [
       { href: '/warranty', label: '保証・アフターサービス' },
       { href: '/guide/cost', label: '給湯器交換費用の相場' },
     ],
+    relatedAreaLinks: areaLinksAll,
   },
   {
     slug: 'photo-estimate',
@@ -1174,7 +1184,10 @@ export const guidesData: GuideItem[] = [
       { q: '横浜市のマンションに対応していますか？', a: 'はい。横浜市・川崎市・厚木市・海老名市のマンション給湯器交換に対応しています。お気軽にご相談ください。' },
       { q: '工事後の保証はありますか？', a: 'はい。メーカー保証と工事保証が適用されます。詳細は見積もり時にご案内します。' },
     ],
-    relatedAreaLinks: areaLinksAll,
+    relatedAreaLinks: [
+      ...areaLinksAll,
+      { href: '/area/yokohama/type/mansion-ps', label: '横浜市マンションPS型交換' },
+    ],
     relatedLinks: [
       { href: '/guide/installation-type', label: '設置タイプの種類' },
       { href: '/guide/cost', label: '給湯器交換費用の相場' },
