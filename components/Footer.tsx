@@ -27,6 +27,7 @@ const makerLinks = [
 ]
 
 const companyLinks = [
+  { href: '/company', label: '会社紹介' },
   { href: '/warranty', label: '保証・アフター' },
   { href: '/voice', label: 'お客様の声' },
   { href: '/blog', label: 'コラム・ブログ' },
