@@ -128,6 +128,14 @@ const organizationJsonLd = {
   areaServed: ['横浜市', '川崎市', '厚木市', '海老名市'],
   priceRange: '$$',
   description: '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売なら株式会社宝宮設備。リンナイ・ノーリツ・パロマ対応。無料見積もり・LINE相談受付中。',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5',
+    reviewCount: '6',
+    bestRating: '5',
+    worstRating: '1',
+  },
+  sameAs: [siteConfig.lineUrl],
 }
 
 const webSiteJsonLd = {
@@ -604,9 +612,12 @@ export default function Home() {
                 <p className="text-sm text-gray-600">施工後のご相談も電話・LINEで承ります。地元密着だからこそできる迅速なアフター対応。</p>
               </div>
             </div>
-            <div className="text-center mt-6">
+            <div className="text-center mt-6 flex flex-wrap justify-center gap-6">
               <Link href="/warranty" className="text-brand-700 font-bold text-sm hover:underline">
                 保証の詳細について →
+              </Link>
+              <Link href="/company" className="text-brand-700 font-bold text-sm hover:underline">
+                会社紹介・概要を見る →
               </Link>
             </div>
           </div>
@@ -620,7 +631,7 @@ export default function Home() {
             <h2 className="text-2xl font-black text-gray-900 mb-2 text-center">給湯器の基礎知識</h2>
             <p className="text-gray-500 text-sm mb-8 text-center">給湯器選びに役立つ知識をご紹介</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {guidesData.slice(0, 8).map((g) => (
+              {guidesData.slice(0, 12).map((g) => (
                 <Link
                   key={g.slug}
                   href={`/guide/${g.slug}`}
@@ -634,6 +645,11 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
+            </div>
+            <div className="text-center mt-4">
+              <Link href="/guide" className="text-brand-700 font-bold text-sm hover:underline">
+                全ガイドを見る（12テーマ） →
+              </Link>
             </div>
           </div>
         </section>
