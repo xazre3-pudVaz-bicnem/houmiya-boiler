@@ -118,10 +118,58 @@ export default async function CaseDetailPage({
     ['施工時期', c.date],
   ]
 
+  const isPS = c.installationType.includes('PS')
+  const isManshon = c.buildingType === 'マンション' || c.buildingType.includes('マンション')
+
+  const faqItems: { q: string; a: string }[] = [
+    {
+      q: `${c.installationType}タイプの給湯器交換はどのくらいの時間がかかりますか？`,
+      a: `標準的な${c.installationType}タイプの給湯器交換は${c.duration}程度が目安です。既存配管の状態や付帯工事の有無によって前後することがあります。事前に写真見積もりで確認し、当日の施工をスムーズに進められるよう準備しています。`,
+    },
+    isPS
+      ? {
+          q: `マンションのパイプスペース（PS）設置型は、どのメーカーの機種でも交換できますか？`,
+          a: `PS設置型は、PS扉の内寸・排気方式（強制給排気・屋外排気など）に適合した機種を選ぶ必要があります。${c.maker}をはじめ主要メーカーに対応していますが、マンションの管理規約によって使用できるメーカーや機種が指定されている場合もあります。事前に管理組合への確認をお願いすることがあります。`,
+        }
+      : {
+          q: `屋外壁掛型の給湯器交換で、配管を新設する必要はありますか？`,
+          a: `既存の配管が良好な状態であれば、そのまま流用できるケースが多いです。今回の事例でも既存配管を確認のうえ再利用しています。ただし、配管の劣化・腐食・口径変更が必要な場合は配管工事が加わるため、見積もり時に状態を確認します。`,
+        },
+    {
+      q: `給湯器の号数（${c.capacity}号）は変更できますか？`,
+      a: `号数の変更は可能ですが、ガス供給量・配管口径・設置スペースの確認が必要です。号数を上げる場合はガス管の容量確認が必要になることがあります。現在の生活人数や使用状況に合わせた号数選びについては、無料見積もり時にご相談ください。`,
+    },
+    {
+      q: `${c.maker}製の給湯器に交換した場合、保証はどうなりますか？`,
+      a: `${c.maker}製品はメーカー標準保証（1〜2年）が付属します。弊社では工事保証も提供しており、施工に起因する不具合については対応いたします。保証の詳細は機種・工事内容により異なりますので、見積もり時にご確認ください。`,
+    },
+    {
+      q: `${isManshon ? 'マンション' : '戸建て'}での給湯器交換で注意することはありますか？`,
+      a: isManshon
+        ? `マンションの場合、管理規約・管理組合への届け出が必要なケースがあります。また、PS（パイプスペース）の扉サイズや排気方式の制約があるため、適合機種の確認が重要です。工事前に必要な確認事項を整理し、スムーズに進められるようご案内します。`
+        : `戸建ての場合は設置スペースの確保・ドレン排水の処理方法（エコジョーズの場合）・ガス供給量の確認が主なチェックポイントです。設置環境の写真をお送りいただければ、事前に確認事項を整理した状態でご訪問できます。`,
+    },
+    {
+      q: `給湯器交換の見積もりはどのように依頼すればよいですか？`,
+      a: `LINEでの写真見積もり、またはWebフォームからお申し込みいただけます。給湯器本体の型番シールや設置箇所の写真をお送りいただくことで、現地確認不要で正確なお見積もりを提示できることが多いです。横浜市・川崎市・厚木市・海老名市のエリアは自社スタッフが対応します。`,
+    },
+  ]
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 
@@ -360,6 +408,32 @@ export default async function CaseDetailPage({
                 >
                   {g.label} →
                 </Link>
+              ))}
+            </div>
+          </section>
+
+          {/* よくある質問 */}
+          <section className="mb-10" id="faq">
+            <h2 className="text-xl font-black text-gray-900 mb-6">よくある質問（FAQ）</h2>
+            <div className="space-y-3">
+              {faqItems.map((item, i) => (
+                <details key={i} className="group border border-gray-200 rounded-xl overflow-hidden">
+                  <summary className="flex items-center justify-between gap-3 px-5 py-4 cursor-pointer bg-white hover:bg-gray-50 transition-colors list-none">
+                    <span className="flex items-start gap-3">
+                      <span className="text-brand-700 font-black text-sm flex-shrink-0 mt-0.5">Q</span>
+                      <span className="text-sm font-bold text-gray-800">{item.q}</span>
+                    </span>
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div className="px-5 py-4 bg-gray-50 border-t border-gray-100">
+                    <div className="flex items-start gap-3">
+                      <span className="text-green-600 font-black text-sm flex-shrink-0 mt-0.5">A</span>
+                      <p className="text-sm text-gray-700 leading-relaxed">{item.a}</p>
+                    </div>
+                  </div>
+                </details>
               ))}
             </div>
           </section>
