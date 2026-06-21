@@ -12,7 +12,14 @@ import ContactForm from '@/components/ContactForm'
 export const metadata: Metadata = {
   title: 'エコジョーズ交換・販売｜横浜市・川崎市・厚木市｜株式会社宝宮設備',
   description: 'エコジョーズ（省エネ給湯器）への交換・販売なら株式会社宝宮設備へ。横浜市・川崎市・厚木市・海老名市対応。設置環境の確認から施工まで丁寧に対応。',
-  alternates: { canonical: 'https://houmiya-boiler.com/ecojoys' },
+  alternates: { canonical: 'https://www.houmiya-boiler.com/ecojoys' },
+  openGraph: {
+    title: 'エコジョーズ交換・販売｜宝宮設備',
+    description: 'エコジョーズへの交換・販売なら宝宮設備。横浜市・川崎市・厚木市・海老名市対応。設置環境確認から施工まで丁寧対応。',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 export default function EcojoysPage() {

@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description:
     '給湯器のトラブル症状別ページ一覧。お湯が出ない・エラーコード111・水漏れ・追い焚きできない・ガス臭いなど症状から原因と対処法を確認できます。横浜市・川崎市・厚木市・海老名市対応。',
   alternates: { canonical: 'https://www.houmiya-boiler.com/trouble' },
+  openGraph: {
+    title: '給湯器のトラブル・症状別ページ一覧｜宝宮設備',
+    description: '給湯器のトラブル症状別ページ一覧。お湯が出ない・エラーコード・水漏れなど症状から原因と対処法を確認できます。',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 const breadcrumbJsonLd = {

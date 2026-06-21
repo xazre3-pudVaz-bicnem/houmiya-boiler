@@ -9,7 +9,14 @@ import ContactForm from '@/components/ContactForm'
 export const metadata: Metadata = {
   title: 'お客様の声・口コミ｜給湯器交換｜株式会社宝宮設備',
   description: '横浜市・川崎市・厚木市・海老名市で給湯器交換を依頼されたお客様からいただいたご感想・口コミをご紹介します。',
-  alternates: { canonical: 'https://houmiya-boiler.com/voice' },
+  alternates: { canonical: 'https://www.houmiya-boiler.com/voice' },
+  openGraph: {
+    title: 'お客様の声・口コミ｜宝宮設備',
+    description: '横浜市・川崎市・厚木市・海老名市で給湯器交換を依頼されたお客様からいただいたご感想・口コミをご紹介します。',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 const voices = [

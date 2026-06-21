@@ -12,6 +12,13 @@ export const metadata: Metadata = {
   description:
     '株式会社宝宮設備の給湯器交換施工事例一覧。横浜市・川崎市・厚木市・海老名市での施工実績。エリア・メーカー・設置タイプで絞り込み可能。リンナイ・ノーリツ・パロマ対応。',
   alternates: { canonical: 'https://www.houmiya-boiler.com/cases' },
+  openGraph: {
+    title: '給湯器交換の施工事例一覧｜宝宮設備',
+    description: '横浜市・川崎市・厚木市・海老名市での給湯器交換施工事例。エリア・メーカー・設置タイプで絞り込み可能。',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 const breadcrumbJsonLd = {

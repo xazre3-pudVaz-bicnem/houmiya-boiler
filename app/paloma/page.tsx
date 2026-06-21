@@ -14,6 +14,13 @@ export const metadata: Metadata = {
   description:
     'パロマ給湯器（FH-Eシリーズ）の交換・販売なら宝宮設備。横浜市・川崎市・厚木市・海老名市対応。工事費込み価格。無料見積もり受付中。',
   alternates: { canonical: 'https://www.houmiya-boiler.com/paloma' },
+  openGraph: {
+    title: 'パロマ給湯器の交換・販売｜宝宮設備',
+    description: 'パロマ給湯器（FH-Eシリーズ）の交換・販売。横浜市・川崎市・厚木市・海老名市対応。工事費込み価格。',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 const products = getProductsByMaker('paloma')
