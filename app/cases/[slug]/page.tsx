@@ -52,6 +52,9 @@ const guideLinks = [
   { href: '/guide/capacity', label: '号数の選び方' },
   { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
   { href: '/guide/lifespan', label: '給湯器の寿命の目安' },
+  { href: '/guide/cost', label: '交換費用の相場' },
+  { href: '/guide/photo-estimate', label: '写真見積もりの手順' },
+  { href: '/guide/warranty', label: '保証・アフターサービス' },
 ]
 
 const makerCategoryMap: Record<string, string> = {
@@ -71,6 +74,9 @@ export default async function CaseDetailPage({
 
   const otherCases = casesData.filter((x) => x.slug !== slug).slice(0, 4)
   const areaLink = c.areaSlug ? areaLinks[c.areaSlug] : null
+  const wardLink = c.areaSlug === 'yokohama' && c.wardSlug
+    ? { href: `/area/yokohama/${c.wardSlug}`, name: `${c.area}の給湯器交換` }
+    : null
 
   // 同じメーカー・同じ号数の関連商品
   const makerKey = makerLabelToKey[c.maker]
@@ -325,15 +331,27 @@ export default async function CaseDetailPage({
           )}
 
           {/* 関連エリアページ */}
-          {areaLink && (
+          {(areaLink || wardLink) && (
             <section className="mb-10">
               <h2 className="text-lg font-black text-gray-900 mb-3">施工エリア</h2>
-              <Link
-                href={areaLink.href}
-                className="inline-flex items-center gap-2 border border-brand-200 text-brand-700 bg-brand-50 hover:bg-brand-100 font-bold text-sm px-4 py-2.5 rounded-lg transition-colors"
-              >
-                {areaLink.name}の詳細情報・施工事例 →
-              </Link>
+              <div className="flex flex-wrap gap-3">
+                {wardLink && (
+                  <Link
+                    href={wardLink.href}
+                    className="inline-flex items-center gap-2 border border-brand-200 text-brand-700 bg-brand-50 hover:bg-brand-100 font-bold text-sm px-4 py-2.5 rounded-lg transition-colors"
+                  >
+                    {wardLink.name}の詳細情報 →
+                  </Link>
+                )}
+                {areaLink && (
+                  <Link
+                    href={areaLink.href}
+                    className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 font-bold text-sm px-4 py-2.5 rounded-lg transition-colors"
+                  >
+                    {areaLink.name}の施工事例一覧 →
+                  </Link>
+                )}
+              </div>
             </section>
           )}
 
