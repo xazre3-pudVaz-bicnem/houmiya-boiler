@@ -54,6 +54,10 @@ const guideSlugList = [
   'lifespan',
   'installation-type',
   'color-variation',
+  'cost',
+  'warranty',
+  'photo-estimate',
+  'mansion-ps',
 ]
 
 // 横浜市 駅ページ（46件）
