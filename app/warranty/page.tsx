@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: { card: 'summary_large_image' },
-  alternates: { canonical: 'https://houmiya-boiler.com/warranty' },
+  alternates: { canonical: 'https://www.houmiya-boiler.com/warranty' },
 }
 
 const faqs = [

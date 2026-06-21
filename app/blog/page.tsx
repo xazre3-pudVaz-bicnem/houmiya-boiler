@@ -23,6 +23,13 @@ export const metadata: Metadata = {
   description:
     '給湯器の交換時期、エラーコード、メーカー比較、費用相場など、給湯器に関するお役立ち情報を発信しています。',
   alternates: { canonical: 'https://www.houmiya-boiler.com/blog' },
+  openGraph: {
+    title: '給湯器コラム｜宝宮設備',
+    description: '給湯器の交換時期、エラーコード、メーカー比較、費用相場など、給湯器に関するお役立ち情報を発信。',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 const FALLBACK_IMAGE = '/hero-banner.png'
