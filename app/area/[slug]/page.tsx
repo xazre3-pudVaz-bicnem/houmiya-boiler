@@ -367,10 +367,10 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
                 <table className="w-full text-sm border-collapse">
                   <thead className="bg-brand-700 text-white">
                     <tr>
-                      <th className="p-3 text-left border border-brand-600 font-bold">項目</th>
-                      <th className="p-3 text-center border border-brand-600 font-bold">16号</th>
-                      <th className="p-3 text-center border border-brand-600 font-bold">20号</th>
-                      <th className="p-3 text-center border border-brand-600 font-bold">24号</th>
+                      <th scope="col" className="p-3 text-left border border-brand-600 font-bold">項目</th>
+                      <th scope="col" className="p-3 text-center border border-brand-600 font-bold">16号</th>
+                      <th scope="col" className="p-3 text-center border border-brand-600 font-bold">20号</th>
+                      <th scope="col" className="p-3 text-center border border-brand-600 font-bold">24号</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -433,9 +433,9 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-brand-900 text-white">
-                    <th className="px-4 py-3 text-left font-bold">設置タイプ</th>
-                    <th className="px-4 py-3 text-left font-bold">特徴</th>
-                    <th className="px-4 py-3 text-left font-bold">多い住宅</th>
+                    <th scope="col" className="px-4 py-3 text-left font-bold">設置タイプ</th>
+                    <th scope="col" className="px-4 py-3 text-left font-bold">特徴</th>
+                    <th scope="col" className="px-4 py-3 text-left font-bold">多い住宅</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -509,9 +509,9 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-brand-900 text-white">
-                    <th className="px-4 py-3 text-left font-bold">号数</th>
-                    <th className="px-4 py-3 text-left font-bold">家族構成の目安</th>
-                    <th className="px-4 py-3 text-left font-bold">向いている使い方</th>
+                    <th scope="col" className="px-4 py-3 text-left font-bold">号数</th>
+                    <th scope="col" className="px-4 py-3 text-left font-bold">家族構成の目安</th>
+                    <th scope="col" className="px-4 py-3 text-left font-bold">向いている使い方</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -600,8 +600,8 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
                 <table className="w-full text-sm border-collapse">
                   <thead className="bg-gray-700 text-white">
                     <tr>
-                      <th className="p-3 text-left border border-gray-600 font-bold w-1/2">修理で対応できる可能性があるケース</th>
-                      <th className="p-3 text-left border border-gray-600 font-bold w-1/2">交換を検討すべきケース</th>
+                      <th scope="col" className="p-3 text-left border border-gray-600 font-bold w-1/2">修理で対応できる可能性があるケース</th>
+                      <th scope="col" className="p-3 text-left border border-gray-600 font-bold w-1/2">交換を検討すべきケース</th>
                     </tr>
                   </thead>
                   <tbody>

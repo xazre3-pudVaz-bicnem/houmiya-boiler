@@ -358,9 +358,9 @@ function WardContent({
               <table className="w-full text-sm border-collapse">
                 <thead className="bg-brand-700 text-white">
                   <tr>
-                    <th className="p-3 text-left border border-brand-600">設置タイプ</th>
-                    <th className="p-3 text-left border border-brand-600">多い住宅</th>
-                    <th className="p-3 text-left border border-brand-600">交換時の注意点</th>
+                    <th scope="col" className="p-3 text-left border border-brand-600">設置タイプ</th>
+                    <th scope="col" className="p-3 text-left border border-brand-600">多い住宅</th>
+                    <th scope="col" className="p-3 text-left border border-brand-600">交換時の注意点</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -392,10 +392,10 @@ function WardContent({
               <table className="w-full text-sm border-collapse">
                 <thead className="bg-gray-700 text-white">
                   <tr>
-                    <th className="p-3 text-left border border-gray-600">項目</th>
-                    <th className="p-3 text-center border border-gray-600">16号</th>
-                    <th className="p-3 text-center border border-gray-600">20号</th>
-                    <th className="p-3 text-center border border-gray-600">24号</th>
+                    <th scope="col" className="p-3 text-left border border-gray-600">項目</th>
+                    <th scope="col" className="p-3 text-center border border-gray-600">16号</th>
+                    <th scope="col" className="p-3 text-center border border-gray-600">20号</th>
+                    <th scope="col" className="p-3 text-center border border-gray-600">24号</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -483,8 +483,8 @@ function WardContent({
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr>
-                    <th className="p-3 bg-blue-50 text-blue-800 border border-blue-200 text-left">修理で対応できるケース</th>
-                    <th className="p-3 bg-red-50 text-red-800 border border-red-200 text-left">交換を検討したほうがよいケース</th>
+                    <th scope="col" className="p-3 bg-blue-50 text-blue-800 border border-blue-200 text-left">修理で対応できるケース</th>
+                    <th scope="col" className="p-3 bg-red-50 text-red-800 border border-red-200 text-left">交換を検討したほうがよいケース</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -600,7 +600,7 @@ function WardContent({
                         <thead>
                           <tr className="bg-brand-900 text-white">
                             {section.table.headers.map((h, j) => (
-                              <th key={j} className="text-left px-4 py-2.5 font-bold text-xs">{h}</th>
+                              <th key={j} scope="col" className="text-left px-4 py-2.5 font-bold text-xs">{h}</th>
                             ))}
                           </tr>
                         </thead>

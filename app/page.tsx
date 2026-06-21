@@ -101,9 +101,63 @@ const LineIcon = () => (
   </svg>
 )
 
+const BASE_URL = 'https://www.houmiya-boiler.com'
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': ['Organization', 'LocalBusiness'],
+  name: '株式会社宝宮設備',
+  alternateName: '宝宮設備',
+  url: BASE_URL,
+  logo: `${BASE_URL}/logo.png`,
+  telephone: siteConfig.phone,
+  email: siteConfig.contactEmail,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '温水西1-4-39',
+    addressLocality: '厚木市',
+    addressRegion: '神奈川県',
+    addressCountry: 'JP',
+  },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+    opens: '09:00',
+    closes: '18:00',
+  },
+  areaServed: ['横浜市', '川崎市', '厚木市', '海老名市'],
+  priceRange: '$$',
+  description: '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売なら株式会社宝宮設備。リンナイ・ノーリツ・パロマ対応。無料見積もり・LINE相談受付中。',
+}
+
+const webSiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '株式会社宝宮設備 給湯器交換サイト',
+  url: BASE_URL,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: `${BASE_URL}/search?q={search_term_string}` },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+const topFaqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+}
+
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(topFaqJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 

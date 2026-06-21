@@ -172,7 +172,7 @@ export default async function CaseDetailPage({
                 <tbody>
                   {rows.map(([label, value], i) => (
                     <tr key={label} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                      <th className="text-left text-gray-500 font-bold px-4 py-3 w-36 align-top">{label}</th>
+                      <th scope="row" className="text-left text-gray-500 font-bold px-4 py-3 w-36 align-top">{label}</th>
                       <td className="text-gray-800 px-4 py-3">{value}</td>
                     </tr>
                   ))}

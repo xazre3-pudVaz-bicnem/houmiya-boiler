@@ -12,7 +12,7 @@ export const siteConfig = {
   representative: '小宮龍亮',
   hours: '9:00〜18:00（年中無休）',
   areas: ['横浜市', '川崎市', '厚木市', '海老名市'],
-  baseUrl: 'https://houmiya-boiler.com',
+  baseUrl: 'https://www.houmiya-boiler.com',
 
   // 保証設定 — 正式確認が取れたらtrueに変更
   showTenYearWarranty: false,

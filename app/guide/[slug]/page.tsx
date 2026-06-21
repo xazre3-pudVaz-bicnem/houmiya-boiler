@@ -61,9 +61,17 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
     '@type': 'Article',
     headline: shortTitle,
     description: guide.description,
-    author: { '@type': 'Organization', name: '株式会社宝宮設備' },
-    publisher: { '@type': 'Organization', name: '株式会社宝宮設備' },
-    mainEntityOfPage: `${BASE_URL}/guide/${guide.slug}`,
+    author: { '@type': 'Organization', name: '株式会社宝宮設備', url: BASE_URL },
+    publisher: {
+      '@type': 'Organization',
+      name: '株式会社宝宮設備',
+      url: BASE_URL,
+      logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.png` },
+    },
+    datePublished: '2026-01-01',
+    dateModified: new Date().toISOString().split('T')[0],
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${BASE_URL}/guide/${guide.slug}` },
+    url: `${BASE_URL}/guide/${guide.slug}`,
   }
 
   // 目次用にH2見出しへアンカーIDを付与
