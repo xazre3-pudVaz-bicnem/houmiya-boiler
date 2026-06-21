@@ -8,16 +8,26 @@ import type { CaseItem } from '@/data/cases'
 const cities = ['すべて', '横浜市', '川崎市', '厚木市', '海老名市']
 const makers = ['すべて', 'リンナイ', 'ノーリツ', 'パロマ']
 const installationTypes = ['すべて', '壁掛屋外型', 'PS標準設置型', 'PS扉内設置型']
+const capacities = ['すべて', '16号', '20号', '24号']
+const buildingTypes = ['すべて', '戸建て', 'マンション', 'アパート・賃貸']
 
 export default function CasesGrid({ cases }: { cases: CaseItem[] }) {
   const [city, setCity] = useState('すべて')
   const [maker, setMaker] = useState('すべて')
   const [installType, setInstallType] = useState('すべて')
+  const [capacity, setCapacity] = useState('すべて')
+  const [buildingType, setBuildingType] = useState('すべて')
 
   const filtered = cases.filter((c) => {
     if (city !== 'すべて' && c.city !== city) return false
     if (maker !== 'すべて' && c.maker !== maker) return false
     if (installType !== 'すべて' && c.installationType !== installType) return false
+    if (capacity !== 'すべて' && `${c.capacity}号` !== capacity) return false
+    if (buildingType !== 'すべて') {
+      if (buildingType === 'マンション' && !c.buildingType.includes('マンション') && !c.buildingType.includes('分譲')) return false
+      if (buildingType === 'アパート・賃貸' && !c.buildingType.includes('アパート') && !c.buildingType.includes('賃貸')) return false
+      if (buildingType === '戸建て' && !c.buildingType.includes('戸建て') && !c.buildingType.includes('一戸建')) return false
+    }
     return true
   })
 
@@ -69,6 +79,30 @@ export default function CasesGrid({ cases }: { cases: CaseItem[] }) {
               <FilterButton key={t} label={t} active={installType === t} onClick={() => setInstallType(t)} />
             ))}
           </div>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500 font-bold mb-2">号数</p>
+          <div className="flex flex-wrap gap-2">
+            {capacities.map((c) => (
+              <FilterButton key={c} label={c} active={capacity === c} onClick={() => setCapacity(c)} />
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500 font-bold mb-2">建物タイプ</p>
+          <div className="flex flex-wrap gap-2">
+            {buildingTypes.map((t) => (
+              <FilterButton key={t} label={t} active={buildingType === t} onClick={() => setBuildingType(t)} />
+            ))}
+          </div>
+        </div>
+        <div className="flex justify-end pt-1">
+          <button
+            onClick={() => { setCity('すべて'); setMaker('すべて'); setInstallType('すべて'); setCapacity('すべて'); setBuildingType('すべて') }}
+            className="text-xs text-gray-400 hover:text-brand-700 hover:underline"
+          >
+            フィルターをリセット
+          </button>
         </div>
       </div>
 
@@ -122,7 +156,7 @@ export default function CasesGrid({ cases }: { cases: CaseItem[] }) {
         <div className="text-center py-12 text-gray-500">
           <p className="text-sm">該当する施工事例が見つかりませんでした。</p>
           <button
-            onClick={() => { setCity('すべて'); setMaker('すべて'); setInstallType('すべて') }}
+            onClick={() => { setCity('すべて'); setMaker('すべて'); setInstallType('すべて'); setCapacity('すべて'); setBuildingType('すべて') }}
             className="mt-3 text-xs font-bold text-brand-700 hover:underline"
           >
             フィルターをリセット
