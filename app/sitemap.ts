@@ -9,11 +9,8 @@ import { areaConfigs } from '@/data/area-configs'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
-// 地域×症状ページ
+// 地域×症状ページ（yokohamaは /trouble/ サブディレクトリへ301リダイレクト済みのため除外）
 const areaTroublePages = [
-  { citySlug: 'yokohama', troubleSlug: 'no-hot-water' },
-  { citySlug: 'yokohama', troubleSlug: 'error-111' },
-  { citySlug: 'yokohama', troubleSlug: 'water-leak' },
   { citySlug: 'kawasaki', troubleSlug: 'no-hot-water' },
   { citySlug: 'kawasaki', troubleSlug: 'error-111' },
   { citySlug: 'kawasaki', troubleSlug: 'water-leak' },
@@ -25,11 +22,8 @@ const areaTroublePages = [
   { citySlug: 'ebina', troubleSlug: 'water-leak' },
 ]
 
-// 地域×設置タイプページ
+// 地域×設置タイプページ（yokohamaは /type/ サブディレクトリへ301リダイレクト済みのため除外）
 const areaInstalltypePages = [
-  { citySlug: 'yokohama', typeSlug: 'mansion-ps' },
-  { citySlug: 'yokohama', typeSlug: 'wall-mounted' },
-  { citySlug: 'yokohama', typeSlug: 'eco-jaws' },
   { citySlug: 'kawasaki', typeSlug: 'mansion-ps' },
   { citySlug: 'kawasaki', typeSlug: 'wall-mounted' },
   { citySlug: 'kawasaki', typeSlug: 'eco-jaws' },

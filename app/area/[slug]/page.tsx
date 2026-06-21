@@ -1097,11 +1097,15 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <div>
                 <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">症状・トラブル別</p>
                 <ul className="space-y-2">
-                  {[
+                  {(slug === 'yokohama' ? [
+                    { href: `/area/yokohama/trouble/no-hot-water`, label: `横浜市で給湯器のお湯が出ない場合` },
+                    { href: `/area/yokohama/trouble/error-111`, label: `横浜市で給湯器エラー111が出た場合` },
+                    { href: `/area/yokohama/trouble/water-leak`, label: `横浜市で給湯器の水漏れがある場合` },
+                  ] : [
                     { href: `/area/${slug}/no-hot-water`, label: `${config.name}で給湯器のお湯が出ない場合` },
                     { href: `/area/${slug}/error-111`, label: `${config.name}で給湯器エラー111が出た場合` },
                     { href: `/area/${slug}/water-leak`, label: `${config.name}で給湯器の水漏れがある場合` },
-                  ].map(l => (
+                  ]).map(l => (
                     <li key={l.href}>
                       <Link href={l.href} className="flex items-center gap-2 text-sm text-brand-700 hover:text-brand-900 font-semibold hover:underline">
                         <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -1117,11 +1121,18 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
                 <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">設置タイプ・住宅タイプ別</p>
                 <ul className="space-y-2">
                   {((): { href: string; label: string }[] => {
-                    if (slug === 'yokohama' || slug === 'kawasaki') {
+                    if (slug === 'yokohama') {
                       return [
-                        { href: `/area/${slug}/mansion-ps`, label: `${config.name}のマンションPS設置型交換` },
-                        { href: `/area/${slug}/wall-mounted`, label: `${config.name}の屋外壁掛型交換` },
-                        { href: `/area/${slug}/eco-jaws`, label: `${config.name}でエコジョーズへの交換` },
+                        { href: `/area/yokohama/type/mansion-ps`, label: `横浜市のマンションPS設置型交換` },
+                        { href: `/area/yokohama/type/wall-mounted`, label: `横浜市の屋外壁掛型交換` },
+                        { href: `/area/yokohama/type/eco-jaws`, label: `横浜市でエコジョーズへの交換` },
+                      ]
+                    }
+                    if (slug === 'kawasaki') {
+                      return [
+                        { href: `/area/kawasaki/mansion-ps`, label: `川崎市のマンションPS設置型交換` },
+                        { href: `/area/kawasaki/wall-mounted`, label: `川崎市の屋外壁掛型交換` },
+                        { href: `/area/kawasaki/eco-jaws`, label: `川崎市でエコジョーズへの交換` },
                       ]
                     }
                     return [

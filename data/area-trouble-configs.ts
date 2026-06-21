@@ -242,6 +242,18 @@ for (const c of cities) {
   }
 }
 
+// yokohamaの旧URLページは新URL（/trouble/）の方が正規なのでcanonicalを修正
+const yokohamaTroubleNewCanonicals: Record<string, string> = {
+  'no-hot-water': 'https://www.houmiya-boiler.com/area/yokohama/trouble/no-hot-water',
+  'error-111': 'https://www.houmiya-boiler.com/area/yokohama/trouble/error-111',
+  'water-leak': 'https://www.houmiya-boiler.com/area/yokohama/trouble/water-leak',
+}
+for (const [slug, canonical] of Object.entries(yokohamaTroubleNewCanonicals)) {
+  if (areaTroubleConfigs['yokohama']?.[slug]) {
+    areaTroubleConfigs['yokohama'][slug].canonical = canonical
+  }
+}
+
 export const allAreaTroubles: { citySlug: string; troubleSlug: string }[] = Object.entries(
   areaTroubleConfigs,
 ).flatMap(([citySlug, troubles]) =>

@@ -10,6 +10,7 @@ import { getProductsByMaker, productsData, formatPrice } from '@/data/products'
 import { casesData } from '@/data/cases'
 import { siteConfig } from '@/data/site'
 import { wardConfigs, allWards, type WardConfig } from '@/data/ward-configs'
+import { yokohamaStations } from '@/data/yokohama-stations'
 import {
   areaTroubleConfigs,
   allAreaTroubles,
@@ -643,10 +644,10 @@ function WardContent({
                 <div>
                   <p className="text-xs font-bold text-gray-500 mb-2">{config.wardName}の駅周辺</p>
                   <ul className="space-y-1.5">
-                    {config.stationPageSlugs.slice(0, 4).map((ss) => (
+                    {config.stationPageSlugs.filter(ss => yokohamaStations[ss]).slice(0, 4).map((ss) => (
                       <li key={ss}>
                         <Link href={`/area/yokohama/station/${ss}`} className="text-xs text-brand-700 hover:underline font-semibold">
-                          {ss}駅周辺の給湯器交換 →
+                          {yokohamaStations[ss].name}駅周辺の給湯器交換 →
                         </Link>
                       </li>
                     ))}

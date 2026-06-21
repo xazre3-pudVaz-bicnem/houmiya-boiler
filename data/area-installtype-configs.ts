@@ -342,3 +342,15 @@ export const allAreaInstalltypes: { citySlug: string; typeSlug: string }[] = Obj
 ).flatMap(([citySlug, types]) =>
   Object.keys(types).map((typeSlug) => ({ citySlug, typeSlug })),
 )
+
+// yokohamaの旧URLページは新URL（/type/）の方が正規なのでcanonicalを修正
+const yokohamaTypeNewCanonicals: Record<string, string> = {
+  'mansion-ps': 'https://www.houmiya-boiler.com/area/yokohama/type/mansion-ps',
+  'wall-mounted': 'https://www.houmiya-boiler.com/area/yokohama/type/wall-mounted',
+  'eco-jaws': 'https://www.houmiya-boiler.com/area/yokohama/type/eco-jaws',
+}
+for (const [slug, canonical] of Object.entries(yokohamaTypeNewCanonicals)) {
+  if (areaInstalltypeConfigs['yokohama']?.[slug]) {
+    areaInstalltypeConfigs['yokohama'][slug].canonical = canonical
+  }
+}
