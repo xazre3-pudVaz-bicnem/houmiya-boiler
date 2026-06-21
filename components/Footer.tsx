@@ -1,132 +1,46 @@
 import Link from 'next/link'
 import { siteConfig } from '@/data/site'
 
-const makerColumns = [
-  {
-    title: 'リンナイ',
-    links: [
-      { href: '/rinnai', label: 'リンナイ給湯器 一覧' },
-      { href: '/category/gas-furo', label: 'ガスふろ給湯器' },
-      { href: '/category/ps-standard', label: 'PS標準設置型' },
-      { href: '/category/ps-door', label: 'PS扉内設置型' },
-      { href: '/category/eco-jaws', label: 'エコジョーズ' },
-    ],
-  },
-  {
-    title: 'ノーリツ',
-    links: [
-      { href: '/noritz', label: 'ノーリツ給湯器 一覧' },
-      { href: '/category/eco-jaws', label: 'エコジョーズ' },
-      { href: '/category/warm-water-heating', label: '暖房付き給湯器' },
-      { href: '/category/ps-standard', label: 'PS標準設置型' },
-      { href: '/category/gas-kyuto', label: '給湯専用' },
-    ],
-  },
-  {
-    title: 'パロマ',
-    links: [
-      { href: '/paloma', label: 'パロマ給湯器 一覧' },
-      { href: '/category/gas-furo', label: 'ガスふろ給湯器' },
-      { href: '/category/gas-kyuto', label: '給湯専用' },
-      { href: '/category/ps-standard', label: 'PS標準設置型' },
-    ],
-  },
-  {
-    title: 'ご利用案内',
-    links: [
-      { href: '/estimate', label: '無料見積もり依頼' },
-      { href: '/warranty', label: '保証について' },
-      { href: '/cases', label: '施工事例一覧' },
-      { href: '/#order-flow', label: 'ご注文の流れ' },
-      { href: '/#construction-fee', label: '標準工事費について' },
-    ],
-  },
-  {
-    title: '対応エリア',
-    links: [
-      { href: '/area', label: '対応エリア一覧' },
-      { href: '/area/yokohama', label: '横浜市の給湯器交換' },
-      { href: '/area/kawasaki', label: '川崎市の給湯器交換' },
-      { href: '/area/atsugi', label: '厚木市の給湯器交換' },
-      { href: '/area/ebina', label: '海老名市の給湯器交換' },
-    ],
-  },
-  {
-    title: 'トラブル症状',
-    links: [
-      { href: '/trouble', label: '症状別ページ一覧' },
-      { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
-      { href: '/trouble/error-111', label: 'エラーコード111' },
-      { href: '/trouble/water-leak', label: '水漏れがある' },
-      { href: '/trouble/gas-smell', label: 'ガス臭いがする' },
-    ],
-  },
-  {
-    title: '給湯器の基礎知識',
-    links: [
-      { href: '/guide/full-auto-auto', label: 'フルオートとオートの違い' },
-      { href: '/guide/capacity', label: '号数の選び方' },
-      { href: '/guide/eco-jaws', label: 'エコジョーズとは' },
-      { href: '/guide/error-code', label: 'エラーコード一覧' },
-      { href: '/guide/lifespan', label: '給湯器の寿命' },
-      { href: '/blog', label: '給湯器コラム一覧' },
-    ],
-  },
-  {
-    title: '会社情報',
-    links: [
-      { href: '/estimate', label: 'お問い合わせ' },
-      { href: '/#faq', label: 'よくある質問' },
-      { href: '/warranty', label: '保証・アフター' },
-      { href: '/voice', label: 'お客様の声' },
-    ],
-  },
+const areaLinks = [
+  { href: '/area/yokohama', label: '横浜市の給湯器交換' },
+  { href: '/area/yokohama/kohoku', label: '横浜市港北区' },
+  { href: '/area/yokohama/aoba', label: '横浜市青葉区' },
+  { href: '/area/yokohama/tsuzuki', label: '横浜市都筑区' },
+  { href: '/area/yokohama/totsuka', label: '横浜市戸塚区' },
+  { href: '/area/kawasaki', label: '川崎市の給湯器交換' },
+  { href: '/area/atsugi', label: '厚木市の給湯器交換' },
+  { href: '/area/ebina', label: '海老名市の給湯器交換' },
 ]
 
-const yokohamaWardLinks = [
-  { href: '/area/yokohama/kohoku', label: '港北区' },
-  { href: '/area/yokohama/totsuka', label: '戸塚区' },
-  { href: '/area/yokohama/aoba', label: '青葉区' },
-  { href: '/area/yokohama/tsuzuki', label: '都筑区' },
-  { href: '/area/yokohama/kanagawa', label: '神奈川区' },
-  { href: '/area/yokohama/tsurumi', label: '鶴見区' },
-  { href: '/area/yokohama/naka', label: '中区' },
-  { href: '/area/yokohama/minami', label: '南区' },
-  { href: '/area/yokohama/asahi', label: '旭区' },
-  { href: '/area/yokohama/kanazawa', label: '金沢区' },
+const serviceLinks = [
+  { href: '/products', label: '商品・価格一覧' },
+  { href: '/estimate', label: '無料見積もり' },
+  { href: '/cases', label: '施工事例' },
+  { href: '/trouble', label: 'トラブル症状' },
+  { href: '/guide', label: '給湯器の基礎知識' },
 ]
 
-const kawasakiWardLinks = [
-  { href: '/area/kawasaki/nakahara', label: '中原区' },
-  { href: '/area/kawasaki/takatsu', label: '高津区' },
-  { href: '/area/kawasaki/miyamae', label: '宮前区' },
-  { href: '/area/kawasaki/tama', label: '多摩区' },
-  { href: '/area/kawasaki/asao', label: '麻生区' },
-  { href: '/area/kawasaki/saiwai', label: '幸区' },
-  { href: '/area/kawasaki/kawasaki-ku', label: '川崎区' },
+const makerLinks = [
+  { href: '/rinnai', label: 'リンナイ給湯器' },
+  { href: '/noritz', label: 'ノーリツ給湯器' },
+  { href: '/paloma', label: 'パロマ給湯器' },
 ]
 
-const troubleLinks = [
-  { href: '/trouble/no-hot-water', label: 'お湯が出ない' },
-  { href: '/trouble/error-111', label: 'エラーコード111' },
-  { href: '/trouble/error-110', label: 'エラーコード110' },
-  { href: '/trouble/water-leak', label: '水漏れ' },
-  { href: '/trouble/no-reheating', label: '追い焚きできない' },
-  { href: '/trouble/temperature-unstable', label: '温度が安定しない' },
-  { href: '/trouble/remote-controller', label: 'リモコンがつかない' },
-  { href: '/trouble/strange-noise', label: '異音がする' },
-  { href: '/trouble/gas-smell', label: 'ガス臭い' },
+const companyLinks = [
+  { href: '/warranty', label: '保証・アフター' },
+  { href: '/voice', label: 'お客様の声' },
+  { href: '/blog', label: 'コラム・ブログ' },
 ]
-
-const InstagramIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-  </svg>
-)
 
 const LineIcon = () => (
   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
     <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.07 9.437-6.975C23.176 14.393 24 12.458 24 10.314" />
+  </svg>
+)
+
+const InstagramIcon = () => (
+  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
   </svg>
 )
 
@@ -171,81 +85,89 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* 区別・症状別リンク帯 */}
-      <div className="border-b border-gray-800 py-6">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2.5 pb-1.5 border-b border-gray-800">
-                横浜市の区別ページ
-              </p>
-              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-                {yokohamaWardLinks.map((l) => (
-                  <Link key={l.href} href={l.href} className="text-gray-500 hover:text-gray-200 text-xs transition-colors">
-                    {l.label}
-                  </Link>
-                ))}
-                <Link href="/area/yokohama" className="text-brand-400 hover:text-brand-300 text-xs transition-colors font-bold">
-                  横浜市全体 →
-                </Link>
-              </div>
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2.5 pb-1.5 border-b border-gray-800">
-                川崎市の区別ページ
-              </p>
-              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-                {kawasakiWardLinks.map((l) => (
-                  <Link key={l.href} href={l.href} className="text-gray-500 hover:text-gray-200 text-xs transition-colors">
-                    {l.label}
-                  </Link>
-                ))}
-                <Link href="/area/kawasaki" className="text-brand-400 hover:text-brand-300 text-xs transition-colors font-bold">
-                  川崎市全体 →
-                </Link>
-              </div>
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2.5 pb-1.5 border-b border-gray-800">
-                給湯器のトラブル症状
-              </p>
-              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-                {troubleLinks.map((l) => (
-                  <Link key={l.href} href={l.href} className="text-gray-500 hover:text-gray-200 text-xs transition-colors">
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* メインフッター */}
+      {/* メインフッター リンク */}
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-6 mb-10">
-          {makerColumns.map((col) => (
-            <div key={col.title} className="lg:col-span-1">
-              <h3 className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
-                {col.title}
-              </h3>
-              <ul className="space-y-2">
-                {col.links.map((link, i) => (
-                  <li key={i}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-500 hover:text-gray-200 text-xs transition-colors leading-tight block"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
+
+          {/* エリア情報 */}
+          <div className="sm:col-span-1">
+            <h3 className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
+              対応エリア
+            </h3>
+            <ul className="space-y-2">
+              {areaLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-500 hover:text-gray-200 text-xs transition-colors leading-tight block"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* サービス */}
+          <div>
+            <h3 className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
+              サービス
+            </h3>
+            <ul className="space-y-2">
+              {serviceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-500 hover:text-gray-200 text-xs transition-colors leading-tight block"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* メーカー */}
+          <div>
+            <h3 className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
+              メーカー
+            </h3>
+            <ul className="space-y-2">
+              {makerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-500 hover:text-gray-200 text-xs transition-colors leading-tight block"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 会社情報 */}
+          <div>
+            <h3 className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-700">
+              会社情報
+            </h3>
+            <ul className="space-y-2">
+              {companyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-500 hover:text-gray-200 text-xs transition-colors leading-tight block"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
         </div>
 
-        {/* 会社情報 */}
+        {/* 会社概要 + NAP */}
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row gap-6 md:gap-12">
             <div className="md:w-64 flex-shrink-0">
@@ -282,6 +204,15 @@ export default function Footer() {
                   Instagram
                 </a>
               </div>
+
+              {/* NAP 構造化情報 */}
+              <address className="not-italic text-xs text-gray-400 mt-6 space-y-1">
+                <p className="font-bold text-gray-300">{siteConfig.name}</p>
+                <p>〒243-0032 {siteConfig.address}</p>
+                <p>TEL: {siteConfig.phone}</p>
+                <p>営業時間: {siteConfig.hours}</p>
+                <p>メール: {siteConfig.contactEmail}</p>
+              </address>
             </div>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-xs">
               {[
