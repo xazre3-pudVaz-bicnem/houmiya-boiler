@@ -1,19 +1,21 @@
-import Image from 'next/image'
 import Link from 'next/link'
-import {
-  getLatestPosts,
-  getFeaturedImage,
-  getFeaturedImageAlt,
-  getCategories,
-  stripHtml,
-  formatDate,
-} from '@/lib/wordpress'
+import { getAllPosts, formatBlogDate } from '@/lib/blog'
 
-const FALLBACK_IMAGE = '/hero-banner.png'
+const CATEGORY_COLORS: Record<string, string> = {
+  'トラブル': 'bg-red-50 text-red-700 border-red-200',
+  '選び方': 'bg-blue-50 text-blue-700 border-blue-200',
+  '基礎知識': 'bg-brand-50 text-brand-700 border-brand-200',
+  '種類': 'bg-green-50 text-green-700 border-green-200',
+  'コスト': 'bg-yellow-50 text-yellow-700 border-yellow-200',
+  '地域情報': 'bg-purple-50 text-purple-700 border-purple-200',
+}
 
-// トップページ組み込み用。60秒 revalidate でホームの静的性能を維持しつつ準即時反映。
-export default async function BlogSection() {
-  const posts = await getLatestPosts(3)
+function categoryClass(cat: string): string {
+  return CATEGORY_COLORS[cat] ?? 'bg-brand-50 text-brand-700 border-brand-200'
+}
+
+export default function BlogSection() {
+  const posts = getAllPosts().slice(0, 3)
   if (posts.length === 0) return null
 
   return (
@@ -28,58 +30,38 @@ export default async function BlogSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-          {posts.map((post) => {
-            const imgSrc = getFeaturedImage(post) ?? FALLBACK_IMAGE
-            const imgAlt = getFeaturedImageAlt(post)
-            const cats = getCategories(post)
-            const excerpt = stripHtml(post.excerpt.rendered).slice(0, 70)
-            return (
-              <article
-                key={post.id}
-                className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-card hover:shadow-card-md hover:border-brand-300 transition-all duration-200 flex flex-col"
-              >
-                <Link href={`/blog/${post.slug}`} className="block relative aspect-[16/9] overflow-hidden bg-gray-100 flex-shrink-0">
-                  <Image
-                    src={imgSrc}
-                    alt={imgAlt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover hover:scale-105 transition-transform duration-500"
-                    unoptimized={imgSrc.startsWith('https://wp.')}
-                  />
+          {posts.map((post) => (
+            <article
+              key={post.slug}
+              className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-card hover:shadow-card-md hover:border-brand-300 transition-all duration-200 flex flex-col p-4"
+            >
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                <span className={`border text-[10px] font-bold px-2 py-0.5 rounded-full ${categoryClass(post.category)}`}>
+                  {post.category}
+                </span>
+                <time dateTime={post.date} className="text-gray-400 text-[10px] ml-auto">
+                  {formatBlogDate(post.date)}
+                </time>
+              </div>
+              <h3 className="font-black text-gray-900 text-sm leading-snug mb-1.5 flex-1">
+                <Link href={`/blog/${post.slug}`} className="hover:text-brand-700 transition-colors line-clamp-2">
+                  {post.title}
                 </Link>
-                <div className="p-4 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    {cats.slice(0, 1).map((cat) => (
-                      <span key={cat.id} className="bg-brand-50 text-brand-700 border border-brand-200 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        {cat.name}
-                      </span>
-                    ))}
-                    <time dateTime={post.date} className="text-gray-400 text-[10px] ml-auto">
-                      {formatDate(post.date)}
-                    </time>
-                  </div>
-                  <h3 className="font-black text-gray-900 text-sm leading-snug mb-1.5 line-clamp-2 flex-1">
-                    <Link href={`/blog/${post.slug}`} className="hover:text-brand-700 transition-colors">
-                      {post.title.rendered}
-                    </Link>
-                  </h3>
-                  {excerpt && (
-                    <p className="text-gray-400 text-xs line-clamp-2 mb-3">{excerpt}</p>
-                  )}
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-1 text-brand-700 text-xs font-bold hover:gap-2 transition-all mt-auto"
-                  >
-                    続きを読む
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </article>
-            )
-          })}
+              </h3>
+              {post.description && (
+                <p className="text-gray-400 text-xs line-clamp-2 mb-3">{post.description}</p>
+              )}
+              <Link
+                href={`/blog/${post.slug}`}
+                className="inline-flex items-center gap-1 text-brand-700 text-xs font-bold hover:gap-2 transition-all mt-auto"
+              >
+                続きを読む
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </article>
+          ))}
         </div>
 
         <div className="text-center">
