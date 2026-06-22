@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 import { areaPages } from '@/data/subpage-areas'
 import { productsData } from '@/data/products'
-import { fetchAllPostSlugs } from '@/lib/wordpress'
+import { getAllPosts } from '@/lib/blog'
 import { allWards } from '@/data/ward-configs'
 import { troubleList } from '@/data/trouble-configs'
 import { casesData } from '@/data/cases'
@@ -170,9 +170,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/company`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
   ]
 
-  const wpSlugs = await fetchAllPostSlugs()
-  const blogDetailPages: MetadataRoute.Sitemap = wpSlugs.map((slug) => ({
-    url: `${BASE_URL}/blog/${slug}`,
+  const blogPosts = getAllPosts()
+  const blogDetailPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,

@@ -1,22 +1,10 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import CTABanner from '@/components/CTABanner'
-import {
-  getPosts,
-  getFeaturedImage,
-  getFeaturedImageAlt,
-  getCategories,
-  stripHtml,
-  formatDate,
-} from '@/lib/wordpress'
-
-// WordPressの最新記事を毎リクエスト取得（即時反映）
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+import { getAllPosts, formatBlogDate } from '@/lib/blog'
 
 export const metadata: Metadata = {
   title: '給湯器コラム｜株式会社宝宮設備',
@@ -32,20 +20,21 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 }
 
-const FALLBACK_IMAGE = '/hero-banner.png'
+const CATEGORY_COLORS: Record<string, string> = {
+  'トラブル': 'bg-red-50 text-red-700 border-red-200',
+  '選び方': 'bg-blue-50 text-blue-700 border-blue-200',
+  '基礎知識': 'bg-brand-50 text-brand-700 border-brand-200',
+  '種類': 'bg-green-50 text-green-700 border-green-200',
+  'コスト': 'bg-yellow-50 text-yellow-700 border-yellow-200',
+  '地域情報': 'bg-purple-50 text-purple-700 border-purple-200',
+}
 
-const EXCLUDED_SLUGS = ['hello-world', 'test', 'sample-page']
-const EXCLUDED_CATEGORIES = ['uncategorized', '未分類']
+function categoryClass(cat: string): string {
+  return CATEGORY_COLORS[cat] ?? 'bg-brand-50 text-brand-700 border-brand-200'
+}
 
-export default async function BlogPage() {
-  const rawPosts = await getPosts(20)
-  const posts = rawPosts.filter((post) => {
-    if (EXCLUDED_SLUGS.includes(post.slug)) return false
-    const cats = getCategories(post)
-    if (cats.length === 0) return false
-    if (cats.every((cat) => EXCLUDED_CATEGORIES.includes(cat.slug) || EXCLUDED_CATEGORIES.includes(cat.name))) return false
-    return true
-  }).slice(0, 12)
+export default function BlogPage() {
+  const posts = getAllPosts()
 
   return (
     <>
@@ -81,65 +70,53 @@ export default async function BlogPage() {
               <div className="text-center py-20">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                   </svg>
                 </div>
-                <p className="text-gray-400 text-sm">記事を取得できませんでした。時間を置いて再度お試しください。</p>
-                <Link href="/" className="inline-block mt-6 text-sky-dark text-sm font-bold hover:underline">
+                <p className="text-gray-400 text-sm">記事が見つかりませんでした。</p>
+                <Link href="/" className="inline-block mt-6 text-brand-700 text-sm font-bold hover:underline">
                   トップページへ戻る
                 </Link>
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => {
-                  const imgSrc = getFeaturedImage(post) ?? FALLBACK_IMAGE
-                  const imgAlt = getFeaturedImageAlt(post)
-                  const cats = getCategories(post)
-                  const excerpt = stripHtml(post.excerpt.rendered).slice(0, 80)
-                  return (
-                    <article key={post.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-card hover:shadow-card-md hover:border-brand-300 transition-all duration-200 flex flex-col">
-                      <Link href={`/blog/${post.slug}`} className="block relative aspect-[16/9] overflow-hidden bg-gray-100 flex-shrink-0">
-                        <Image
-                          src={imgSrc}
-                          alt={imgAlt}
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover hover:scale-105 transition-transform duration-500"
-                          unoptimized={imgSrc.startsWith('https://wp.')}
-                        />
+                {posts.map((post) => (
+                  <article
+                    key={post.slug}
+                    className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-card hover:shadow-card-md hover:border-brand-300 transition-all duration-200 flex flex-col p-5"
+                  >
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      <span className={`border text-[11px] font-bold px-2.5 py-0.5 rounded-full ${categoryClass(post.category)}`}>
+                        {post.category}
+                      </span>
+                      <time dateTime={post.date} className="text-gray-400 text-[11px] ml-auto">
+                        {formatBlogDate(post.date)}
+                      </time>
+                    </div>
+                    <h2 className="font-black text-gray-900 text-sm leading-snug mb-2 flex-1">
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="hover:text-brand-700 transition-colors line-clamp-2"
+                      >
+                        {post.title}
                       </Link>
-                      <div className="p-5 flex flex-col flex-1">
-                        <div className="flex items-center gap-2 mb-3 flex-wrap">
-                          {cats.slice(0, 2).map((cat) => (
-                            <span key={cat.id} className="bg-brand-50 text-brand-700 border border-brand-200 text-[11px] font-bold px-2.5 py-0.5 rounded-full">
-                              {cat.name}
-                            </span>
-                          ))}
-                          <time dateTime={post.date} className="text-gray-400 text-[11px] ml-auto">
-                            {formatDate(post.date)}
-                          </time>
-                        </div>
-                        <h2 className="font-black text-gray-900 text-sm leading-snug mb-2 line-clamp-2 flex-1">
-                          <Link href={`/blog/${post.slug}`} className="hover:text-brand-700 transition-colors">
-                            {post.title.rendered}
-                          </Link>
-                        </h2>
-                        {excerpt && (
-                          <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">{excerpt}</p>
-                        )}
-                        <Link
-                          href={`/blog/${post.slug}`}
-                          className="inline-flex items-center gap-1 text-brand-700 text-xs font-bold hover:gap-2 transition-all mt-auto"
-                        >
-                          続きを読む
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      </div>
-                    </article>
-                  )
-                })}
+                    </h2>
+                    {post.description && (
+                      <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
+                        {post.description}
+                      </p>
+                    )}
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="inline-flex items-center gap-1 text-brand-700 text-xs font-bold hover:gap-2 transition-all mt-auto"
+                    >
+                      続きを読む
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </article>
+                ))}
               </div>
             )}
           </div>

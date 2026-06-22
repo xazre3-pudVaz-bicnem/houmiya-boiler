@@ -1,77 +1,35 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import { siteConfig } from '@/data/site'
-import {
-  getPostBySlug,
-  getFeaturedImage,
-  getFeaturedImageAlt,
-  getCategories,
-  stripHtml,
-  formatDate,
-} from '@/lib/wordpress'
+import { getAllPosts, getPostBySlug, formatBlogDate } from '@/lib/blog'
 
-// WordPressの最新記事を毎リクエスト取得（即時反映）
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-
-const FALLBACK_IMAGE = '/hero-banner.png'
-
-const keywordLinkMap: { keyword: string; href: string }[] = [
-  { keyword: '横浜市', href: '/area/yokohama' },
-  { keyword: '川崎市', href: '/area/kawasaki' },
-  { keyword: '厚木市', href: '/area/atsugi' },
-  { keyword: '海老名市', href: '/area/ebina' },
-  { keyword: 'エコジョーズ', href: '/guide/eco-jaws' },
-  { keyword: 'エラー111', href: '/trouble/error-111' },
-  { keyword: 'お湯が出ない', href: '/trouble/no-hot-water' },
-  { keyword: '号数', href: '/guide/capacity' },
-  { keyword: 'フルオート', href: '/guide/full-auto-auto' },
-  { keyword: '寿命', href: '/guide/lifespan' },
-]
-
-/**
- * WordPress HTML内の特定キーワードに内部リンクを追加する
- * - 各キーワードの最初の出現のみリンク化（多重リンク回避）
- * - すでに <a> タグ内にある場合はスキップ
- */
-function addKeywordLinks(html: string): string {
-  let result = html
-  for (const { keyword, href } of keywordLinkMap) {
-    if (result.includes(`href="${href}"`)) continue
-    const regex = new RegExp(`(?<!<[^>]*)(${keyword})(?![^<]*>)`, 'u')
-    result = result.replace(
-      regex,
-      `<a href="${href}" class="text-brand-700 underline underline-offset-2 hover:text-brand-900 font-semibold">${keyword}</a>`
-    )
-  }
-  return result
+export async function generateStaticParams() {
+  const posts = getAllPosts()
+  return posts.map((post) => ({ slug: post.slug }))
 }
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params
-  const post = await getPostBySlug(slug)
+  const post = getPostBySlug(slug)
   if (!post) return {}
-  const title = `${post.title.rendered} | ${siteConfig.name}`
-  const description = stripHtml(post.excerpt.rendered).slice(0, 120)
-  const imgSrc = getFeaturedImage(post)
+  const title = `${post.title} | ${siteConfig.name}`
   return {
     title,
-    description,
+    description: post.description || post.title,
     openGraph: {
       title,
-      description,
+      description: post.description || post.title,
       locale: 'ja_JP',
       type: 'article',
       publishedTime: post.date,
-      modifiedTime: post.modified,
-      ...(imgSrc ? { images: [{ url: imgSrc }] } : {}),
     },
     twitter: { card: 'summary_large_image' },
     alternates: { canonical: `https://www.houmiya-boiler.com/blog/${slug}` },
@@ -82,19 +40,14 @@ export default async function BlogDetailPage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const post = await getPostBySlug(slug)
+  const post = getPostBySlug(slug)
   if (!post) notFound()
-
-  const imgSrc = getFeaturedImage(post) ?? FALLBACK_IMAGE
-  const imgAlt = getFeaturedImageAlt(post)
-  const cats = getCategories(post)
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: post.title.rendered,
+    headline: post.title,
     datePublished: post.date,
-    dateModified: post.modified,
     author: {
       '@type': 'Organization',
       name: siteConfig.name,
@@ -120,7 +73,7 @@ export default async function BlogDetailPage(
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
       { '@type': 'ListItem', position: 2, name: '給湯器コラム', item: 'https://www.houmiya-boiler.com/blog' },
-      { '@type': 'ListItem', position: 3, name: post.title.rendered, item: `https://www.houmiya-boiler.com/blog/${slug}` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.houmiya-boiler.com/blog/${slug}` },
     ],
   }
 
@@ -138,7 +91,7 @@ export default async function BlogDetailPage(
             <span>›</span>
             <Link href="/blog" className="hover:text-brand-700 transition-colors">給湯器コラム</Link>
             <span>›</span>
-            <span className="text-gray-600 line-clamp-1">{post.title.rendered}</span>
+            <span className="text-gray-600 line-clamp-1">{post.title}</span>
           </div>
         </nav>
 
@@ -146,39 +99,25 @@ export default async function BlogDetailPage(
 
           {/* カテゴリ・日付 */}
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            {cats.map((cat) => (
-              <span key={cat.id} className="bg-brand-50 text-brand-700 border border-brand-200 text-xs font-bold px-3 py-1 rounded-full">
-                {cat.name}
-              </span>
-            ))}
+            <span className="bg-brand-50 text-brand-700 border border-brand-200 text-xs font-bold px-3 py-1 rounded-full">
+              {post.category}
+            </span>
             <time dateTime={post.date} className="text-gray-400 text-xs ml-auto">
-              {formatDate(post.date)}
+              {formatBlogDate(post.date)}
             </time>
           </div>
 
           {/* タイトル */}
-          <h1 className="font-black text-2xl md:text-3xl text-gray-900 leading-snug mb-6">
-            {post.title.rendered}
+          <h1 className="font-black text-2xl md:text-3xl text-gray-900 leading-snug mb-8">
+            {post.title}
           </h1>
 
-          {/* アイキャッチ */}
-          <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-gray-100 mb-8 shadow-card">
-            <Image
-              src={imgSrc}
-              alt={imgAlt}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
-              unoptimized={imgSrc.startsWith('https://wp.')}
-            />
-          </div>
-
           {/* 本文 */}
-          <div
-            className="wp-content"
-            dangerouslySetInnerHTML={{ __html: addKeywordLinks(post.content.rendered) }}
-          />
+          <div className="wp-content">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.content}
+            </ReactMarkdown>
+          </div>
 
           {/* 記事下CTA */}
           <div className="mt-12 bg-brand-50 border border-brand-200 rounded-xl p-6 text-center">
