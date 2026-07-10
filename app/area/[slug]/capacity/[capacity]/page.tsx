@@ -114,7 +114,7 @@ export default async function YokohamaCapacityPage({ params }: Props) {
         streetAddress: '温水西1-4-39',
         addressLocality: '厚木市',
         addressRegion: '神奈川県',
-        postalCode: '243-0032',
+        postalCode: '243-0039',
         addressCountry: 'JP',
       },
     },

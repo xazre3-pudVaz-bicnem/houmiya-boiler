@@ -39,7 +39,7 @@
               <div className="space-y-2.5 text-sm">
                 <div className="flex gap-2.5">
                   <span className="text-gray-400 flex-shrink-0 w-14">住所</span>
-                  <span className="text-brand-700">〒243-0032<br />神奈川県厚木市温水西1-4-39</span>
+                  <span className="text-brand-700">〒243-0039<br />神奈川県厚木市温水西1-4-39</span>
                 </div>
                 <div className="flex gap-2.5">
                   <span className="text-gray-400 flex-shrink-0 w-14">TEL</span>

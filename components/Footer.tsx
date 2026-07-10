@@ -209,7 +209,7 @@ export default function Footer() {
               {/* NAP 構造化情報 */}
               <address className="not-italic text-xs text-gray-400 mt-6 space-y-1">
                 <p className="font-bold text-gray-300">{siteConfig.name}</p>
-                <p>〒243-0032 {siteConfig.address}</p>
+                <p>〒243-0039 {siteConfig.address}</p>
                 <p>TEL: {siteConfig.phone}</p>
                 <p>営業時間: {siteConfig.hours}</p>
                 <p>メール: {siteConfig.contactEmail}</p>

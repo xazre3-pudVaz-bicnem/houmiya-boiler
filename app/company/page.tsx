@@ -34,7 +34,7 @@ const localBusinessJsonLd = {
     streetAddress: '温水西1-4-39',
     addressLocality: '厚木市',
     addressRegion: '神奈川県',
-    postalCode: '243-0034',
+    postalCode: '243-0039',
     addressCountry: 'JP',
   },
   openingHours: 'Mo,Tu,We,Th,Fr,Sa,Su 09:00-18:00',

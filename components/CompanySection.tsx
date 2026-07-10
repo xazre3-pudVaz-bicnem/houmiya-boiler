@@ -3,7 +3,7 @@ import { siteConfig } from '@/data/site'
 const companyInfo = [
   { label: '会社名', value: '株式会社宝宮設備' },
   { label: '代表者', value: '小宮 龍亮' },
-  { label: '所在地', value: '〒243-0032 神奈川県厚木市温水西1-4-39' },
+  { label: '所在地', value: '〒243-0039 神奈川県厚木市温水西1-4-39' },
   { label: '電話番号', value: '046-205-4558', isPhone: true },
   { label: '営業時間', value: '9:00〜18:00（年中無休）' },
   { label: '対応エリア', value: '横浜市・川崎市・厚木市・海老名市（神奈川県内）' },
