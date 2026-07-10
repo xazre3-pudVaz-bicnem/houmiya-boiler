@@ -15,7 +15,7 @@ export default function ThanksPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50 pt-[100px]">
         <div className="max-w-xl mx-auto px-4 py-20">
 
           {/* アイコン */}

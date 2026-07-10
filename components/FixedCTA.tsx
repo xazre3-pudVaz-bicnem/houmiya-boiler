@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { siteConfig } from '@/data/site'
 
 const PHONE = '046-205-4558'
-const HEADER_H = 80 // px — fixed header height
+const HEADER_H = 100 // px — fixed header height (top bar ~36px + main bar 60px + 余白)
 
 function scrollToEstimate(e: React.MouseEvent<HTMLAnchorElement>) {
   e.preventDefault()

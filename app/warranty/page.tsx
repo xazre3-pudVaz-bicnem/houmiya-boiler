@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '給湯器交換の保証・アフターサポート｜宝宮設備',
     description: '株式会社宝宮設備の給湯器交換保証について。メーカー保証・工事保証・アフターサポートの詳細をご案内。',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     locale: 'ja_JP',
     type: 'website',
   },
@@ -67,8 +67,8 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://houmiya-boiler.com' },
-    { '@type': 'ListItem', position: 2, name: '保証・アフター対応', item: 'https://houmiya-boiler.com/warranty' },
+    { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://www.houmiya-boiler.com' },
+    { '@type': 'ListItem', position: 2, name: '保証・アフター対応', item: 'https://www.houmiya-boiler.com/warranty' },
   ],
 }
 

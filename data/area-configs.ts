@@ -186,7 +186,7 @@ export const areaConfigs: Record<string, AreaConfig> = {
       { symptom: '給湯器の水漏れ', href: '/trouble/water-leak', priority: 'high' },
       { symptom: '追い焚きができない', href: '/trouble/no-reheating', priority: 'medium' },
       { symptom: 'お湯の温度が安定しない', href: '/trouble/temperature-unstable', priority: 'medium' },
-      { symptom: '給湯器から異音がする', href: '/trouble/noise', priority: 'medium' },
+      { symptom: '給湯器から異音がする', href: '/trouble/strange-noise', priority: 'medium' },
       { symptom: 'ガス臭い・異臭がする', href: '/trouble/gas-smell', priority: 'high' },
     ],
     repairVsReplace: {
@@ -431,7 +431,7 @@ export const areaConfigs: Record<string, AreaConfig> = {
       { symptom: '給湯器の水漏れ', href: '/trouble/water-leak', priority: 'high' },
       { symptom: '追い焚きができない', href: '/trouble/no-reheating', priority: 'medium' },
       { symptom: 'お湯の温度が安定しない', href: '/trouble/temperature-unstable', priority: 'medium' },
-      { symptom: '給湯器から異音がする', href: '/trouble/noise', priority: 'medium' },
+      { symptom: '給湯器から異音がする', href: '/trouble/strange-noise', priority: 'medium' },
       { symptom: 'ガス臭い・異臭がする', href: '/trouble/gas-smell', priority: 'high' },
     ],
     repairVsReplace: {
@@ -641,8 +641,8 @@ export const areaConfigs: Record<string, AreaConfig> = {
       { symptom: 'エラーコード110', href: '/trouble/error-110', priority: 'high' },
       { symptom: '給湯器の水漏れ', href: '/trouble/water-leak', priority: 'high' },
       { symptom: '追い焚きができない', href: '/trouble/no-reheating', priority: 'medium' },
-      { symptom: 'お湯の出が悪い', href: '/trouble/hot-water-flow', priority: 'medium' },
-      { symptom: '給湯器から異音がする', href: '/trouble/noise', priority: 'medium' },
+      { symptom: 'お湯の出が悪い', href: '/trouble/no-hot-water', priority: 'medium' },
+      { symptom: '給湯器から異音がする', href: '/trouble/strange-noise', priority: 'medium' },
       { symptom: 'ガス臭い・異臭がする', href: '/trouble/gas-smell', priority: 'high' },
     ],
     repairVsReplace: {
@@ -850,7 +850,7 @@ export const areaConfigs: Record<string, AreaConfig> = {
       { symptom: '給湯器の水漏れ', href: '/trouble/water-leak', priority: 'high' },
       { symptom: '追い焚きができない', href: '/trouble/no-reheating', priority: 'medium' },
       { symptom: 'お湯の温度が安定しない', href: '/trouble/temperature-unstable', priority: 'medium' },
-      { symptom: '給湯器から異音がする', href: '/trouble/noise', priority: 'medium' },
+      { symptom: '給湯器から異音がする', href: '/trouble/strange-noise', priority: 'medium' },
       { symptom: 'ガス臭い・異臭がする', href: '/trouble/gas-smell', priority: 'high' },
     ],
     repairVsReplace: {

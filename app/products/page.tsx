@@ -54,7 +54,7 @@ export default function ProductsPage() {
         </section>
 
         {/* フィルターバー */}
-        <div className="bg-white border-b border-slate-200 sticky top-[64px] z-40 shadow-sm">
+        <div className="bg-white border-b border-slate-200 sticky top-[96px] z-40 shadow-sm">
           <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
             <div className="flex gap-1 flex-wrap">
               {makerTabs.map((m) => (

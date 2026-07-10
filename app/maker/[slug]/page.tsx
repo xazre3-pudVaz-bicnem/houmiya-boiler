@@ -24,11 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: maker.title,
     description: maker.metaDescription,
-    alternates: { canonical: `https://houmiya-boiler.com/maker/${maker.slug}` },
+    alternates: { canonical: `https://www.houmiya-boiler.com/maker/${maker.slug}` },
     openGraph: {
       title: maker.title,
       description: maker.metaDescription,
-      url: `https://houmiya-boiler.com/maker/${maker.slug}`,
+      url: `https://www.houmiya-boiler.com/maker/${maker.slug}`,
     },
   }
 }
@@ -40,7 +40,7 @@ export default function MakerPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="pt-22">
+      <main className="pt-[100px]">
         <Breadcrumb
           items={[
             { label: 'ホーム', href: '/' },

@@ -55,15 +55,6 @@ const aggregateRatingJsonLd = {
   })),
 }
 
-const breadcrumbJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
-    { '@type': 'ListItem', position: 2, name: 'お客様の声', item: 'https://www.houmiya-boiler.com/voice' },
-  ],
-}
-
 export default function VoicePage() {
   return (
     <>
@@ -71,12 +62,9 @@ export default function VoicePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      {/* パンくずのBreadcrumdListは <Breadcrumb> コンポーネントが出力するため二重定義を廃止 */}
       <Header />
-      <main className="pt-16">
+      <main className="pt-[100px]">
         <Breadcrumb items={[{ label: 'ホーム', href: '/' }, { label: 'お客様の声' }]} />
 
         <section className="bg-gradient-to-r from-brand-900 to-brand-800 py-12 md:py-16">

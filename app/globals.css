@@ -3,21 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     font-family: var(--font-noto), 'Hiragino Sans', 'Yu Gothic', sans-serif;
     -webkit-font-smoothing: antialiased;
     color: #374151;
-    padding-bottom: 72px;
+    /* 下部固定CTAバー（実高さ約72px）+ ノッチ端末のセーフエリアを確保 */
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 
   @media (min-width: 768px) {
     body {
-      padding-bottom: 64px;
+      padding-bottom: 76px;
     }
   }
 
+  /* 固定ヘッダー（実高さ約96px）分をアンカースクロール時に確保 */
   [id] {
-    scroll-margin-top: 72px;
+    scroll-margin-top: 100px;
   }
 }
 

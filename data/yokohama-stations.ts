@@ -832,7 +832,7 @@ const stationExtras: Record<string, StationExtra> = {
       '東戸塚駅は駅前の大型商業施設を中心に発展した住宅エリアで、駅周辺には大規模マンションが立ち並び、丘陵地には戸建て住宅地が広がります。1980年代後半以降に開発された物件が多く、マンション・戸建てともに給湯器の更新時期を迎えています。生活利便性の高さからファミリー世帯に人気のエリアです。',
     nearby: [
       { slug: 'totsuka', name: '戸塚' },
-      { slug: 'hodogaya', name: '保土ケ谷' },
+      { slug: 'nishiya', name: '西谷' },
       { slug: 'maioka', name: '舞岡' },
     ],
   },

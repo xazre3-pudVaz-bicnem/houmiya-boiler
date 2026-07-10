@@ -59,7 +59,8 @@ async function generateArticle(topic: Topic): Promise<string> {
 
 ルール：
 - 2000〜3500字程度で書く（長すぎず短すぎず）
-- H2・H3見出しを使って読みやすく構成する
+- 記事タイトル（H1・# 見出し）は本文に含めない。タイトルはページ側で自動表示されるため、本文は導入文（リード文）から書き始める
+- 見出しはH2（##）から始め、必要に応じてH3（###）を使う。H1（#）は絶対に使わない
 - 専門用語は分かりやすく解説する
 - 具体的で実用的な内容にする（抽象的・曖昧な表現を避ける）
 - 架空の統計・根拠のない数字は使わない
@@ -87,18 +88,41 @@ async function generateArticle(topic: Topic): Promise<string> {
   return block.text
 }
 
+// 本文冒頭のH1見出しを除去（タイトルはページ側で表示するため二重H1を防ぐ）
+function stripLeadingH1(md: string): string {
+  return md.replace(/^\s*#\s+.+\n+/, '')
+}
+
+// 本文の最初の段落からメタディスクリプション（約110字）を生成する
+function buildDescription(md: string, fallback: string): string {
+  const firstParagraph = md
+    .split('\n')
+    .map((line) => line.trim())
+    .find((line) => line.length > 0 && !line.startsWith('#') && !line.startsWith('-') && !line.startsWith('|'))
+  if (!firstParagraph) return fallback
+  const plain = firstParagraph
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+    .replace(/[#*`>]/g, '')
+    .trim()
+  if (plain.length <= 118) return plain
+  return plain.slice(0, 116) + '…'
+}
+
 async function main() {
   const existingSlugs = getExistingSlugs()
   const topic = selectTopic(existingSlugs)
   console.log(`Generating: ${topic.title}`)
 
-  const articleContent = await generateArticle(topic)
+  const rawContent = await generateArticle(topic)
+  const articleContent = stripLeadingH1(rawContent).trim()
+  const description = buildDescription(articleContent, topic.title)
   const today = new Date().toISOString().split('T')[0]
 
   const frontmatter = `---
 title: ${topic.title}
 slug: ${topic.slug}
-description: ${topic.title}
+description: ${description}
 date: ${today}
 category: ${topic.category}
 tags: [給湯器, 給湯器交換, 宝宮設備]

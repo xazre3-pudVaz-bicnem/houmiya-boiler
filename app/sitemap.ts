@@ -171,12 +171,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const blogPosts = getAllPosts()
-  const blogDetailPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: now,
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }))
+  const blogDetailPages: MetadataRoute.Sitemap = blogPosts.map((post) => {
+    const postDate = post.date ? new Date(post.date) : now
+    return {
+      url: `${BASE_URL}/blog/${post.slug}`,
+      lastModified: isNaN(postDate.getTime()) ? now : postDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }
+  })
 
   const productDetailPages: MetadataRoute.Sitemap = productsData.map((p) => ({
     url: `${BASE_URL}/products/${p.slug}`,

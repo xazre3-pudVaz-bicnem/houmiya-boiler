@@ -103,40 +103,8 @@ const LineIcon = () => (
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': ['Organization', 'LocalBusiness'],
-  name: '株式会社宝宮設備',
-  alternateName: '宝宮設備',
-  url: BASE_URL,
-  logo: `${BASE_URL}/logo.png`,
-  telephone: siteConfig.phone,
-  email: siteConfig.contactEmail,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '温水西1-4-39',
-    addressLocality: '厚木市',
-    addressRegion: '神奈川県',
-    addressCountry: 'JP',
-  },
-  openingHoursSpecification: {
-    '@type': 'OpeningHoursSpecification',
-    dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-    opens: '09:00',
-    closes: '18:00',
-  },
-  areaServed: ['横浜市', '川崎市', '厚木市', '海老名市'],
-  priceRange: '$$',
-  description: '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売なら株式会社宝宮設備。リンナイ・ノーリツ・パロマ対応。無料見積もり・LINE相談受付中。',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '5',
-    reviewCount: '6',
-    bestRating: '5',
-    worstRating: '1',
-  },
-  sameAs: [siteConfig.lineUrl],
-}
+// 事業者情報（LocalBusiness/Organization）はサイト共通で app/layout.tsx が @id 付きで出力しているため
+// トップページでは重複定義しない。aggregateRating は可視レビューのある /voice ページ側でのみ出力する。
 
 const webSiteJsonLd = {
   '@context': 'https://schema.org',
@@ -163,11 +131,15 @@ const topFaqJsonLd = {
 export default function Home() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(topFaqJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
+
+        {/* ページ主見出し（SEO用・視覚デザインは維持したままスクリーンリーダー/検索エンジンに提供） */}
+        <h1 className="sr-only">
+          横浜市・川崎市・厚木市・海老名市の給湯器交換・販売｜株式会社宝宮設備
+        </h1>
 
         {/* ═══════════════════════════════════
             1. ヒーローバナー

@@ -8,7 +8,7 @@ type BreadcrumbProps = {
   className?: string
 }
 
-const jsonLd = (items: BreadcrumbItem[], baseUrl = 'https://houmiya-boiler.com') => ({
+const jsonLd = (items: BreadcrumbItem[], baseUrl = 'https://www.houmiya-boiler.com') => ({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: items.map((item, idx) => ({

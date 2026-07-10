@@ -26,7 +26,7 @@ export default function EcojoysPage() {
   return (
     <>
       <Header />
-      <main className="pt-16">
+      <main className="pt-[100px]">
         <Breadcrumb
           items={[
             { label: 'ホーム', href: '/' },
