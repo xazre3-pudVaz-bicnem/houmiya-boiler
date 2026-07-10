@@ -146,11 +146,12 @@ export default function Home() {
         ═══════════════════════════════════ */}
         <section className="w-full bg-blue-50">
           <Image
-            src="/hero-banner.png"
+            src="/hero-banner.webp"
             alt="横浜市・川崎市・厚木市・海老名市対応 給湯器交換なら宝宮設備 最大80%OFF 工事費込み価格"
-            width={1600}
-            height={800}
+            width={1717}
+            height={916}
             priority
+            sizes="100vw"
             className="w-full h-auto block"
           />
         </section>

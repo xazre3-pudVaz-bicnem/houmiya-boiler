@@ -106,33 +106,35 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
     ],
   }
 
+  // 対応エリア（市＋全区）を areaServed として列挙し、地域SEOシグナルを強化
+  const areaServed =
+    config.wards && config.wards.length > 0
+      ? [
+          { '@type': 'City', name: config.name },
+          ...config.wards.map((w) => ({ '@type': 'AdministrativeArea', name: `${config.name}${w}` })),
+        ]
+      : { '@type': 'City', name: config.name }
+
   const serviceJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: `${config.name}の給湯器交換・販売`,
+    serviceType: '給湯器交換工事',
     description: config.metaDescription,
-    provider: {
-      '@type': 'LocalBusiness',
-      name: '株式会社宝宮設備',
-      telephone: siteConfig.phone,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: '温水西1-4-39',
-        addressLocality: '厚木市',
-        addressRegion: '神奈川県',
-        postalCode: '243-0039',
-        addressCountry: 'JP',
-      },
-    },
-    areaServed: { '@type': 'City', name: config.name },
+    // 事業者はサイト共通のLocalBusiness（#business）を@id参照し、エンティティを統合
+    provider: { '@id': 'https://www.houmiya-boiler.com/#business' },
+    areaServed,
   }
 
   const localBusinessJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
+    '@id': 'https://www.houmiya-boiler.com/#business',
     name: siteConfig.name,
     telephone: siteConfig.phone,
     url: 'https://www.houmiya-boiler.com',
+    image: 'https://www.houmiya-boiler.com/og-image.png',
+    hasMap: 'https://maps.google.com/?q=神奈川県厚木市温水西1-4-39',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '温水西1-4-39',
@@ -142,7 +144,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
       addressCountry: 'JP',
     },
     openingHours: 'Mo,Tu,We,Th,Fr,Sa,Su 09:00-18:00',
-    areaServed: { '@type': 'City', name: config.name },
+    areaServed,
   }
 
   return (

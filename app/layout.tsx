@@ -80,7 +80,8 @@ const localBusinessSchema = {
     '横浜市・川崎市・厚木市・海老名市で給湯器交換・販売・撤去を行う専門業者。自社施工で最短即日対応。リンナイ・ノーリツ・パロマ対応。',
   url: 'https://www.houmiya-boiler.com',
   logo: 'https://www.houmiya-boiler.com/logo.png',
-  image: 'https://www.houmiya-boiler.com/logo.png',
+  image: 'https://www.houmiya-boiler.com/og-image.png',
+  hasMap: 'https://maps.google.com/?q=神奈川県厚木市温水西1-4-39',
   telephone: '+81-46-205-4558',
   email: 'homiya@houmiyasetubi.com',
   address: {
