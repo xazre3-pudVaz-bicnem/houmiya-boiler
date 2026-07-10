@@ -29,6 +29,10 @@ const TOPICS = [
   { title: '給湯器の保証と延長保証を比較｜選ぶべき保証とは', slug: 'warranty-comparison', category: 'コスト' },
   { title: '給湯器交換の補助金・助成金を活用する方法', slug: 'subsidy-guide', category: 'コスト' },
   { title: '横浜市で給湯器を交換する費用と選び方のポイント', slug: 'yokohama-replacement-guide', category: '地域情報' },
+  { title: '横浜市のマンションでPS設置型給湯器を交換する際の注意点', slug: 'yokohama-mansion-ps-guide', category: '地域情報' },
+  { title: '横浜市のタワーマンションで給湯器を交換する流れと管理組合手続き', slug: 'yokohama-tower-mansion-guide', category: '地域情報' },
+  { title: '横浜市で給湯器がお湯が出ない・故障したときの即日対応の頼み方', slug: 'yokohama-emergency-guide', category: '地域情報' },
+  { title: '横浜市の戸建てでエコジョーズに交換してガス代を節約する方法', slug: 'yokohama-ecojaws-guide', category: '地域情報' },
   { title: '川崎市で給湯器を即日交換するための準備と手順', slug: 'kawasaki-same-day-guide', category: '地域情報' },
 ] as const
 

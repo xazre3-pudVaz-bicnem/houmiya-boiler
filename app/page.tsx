@@ -642,7 +642,7 @@ export default function Home() {
                     href={`/area/${area.city === '横浜市' ? 'yokohama' : area.city === '川崎市' ? 'kawasaki' : area.city === '厚木市' ? 'atsugi' : 'ebina'}`}
                     className="font-black text-lg text-brand-700 hover:underline mb-2 block"
                   >
-                    {area.city} →
+                    {area.city}の給湯器交換 →
                   </Link>
                   {area.wards && (
                     <div className="flex flex-wrap gap-1 mb-2">
