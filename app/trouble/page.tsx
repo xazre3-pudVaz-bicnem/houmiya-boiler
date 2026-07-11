@@ -14,10 +14,25 @@ export const metadata: Metadata = {
   openGraph: {
     title: '給湯器のトラブル・症状別ページ一覧｜宝宮設備',
     description: '給湯器のトラブル症状別ページ一覧。お湯が出ない・エラーコード・水漏れなど症状から原因と対処法を確認できます。',
+    url: 'https://www.houmiya-boiler.com/trouble',
+    siteName: '宝宮設備 給湯器交換専門サイト',
     locale: 'ja_JP',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: '給湯器のトラブル症状一覧' }],
   },
-  twitter: { card: 'summary_large_image' },
+  twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
+}
+
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  numberOfItems: troubleList.length,
+  itemListElement: troubleList.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: t.title,
+    url: `https://www.houmiya-boiler.com/trouble/${t.slug}`,
+  })),
 }
 
 const breadcrumbJsonLd = {
@@ -40,6 +55,10 @@ export default function TroubleIndexPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
       <Header />
       <main className="pt-[100px]">

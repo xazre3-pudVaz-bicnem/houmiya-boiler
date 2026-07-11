@@ -1,14 +1,20 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 import SmoothScrollProvider from '@/components/SmoothScrollProvider'
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '600', '700', '900'],
   display: 'swap',
   variable: '--font-noto',
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#1E3A5F',
+}
 
 export const metadata: Metadata = {
   title: '横浜市の給湯器交換・販売なら株式会社宝宮設備｜川崎・厚木・海老名対応',
@@ -56,6 +62,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://www.houmiya-boiler.com',
+    types: {
+      'application/rss+xml': 'https://www.houmiya-boiler.com/feed.xml',
+    },
   },
   robots: {
     index: true,
@@ -164,7 +173,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* 構造化データ（会社情報・サービス）。FAQ構造化データは各ページの可視FAQと一致させるため
             全ページ共通ではなく、FAQを表示する各ページ側で個別に出力する。 */}
         <script

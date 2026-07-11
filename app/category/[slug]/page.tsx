@@ -95,6 +95,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: config.metaTitle,
     description: config.metaDescription,
     alternates: { canonical: `https://www.houmiya-boiler.com/category/${slug}` },
+    openGraph: {
+      title: config.metaTitle,
+      description: config.metaDescription,
+      url: `https://www.houmiya-boiler.com/category/${slug}`,
+      siteName: '宝宮設備 給湯器交換専門サイト',
+      locale: 'ja_JP',
+      type: 'website',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: config.metaTitle }],
+    },
+    twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
   }
 }
 

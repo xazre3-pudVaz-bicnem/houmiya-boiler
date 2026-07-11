@@ -48,7 +48,7 @@ export default function AreaSection() {
                 href={`/area/${area.slug}`}
                 className="block bg-white px-8 py-9 hover:bg-brand-900 transition-colors duration-200 group"
               >
-                <div className="text-[11px] text-slate-400 group-hover:text-sky font-medium tracking-wider mb-2 transition-colors">
+                <div className="text-[11px] text-slate-400 group-hover:text-sky font-semibold tracking-wider mb-2 transition-colors">
                   {area.note}
                 </div>
                 <div className="text-brand-900 group-hover:text-white font-black text-2xl mb-1 transition-colors">

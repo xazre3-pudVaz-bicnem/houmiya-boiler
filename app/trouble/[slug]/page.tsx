@@ -29,9 +29,13 @@ export async function generateMetadata({
     openGraph: {
       title: config.metaTitle,
       description: config.metaDescription,
+      url: config.canonical,
+      siteName: '宝宮設備 給湯器交換専門サイト',
       locale: 'ja_JP',
       type: 'website',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: config.metaTitle }],
     },
+    twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
   }
 }
 
@@ -83,19 +87,15 @@ export default async function TroublePage({ params }: { params: Promise<{ slug: 
     '@type': 'Service',
     name: `給湯器の${config.title}の点検・修理・交換`,
     description: config.metaDescription,
-    provider: {
-      '@type': 'LocalBusiness',
-      name: '株式会社宝宮設備',
-      telephone: siteConfig.phone,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: '温水西1-4-39',
-        addressLocality: '厚木市',
-        addressRegion: '神奈川県',
-        postalCode: '243-0039',
-        addressCountry: 'JP',
-      },
-    },
+    url: config.canonical,
+    // 事業者はサイト共通のLocalBusiness（#business）を@id参照（重複エンティティ防止）
+    provider: { '@id': 'https://www.houmiya-boiler.com/#business' },
+    areaServed: [
+      { '@type': 'City', name: '横浜市' },
+      { '@type': 'City', name: '川崎市' },
+      { '@type': 'City', name: '厚木市' },
+      { '@type': 'City', name: '海老名市' },
+    ],
   }
 
   const otherTroubles = troubleList.filter((t) => t.slug !== slug).slice(0, 4)

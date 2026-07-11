@@ -15,10 +15,25 @@ export const metadata: Metadata = {
   openGraph: {
     title: '給湯器交換の施工事例一覧｜宝宮設備',
     description: '横浜市・川崎市・厚木市・海老名市での給湯器交換施工事例。エリア・メーカー・設置タイプで絞り込み可能。',
+    url: 'https://www.houmiya-boiler.com/cases',
+    siteName: '宝宮設備 給湯器交換専門サイト',
     locale: 'ja_JP',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: '給湯器交換の施工事例一覧' }],
   },
-  twitter: { card: 'summary_large_image' },
+  twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
+}
+
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  numberOfItems: casesData.length,
+  itemListElement: casesData.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: `${c.area} ${c.afterModel} 交換事例`,
+    url: `https://www.houmiya-boiler.com/cases/${c.slug}`,
+  })),
 }
 
 const breadcrumbJsonLd = {
@@ -34,6 +49,7 @@ export default function CasesPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 
@@ -46,7 +62,7 @@ export default function CasesPage() {
             </nav>
             <h1 className="text-3xl font-black mb-2">施工事例一覧</h1>
             <p className="text-blue-100 text-sm">
-              横浜市・川崎市・厚木市・海老名市での給湯器交換施工実績 全{casesData.length}件
+              横浜市・川崎市・厚木市・海老名市での給湯器交換 全{casesData.length}件
             </p>
           </div>
         </section>
@@ -54,6 +70,9 @@ export default function CasesPage() {
         <section className="py-10 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">
             <CasesGrid cases={casesData} />
+            <p className="text-xs text-gray-400 mt-6">
+              ※ 掲載内容には、代表的な施工内容をもとに構成した交換ケース例を含みます。
+            </p>
           </div>
         </section>
 

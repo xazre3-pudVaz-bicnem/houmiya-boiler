@@ -7,8 +7,8 @@ const subPages = [
   { href: '/cases', label: '施工事例', desc: '実際の工事事例を見る' },
   { href: '/area/yokohama', label: '横浜市', desc: '横浜市対応エリア詳細' },
   { href: '/area/kawasaki', label: '川崎市', desc: '川崎市対応エリア詳細' },
-  { href: '/maker/rinnai', label: 'リンナイ', desc: 'リンナイ給湯器ラインナップ' },
-  { href: '/maker/noritz', label: 'ノーリツ', desc: 'ノーリツ給湯器ラインナップ' },
+  { href: '/rinnai', label: 'リンナイ', desc: 'リンナイ給湯器ラインナップ' },
+  { href: '/noritz', label: 'ノーリツ', desc: 'ノーリツ給湯器ラインナップ' },
   { href: '/ecojoys', label: 'エコジョーズ', desc: '省エネ給湯器について' },
 ]
 

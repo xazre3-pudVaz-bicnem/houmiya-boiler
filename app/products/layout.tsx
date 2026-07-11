@@ -8,10 +8,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: '給湯器の工事費込み価格一覧｜宝宮設備',
     description: '給湯器工事費込み価格一覧。リンナイ・ノーリツ・パロマ対応。',
+    url: 'https://www.houmiya-boiler.com/products',
+    siteName: '宝宮設備 給湯器交換専門サイト',
     locale: 'ja_JP',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: '給湯器の工事費込み価格一覧' }],
   },
-  twitter: { card: 'summary_large_image' },
+  twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
 }
 
 export default function ProductsLayout({ children }: { children: React.ReactNode }) {

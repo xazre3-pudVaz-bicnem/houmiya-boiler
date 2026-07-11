@@ -38,13 +38,29 @@ export async function generateMetadata({
   const c = casesData.find((x) => x.slug === slug)
   if (!c) return {}
   const title = `${c.area} ${c.buildingType} ${c.afterModel} 給湯器交換施工事例｜宝宮設備`
-  const description = `${c.area}の${c.buildingType}で${c.maker}${c.capacity}号${c.type}タイプへ交換した施工事例。設置タイプ：${c.installationType}、施工時間：${c.duration}。`
+  const description = `${c.area}の${c.buildingType}で${c.maker}${c.capacity}号${c.type}タイプへ交換した施工事例。${c.date}施工。${c.beforeModel}からの交換。設置タイプ：${c.installationType}、施工時間：${c.duration}。`
   return {
     title,
     description,
-    openGraph: { title, description, images: [{ url: c.imageSrc }] },
+    openGraph: {
+      title,
+      description,
+      url: `${BASE_URL}/cases/${c.slug}`,
+      siteName: '宝宮設備 給湯器交換専門サイト',
+      locale: 'ja_JP',
+      type: 'article',
+      images: [{ url: c.imageSrc.startsWith('/') ? `${BASE_URL}${c.imageSrc}` : c.imageSrc }],
+    },
+    twitter: { card: 'summary_large_image' },
     alternates: { canonical: `${BASE_URL}/cases/${c.slug}` },
   }
+}
+
+// '2026年6月' のような和暦テキストをISO 8601の月精度表記（'2026-06'）へ変換
+function toIsoMonth(dateJa: string): string {
+  const m = dateJa.match(/(\d{4})年(\d{1,2})月/)
+  if (!m) return dateJa
+  return `${m[1]}-${m[2].padStart(2, '0')}`
 }
 
 const guideLinks = [
@@ -103,12 +119,22 @@ export default async function CaseDetailPage({
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: `${c.area} ${c.buildingType} ${c.afterModel} 給湯器交換施工事例`,
-    image: c.imageSrc,
-    datePublished: c.date,
+    description: `${c.area}の${c.buildingType}で${c.maker}${c.capacity}号${c.type}タイプへ交換した施工事例。${c.date}施工。`,
+    image: c.imageSrc.startsWith('/') ? `${BASE_URL}${c.imageSrc}` : c.imageSrc,
+    datePublished: toIsoMonth(c.date),
+    dateModified: toIsoMonth(c.date),
+    author: { '@type': 'Organization', name: siteConfig.name, url: BASE_URL },
     publisher: {
       '@type': 'Organization',
       name: siteConfig.name,
       url: BASE_URL,
+      logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.png` },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${BASE_URL}/cases/${c.slug}` },
+    contentLocation: {
+      '@type': 'Place',
+      name: c.area,
+      address: { '@type': 'PostalAddress', addressLocality: c.city, addressRegion: '神奈川県', addressCountry: 'JP' },
     },
   }
 
@@ -233,6 +259,9 @@ export default async function CaseDetailPage({
                 </tbody>
               </table>
             </div>
+            <p className="text-xs text-gray-400 mt-2">
+              ※ 掲載内容には、代表的な施工内容をもとに構成した交換ケース例を含みます。実際の工事内容・時間は現場状況により異なります。
+            </p>
           </section>
 
           {/* 施工内容 */}

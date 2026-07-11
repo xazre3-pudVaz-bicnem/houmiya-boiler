@@ -7,7 +7,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FixedCTA from '@/components/FixedCTA'
 import { siteConfig } from '@/data/site'
-import { getAllPosts, getPostBySlug, formatBlogDate } from '@/lib/blog'
+import { getAllPosts, getPostBySlug, getPostsByCategory, formatBlogDate, addKeywordLinks } from '@/lib/blog'
 
 export async function generateStaticParams() {
   const posts = getAllPosts()
@@ -27,11 +27,15 @@ export async function generateMetadata(
     openGraph: {
       title,
       description: post.description || post.title,
+      url: `https://www.houmiya-boiler.com/blog/${slug}`,
+      siteName: '宝宮設備 給湯器交換専門サイト',
       locale: 'ja_JP',
       type: 'article',
       publishedTime: post.date,
+      modifiedTime: post.date,
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: post.title }],
     },
-    twitter: { card: 'summary_large_image' },
+    twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
     alternates: { canonical: `https://www.houmiya-boiler.com/blog/${slug}` },
   }
 }
@@ -43,11 +47,20 @@ export default async function BlogDetailPage(
   const post = getPostBySlug(slug)
   if (!post) notFound()
 
+  // 関連記事: 同カテゴリ優先、不足分は最新記事で補完（最大3件）
+  const relatedPosts = [
+    ...getPostsByCategory(post.category).filter((p) => p.slug !== post.slug),
+    ...getAllPosts().filter((p) => p.slug !== post.slug && p.category !== post.category),
+  ].slice(0, 3)
+
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
+    description: post.description || post.title,
+    image: ['https://www.houmiya-boiler.com/og-image.png'],
     datePublished: post.date,
+    dateModified: post.date,
     author: {
       '@type': 'Organization',
       name: siteConfig.name,
@@ -112,10 +125,10 @@ export default async function BlogDetailPage(
             {post.title}
           </h1>
 
-          {/* 本文 */}
+          {/* 本文（キーワードを内部リンク化してから描画） */}
           <div className="wp-content">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {post.content}
+              {addKeywordLinks(post.content)}
             </ReactMarkdown>
           </div>
 
@@ -154,6 +167,34 @@ export default async function BlogDetailPage(
               </a>
             </div>
           </div>
+
+          {/* 関連記事 */}
+          {relatedPosts.length > 0 && (
+            <div className="mt-10">
+              <p className="text-xs font-black text-gray-600 uppercase tracking-wider mb-4">関連記事</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {relatedPosts.map((p) => (
+                  <Link
+                    key={p.slug}
+                    href={`/blog/${p.slug}`}
+                    className="bg-white border border-slate-200 rounded-xl p-4 hover:border-brand-300 hover:shadow-card transition-all flex flex-col"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="bg-brand-50 text-brand-700 border border-brand-200 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        {p.category}
+                      </span>
+                      <time dateTime={p.date} className="text-gray-400 text-[10px] ml-auto">
+                        {formatBlogDate(p.date)}
+                      </time>
+                    </div>
+                    <span className="font-bold text-gray-900 text-xs leading-snug line-clamp-2">
+                      {p.title}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 関連ページ内部リンク */}
           <div className="mt-10 border border-gray-200 rounded-xl p-5">

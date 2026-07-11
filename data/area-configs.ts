@@ -175,9 +175,9 @@ export const areaConfigs: Record<string, AreaConfig> = {
       ['注意点', 'お湯切れに注意', '同時使用が多いと号数アップを検討', 'ガス管径・供給圧力の確認が必要'],
     ],
     makerGuide: [
-      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。横浜市の戸建て・マンション両方に適合する機種が豊富で、オート・フルオート・エコジョーズまで幅広く取り扱っています。', makerHref: '/maker/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
-      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。横浜市の戸建てでのエコジョーズ交換にも適した機種をご提案できます。', makerHref: '/maker/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
-      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/maker/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
+      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。横浜市の戸建て・マンション両方に適合する機種が豊富で、オート・フルオート・エコジョーズまで幅広く取り扱っています。', makerHref: '/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
+      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。横浜市の戸建てでのエコジョーズ交換にも適した機種をご提案できます。', makerHref: '/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
+      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
     ],
     troubleLinks: [
       { symptom: 'お湯が出ない', href: '/trouble/no-hot-water', priority: 'high' },
@@ -420,9 +420,9 @@ export const areaConfigs: Record<string, AreaConfig> = {
       ['注意点', 'お湯切れに注意', '同時使用が多いと号数アップを検討', 'ガス管径・供給圧力の確認が必要'],
     ],
     makerGuide: [
-      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。川崎市の戸建て・マンション両方に適合する機種が豊富で、オート・フルオート・エコジョーズまで取り扱っています。', makerHref: '/maker/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
-      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。川崎市の戸建てでのエコジョーズ交換にも適した機種をご提案できます。', makerHref: '/maker/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
-      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/maker/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
+      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。川崎市の戸建て・マンション両方に適合する機種が豊富で、オート・フルオート・エコジョーズまで取り扱っています。', makerHref: '/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
+      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。川崎市の戸建てでのエコジョーズ交換にも適した機種をご提案できます。', makerHref: '/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
+      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
     ],
     troubleLinks: [
       { symptom: 'お湯が出ない', href: '/trouble/no-hot-water', priority: 'high' },
@@ -631,9 +631,9 @@ export const areaConfigs: Record<string, AreaConfig> = {
       ['注意点', 'お湯切れに注意', '同時使用が多いと号数アップを検討', 'ガス管径・供給圧力の確認が必要'],
     ],
     makerGuide: [
-      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。厚木市の戸建てに適合する屋外壁掛型が豊富で、オート・フルオート・エコジョーズまで取り扱っています。', makerHref: '/maker/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
-      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。厚木市の戸建てでのエコジョーズ交換に適した機種をご提案できます。', makerHref: '/maker/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
-      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/maker/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
+      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。厚木市の戸建てに適合する屋外壁掛型が豊富で、オート・フルオート・エコジョーズまで取り扱っています。', makerHref: '/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
+      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。厚木市の戸建てでのエコジョーズ交換に適した機種をご提案できます。', makerHref: '/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
+      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
     ],
     troubleLinks: [
       { symptom: 'お湯が出ない', href: '/trouble/no-hot-water', priority: 'high' },
@@ -839,9 +839,9 @@ export const areaConfigs: Record<string, AreaConfig> = {
       ['注意点', 'お湯切れに注意', '同時使用が多いと号数アップを検討', 'ガス管径・供給圧力の確認が必要'],
     ],
     makerGuide: [
-      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。海老名市の新興住宅地の戸建てに適合する屋外壁掛型が豊富で、オート・フルオート・エコジョーズまで取り扱っています。', makerHref: '/maker/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
-      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。海老名市の戸建てでのエコジョーズ交換に適した機種をご提案できます。', makerHref: '/maker/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
-      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/maker/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
+      { maker: 'リンナイ', desc: '国内シェアが高く、RUF-Aシリーズが定番です。海老名市の新興住宅地の戸建てに適合する屋外壁掛型が豊富で、オート・フルオート・エコジョーズまで取り扱っています。', makerHref: '/rinnai', productSlugs: ['rinnai-ruf-a2405saw-c', 'rinnai-ruf-a2005saw-c', 'rinnai-ruf-a1615saw-c'] },
+      { maker: 'ノーリツ', desc: 'GTシリーズやエコジョーズのラインナップが豊富で、省エネ志向の方に選ばれています。海老名市の戸建てでのエコジョーズ交換に適した機種をご提案できます。', makerHref: '/noritz', productSlugs: ['noritz-gt-2470saw-1', 'noritz-gt-2070saw-1', 'noritz-gt-1670saw-1'] },
+      { maker: 'パロマ', desc: 'シンプルな操作性とコストパフォーマンスで選ばれています。費用を抑えて交換したい方や、賃貸物件での交換にも適しています。', makerHref: '/paloma', productSlugs: ['paloma-fh-2423saw-1', 'paloma-fh-2023saw-1', 'paloma-fh-1613saw-1'] },
     ],
     troubleLinks: [
       { symptom: 'お湯が出ない', href: '/trouble/no-hot-water', priority: 'high' },

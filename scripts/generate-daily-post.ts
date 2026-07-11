@@ -48,11 +48,12 @@ function getExistingSlugs(): string[] {
     .map((f) => f.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, ''))
 }
 
-function selectTopic(existingSlugs: string[]): Topic {
+function selectTopic(existingSlugs: string[]): Topic | null {
   const remaining = (TOPICS as readonly Topic[]).filter((t) => !existingSlugs.includes(t.slug))
   if (remaining.length === 0) {
-    const idx = Math.floor(Math.random() * TOPICS.length)
-    return TOPICS[idx]
+    // 全トピック消化済み。同一slugの重複記事を作らないため生成をスキップする。
+    // 新しいトピックを TOPICS に追加すると投稿が再開される。
+    return null
   }
   return remaining[0]
 }
@@ -70,6 +71,8 @@ async function generateArticle(topic: Topic): Promise<string> {
 - 架空の統計・根拠のない数字は使わない
 - 絵文字は使わない
 - 自然な日本語で読者目線で書く
+- 本文中の文脈に合う箇所で2〜3個の内部リンクをMarkdown形式（[アンカーテキスト](URL)）で入れる。リンク先は次の実在URLのみを使用し、それ以外のURLを創作しない: /area/yokohama /area/kawasaki /area/atsugi /area/ebina /guide/eco-jaws /guide/capacity /guide/error-code /guide/lifespan /guide/cost /guide/model-number /guide/full-auto-auto /guide/photo-estimate /trouble/no-hot-water /trouble/error-111 /trouble/water-leak
+- 同一URLへのリンクは1記事につき1回まで
 - 最後に「給湯器の交換やトラブルは宝宮設備にご相談ください」という趣旨のCTAを1〜2文で添える
 - Markdownフォーマットで書く（フロントマターは不要、本文のみ）`
 
@@ -116,6 +119,10 @@ function buildDescription(md: string, fallback: string): string {
 async function main() {
   const existingSlugs = getExistingSlugs()
   const topic = selectTopic(existingSlugs)
+  if (!topic) {
+    console.log('全トピック消化済みのため生成をスキップしました。TOPICS に新しいトピックを追加してください。')
+    return
+  }
   console.log(`Generating: ${topic.title}`)
 
   const rawContent = await generateArticle(topic)

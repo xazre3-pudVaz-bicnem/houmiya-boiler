@@ -22,6 +22,15 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/estimate` },
 }
 
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'トップ', item: BASE_URL },
+    { '@type': 'ListItem', position: 2, name: '無料見積もり', item: `${BASE_URL}/estimate` },
+  ],
+}
+
 export default async function EstimatePage({
   searchParams,
 }: {
@@ -31,6 +40,7 @@ export default async function EstimatePage({
   const preselectedProduct = productSlug ? getProductBySlug(productSlug) : undefined
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 

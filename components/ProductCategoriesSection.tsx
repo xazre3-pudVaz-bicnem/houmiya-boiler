@@ -4,16 +4,16 @@ import Link from 'next/link'
 import { motion, type Variants } from 'framer-motion'
 
 const makers = [
-  { label: 'リンナイ', en: 'Rinnai', desc: 'フルオート・オートタイプに強み', href: '/maker/rinnai' },
-  { label: 'ノーリツ', en: 'Noritz', desc: 'エコジョーズラインが充実', href: '/maker/noritz' },
-  { label: 'パロマ', en: 'Paloma', desc: 'コストを抑えたい方に', href: '/maker/paloma' },
+  { label: 'リンナイ', en: 'Rinnai', desc: 'フルオート・オートタイプに強み', href: '/rinnai' },
+  { label: 'ノーリツ', en: 'Noritz', desc: 'エコジョーズラインが充実', href: '/noritz' },
+  { label: 'パロマ', en: 'Paloma', desc: 'コストを抑えたい方に', href: '/paloma' },
 ]
 
 const types = [
   { label: 'エコジョーズ', desc: '省エネタイプ', href: '/ecojoys' },
-  { label: 'フルオート', desc: '全自動・保温機能付き', href: '/maker/rinnai' },
-  { label: 'オート', desc: '自動湯はり・追い焚き', href: '/maker/rinnai' },
-  { label: '給湯専用', desc: 'シンプル・リーズナブル', href: '/maker/paloma' },
+  { label: 'フルオート', desc: '全自動・保温機能付き', href: '/rinnai' },
+  { label: 'オート', desc: '自動湯はり・追い焚き', href: '/rinnai' },
+  { label: '給湯専用', desc: 'シンプル・リーズナブル', href: '/paloma' },
 ]
 
 const itemVariant: Variants = {
@@ -64,7 +64,7 @@ export default function ProductCategoriesSection() {
                   href={m.href}
                   className="block bg-white px-8 py-9 hover:bg-brand-900 transition-colors duration-200 group"
                 >
-                  <div className="text-[11px] text-slate-400 group-hover:text-sky font-medium uppercase tracking-widest mb-2 transition-colors">
+                  <div className="text-[11px] text-slate-400 group-hover:text-sky font-semibold uppercase tracking-widest mb-2 transition-colors">
                     {m.en}
                   </div>
                   <div className="text-brand-900 group-hover:text-white font-black text-2xl mb-2 transition-colors">

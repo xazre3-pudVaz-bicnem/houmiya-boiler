@@ -224,7 +224,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               <p className="text-sm font-bold text-gray-700 mb-3">{config.name}の対応エリア（全{config.wards.length}区）</p>
               <div className="flex flex-wrap gap-2">
                 {config.wards.map((w) => (
-                  <span key={w} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-3 py-1.5 rounded-lg font-medium">{w}</span>
+                  <span key={w} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-3 py-1.5 rounded-lg font-semibold">{w}</span>
                 ))}
               </div>
             </div>
@@ -308,7 +308,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
                         <p className="text-xs font-black text-gray-500 mb-2 uppercase tracking-wider">多い設置タイプ</p>
                         <div className="flex flex-wrap gap-2">
                           {h.commonInstallTypes.map((t) => (
-                            <span key={t} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-2.5 py-1 rounded-lg font-medium">{t}</span>
+                            <span key={t} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-2.5 py-1 rounded-lg font-semibold">{t}</span>
                           ))}
                         </div>
                       </div>

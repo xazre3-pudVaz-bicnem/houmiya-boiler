@@ -64,6 +64,18 @@ const breadcrumbJsonLd = {
   ],
 }
 
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  numberOfItems: products.length,
+  itemListElement: products.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: `${p.makerLabel} ${p.model}`,
+    url: `https://www.houmiya-boiler.com${p.detailUrl}`,
+  })),
+}
+
 const checkItems = [
   '現在の給湯器の型番の確認（本体のシールに記載）',
   '号数の確認（16号・20号・24号）',
@@ -101,6 +113,7 @@ export default function PalomaPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 

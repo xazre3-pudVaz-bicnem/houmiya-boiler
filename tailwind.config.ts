@@ -58,7 +58,7 @@ const config: Config = {
       fontSize: {
         'display-xl': ['3rem', { lineHeight: '1.15', fontWeight: '900' }],
         'display-lg': ['2.25rem', { lineHeight: '1.2', fontWeight: '900' }],
-        'display-md': ['1.875rem', { lineHeight: '1.25', fontWeight: '800' }],
+        'display-md': ['1.875rem', { lineHeight: '1.25', fontWeight: '700' }],
         'display-sm': ['1.5rem', { lineHeight: '1.3', fontWeight: '700' }],
       },
       spacing: {

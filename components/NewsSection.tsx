@@ -22,7 +22,7 @@ export default function NewsSection() {
             >
               {/* Date + category */}
               <div className="flex-shrink-0 w-16 text-center">
-                <div className="text-slate-400 text-[10px] font-medium leading-none">{item.date}</div>
+                <div className="text-slate-400 text-[10px] font-semibold leading-none">{item.date}</div>
                 <div className={`mt-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded border ${item.categoryColor}`}>
                   {item.category}
                 </div>

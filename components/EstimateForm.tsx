@@ -62,7 +62,7 @@ function RadioGroup({
       {options.map((opt) => (
         <label
           key={opt}
-          className={`flex items-center gap-2 cursor-pointer border rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+          className={`flex items-center gap-2 cursor-pointer border rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${
             value === opt
               ? 'bg-brand-900 border-brand-900 text-white'
               : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'
@@ -95,7 +95,7 @@ function CheckGroup({
       {options.map((opt) => (
         <label
           key={opt}
-          className={`flex items-center gap-2 cursor-pointer border rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+          className={`flex items-center gap-2 cursor-pointer border rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${
             values.includes(opt)
               ? 'bg-brand-900 border-brand-900 text-white'
               : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'

@@ -11,6 +11,30 @@ import { siteConfig } from '@/data/site'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
+// 各ガイドの実公開日（git履歴に基づく）
+const guidePublishDates: Record<string, string> = {
+  'full-auto-auto': '2026-06-15',
+  capacity: '2026-06-15',
+  'eco-jaws': '2026-06-15',
+  'model-number': '2026-06-15',
+  'error-code': '2026-06-15',
+  lifespan: '2026-06-15',
+  'installation-type': '2026-06-18',
+  'color-variation': '2026-06-15',
+  cost: '2026-06-21',
+  warranty: '2026-06-21',
+  'photo-estimate': '2026-06-21',
+  'mansion-ps': '2026-06-21',
+}
+
+// 内容を実際に更新したガイドのみ更新日を上書き（未記載は公開日と同じ）
+const guideModifiedDates: Record<string, string> = {
+  capacity: '2026-07-11',
+  warranty: '2026-07-11',
+  'photo-estimate': '2026-07-11',
+  'mansion-ps': '2026-07-11',
+}
+
 export async function generateStaticParams() {
   return guidesData.map((g) => ({ slug: g.slug }))
 }
@@ -24,8 +48,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description: guide.description,
     alternates: { canonical: `${BASE_URL}/guide/${guide.slug}` },
-    openGraph: { title, description: guide.description, locale: 'ja_JP', type: 'article' },
-    twitter: { card: 'summary_large_image' },
+    openGraph: {
+      title,
+      description: guide.description,
+      url: `${BASE_URL}/guide/${guide.slug}`,
+      siteName: '宝宮設備 給湯器交換専門サイト',
+      locale: 'ja_JP',
+      type: 'article',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: guide.title }],
+    },
+    twitter: { card: 'summary_large_image', images: ['/og-image.png'] },
   }
 }
 
@@ -56,11 +88,13 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
     ],
   }
 
+  const datePublished = guidePublishDates[guide.slug] ?? '2026-06-15'
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: shortTitle,
     description: guide.description,
+    image: [`${BASE_URL}/og-image.png`],
     author: { '@type': 'Organization', name: '株式会社宝宮設備', url: BASE_URL },
     publisher: {
       '@type': 'Organization',
@@ -68,8 +102,8 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
       url: BASE_URL,
       logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.png` },
     },
-    datePublished: '2026-01-01',
-    dateModified: new Date().toISOString().split('T')[0],
+    datePublished,
+    dateModified: guideModifiedDates[guide.slug] ?? datePublished,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${BASE_URL}/guide/${guide.slug}` },
     url: `${BASE_URL}/guide/${guide.slug}`,
   }

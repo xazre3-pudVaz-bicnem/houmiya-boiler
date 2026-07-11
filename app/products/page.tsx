@@ -24,6 +24,27 @@ const typeTabs: { id: TypeId; label: string }[] = [
   { id: 'full-auto', label: 'フルオート' },
 ]
 
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  numberOfItems: productsData.length,
+  itemListElement: productsData.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: `${p.makerLabel} ${p.model}`,
+    url: `https://www.houmiya-boiler.com${p.detailUrl}`,
+  })),
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'トップ', item: 'https://www.houmiya-boiler.com' },
+    { '@type': 'ListItem', position: 2, name: '商品一覧', item: 'https://www.houmiya-boiler.com/products' },
+  ],
+}
+
 export default function ProductsPage() {
   const [activeMaker, setActiveMaker] = useState<MakerId>('all')
   const [activeType, setActiveType] = useState<TypeId>('all')
@@ -36,6 +57,8 @@ export default function ProductsPage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
       <main className="pt-[100px]">
 

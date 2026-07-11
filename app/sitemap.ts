@@ -6,6 +6,7 @@ import { allWards } from '@/data/ward-configs'
 import { troubleList } from '@/data/trouble-configs'
 import { casesData } from '@/data/cases'
 import { areaConfigs } from '@/data/area-configs'
+import { guidesData } from '@/data/guides'
 
 const BASE_URL = 'https://www.houmiya-boiler.com'
 
@@ -45,20 +46,8 @@ const categorySlugList = [
   'balanced-flue',
 ]
 
-const guideSlugList = [
-  'full-auto-auto',
-  'capacity',
-  'eco-jaws',
-  'model-number',
-  'error-code',
-  'lifespan',
-  'installation-type',
-  'color-variation',
-  'cost',
-  'warranty',
-  'photo-estimate',
-  'mansion-ps',
-]
+// ガイドは data/guides.ts と同一ソースから生成（二重管理による記載漏れ防止）
+const guideSlugList = guidesData.map((g) => g.slug)
 
 // 横浜市 駅ページ（46件）
 const yokohamaStationUrls = [
@@ -75,7 +64,6 @@ const yokohamaStationUrls = [
   'hongodai', 'ofuna',
 ].map(s => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/station/${s}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.7,
 }))
@@ -90,7 +78,6 @@ const yokohamaDistrictUrls = [
   'sakuragicho', 'kannai',
 ].map(d => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/district/${d}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.6,
 }))
@@ -104,7 +91,6 @@ const yokohamaTroubleUrls = [
   'gas-smell', 'freezing', 'old-boiler',
 ].map(t => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/trouble/${t}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.75,
 }))
@@ -118,7 +104,6 @@ const yokohamaTypeUrls = [
   'gas-furo', 'warm-water-heating',
 ].map(t => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/type/${t}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.7,
 }))
@@ -126,7 +111,6 @@ const yokohamaTypeUrls = [
 // 横浜市 メーカーページ（3件）
 const yokohamaMakerUrls = ['rinnai', 'noritz', 'paloma'].map(m => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/maker/${m}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.65,
 }))
@@ -134,7 +118,6 @@ const yokohamaMakerUrls = ['rinnai', 'noritz', 'paloma'].map(m => ({
 // 横浜市 号数ページ（3件）
 const yokohamaCapacityUrls = ['16', '20', '24'].map(c => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/capacity/${c}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.65,
 }))
@@ -144,7 +127,6 @@ const yokohamaBuildingUrls = [
   'condominium', 'rental-apartment', 'detached-house', 'old-building', 'new-construction',
 ].map(b => ({
   url: `https://www.houmiya-boiler.com/area/yokohama/building/${b}`,
-  lastModified: new Date(),
   changeFrequency: 'monthly' as const,
   priority: 0.65,
 }))
@@ -154,20 +136,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
-    { url: `${BASE_URL}/area`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/rinnai`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/noritz`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/paloma`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/products`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/estimate`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/cases`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/warranty`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/voice`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/ecojoys`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/area`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/rinnai`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/noritz`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/paloma`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/products`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/estimate`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/cases`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/warranty`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/voice`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/ecojoys`, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${BASE_URL}/trouble`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/guide`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/company`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/trouble`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/guide`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/company`, changeFrequency: 'monthly', priority: 0.7 },
   ]
 
   const blogPosts = getAllPosts()
@@ -183,28 +165,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productDetailPages: MetadataRoute.Sitemap = productsData.map((p) => ({
     url: `${BASE_URL}/products/${p.slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.9,
   }))
 
   const categoryPages: MetadataRoute.Sitemap = categorySlugList.map((slug) => ({
     url: `${BASE_URL}/category/${slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))
 
   const guidePages: MetadataRoute.Sitemap = guideSlugList.map((slug) => ({
     url: `${BASE_URL}/guide/${slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
 
   const casePageUrls: MetadataRoute.Sitemap = casesData.map((c) => ({
     url: `${BASE_URL}/cases/${c.slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
@@ -217,35 +195,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((area) => showableAreaSlugs.includes(area.slug))
     .map((area) => ({
       url: `${BASE_URL}/area/${area.slug}`,
-      lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.9,
     }))
 
   const wardPageUrls: MetadataRoute.Sitemap = allWards.map((w) => ({
     url: `${BASE_URL}/area/${w.citySlug}/${w.wardSlug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))
 
   const troublePageUrls: MetadataRoute.Sitemap = troubleList.map((t) => ({
     url: `${BASE_URL}/trouble/${t.slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))
 
   const areaTroublePageUrls: MetadataRoute.Sitemap = areaTroublePages.map(p => ({
     url: `${BASE_URL}/area/${p.citySlug}/${p.troubleSlug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))
 
   const areaInstalltypePageUrls: MetadataRoute.Sitemap = areaInstalltypePages.map(p => ({
     url: `${BASE_URL}/area/${p.citySlug}/${p.typeSlug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))

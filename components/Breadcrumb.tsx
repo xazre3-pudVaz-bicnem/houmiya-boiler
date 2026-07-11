@@ -37,7 +37,7 @@ export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
                   </svg>
                 )}
                 {item.href ? (
-                  <a href={item.href} className="text-sky-dark hover:underline font-medium">
+                  <a href={item.href} className="text-sky-dark hover:underline font-semibold">
                     {item.label}
                   </a>
                 ) : (

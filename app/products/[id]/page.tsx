@@ -161,14 +161,29 @@ export async function generateMetadata({
   const { id } = await params
   const product = getProductBySlug(id)
   if (!product) return {}
+  const title = `${product.model}の給湯器交換価格｜${product.makerLabel}${product.capacity}号${product.typeLabel}｜株式会社宝宮設備`
+  const description = `${product.makerLabel} ${product.model}の給湯器交換なら株式会社宝宮設備。横浜市・川崎市・厚木市・海老名市対応。本体・リモコン・標準工事費込みの税込価格${formatPrice(product.totalInTax)}円を掲載。無料見積もり受付中。`
   return {
-    title: `${product.model}の給湯器交換価格｜${product.makerLabel}${product.capacity}号${product.typeLabel}｜株式会社宝宮設備`,
-    description: `${product.makerLabel} ${product.model}の給湯器交換なら株式会社宝宮設備。横浜市・川崎市・厚木市・海老名市対応。本体・リモコン・標準工事費込みの税込価格${formatPrice(product.totalInTax)}円を掲載。無料見積もり受付中。`,
+    title,
+    description,
     alternates: {
       canonical: `${siteConfig.baseUrl}${product.detailUrl}`,
     },
+    openGraph: {
+      title,
+      description,
+      url: `${siteConfig.baseUrl}${product.detailUrl}`,
+      siteName: '宝宮設備 給湯器交換専門サイト',
+      locale: 'ja_JP',
+      type: 'website',
+      images: [{ url: product.image, width: 1200, height: 900, alt: `${product.makerLabel} ${product.model}` }],
+    },
+    twitter: { card: 'summary_large_image', images: [product.image] },
   }
 }
+
+// 価格有効期限（構造化データ用）: ビルド時点の当年末を設定
+const priceValidUntil = `${new Date().getFullYear()}-12-31`
 
 const makerPageMap = {
   rinnai: '/rinnai',
@@ -279,16 +294,17 @@ export default async function ProductDetailPage({
     '@type': 'Product',
     name: `${product.makerLabel} ${product.model} ${product.capacity}号 ${product.typeLabel}`,
     description: `${product.makerLabel} ${product.model}。${product.capacity}号${product.typeLabel}。${product.installationLabel}。`,
+    image: [product.image],
     brand: { '@type': 'Brand', name: product.makerLabel },
     model: product.model,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'JPY',
       price: product.totalInTax,
-      priceValidUntil: '2026-12-31',
+      priceValidUntil,
       availability: 'https://schema.org/InStock',
       seller: { '@type': 'Organization', name: '株式会社宝宮設備' },
-      url: `https://www.houmiya-boiler.com${product.detailUrl}`,
+      url: `${siteConfig.baseUrl}${product.detailUrl}`,
     },
   }
 

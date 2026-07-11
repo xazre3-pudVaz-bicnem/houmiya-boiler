@@ -229,7 +229,7 @@ export default function AreaIndexPage() {
                   <p className="text-xs font-black text-gray-500 mb-2 uppercase tracking-wider">主要エリア</p>
                   <div className="flex flex-wrap gap-2">
                     {area.spots.map((s) => (
-                      <span key={s} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-2.5 py-1 rounded-lg font-medium">{s}</span>
+                      <span key={s} className="text-xs bg-blue-50 border border-blue-200 text-brand-700 px-2.5 py-1 rounded-lg font-semibold">{s}</span>
                     ))}
                   </div>
                 </div>

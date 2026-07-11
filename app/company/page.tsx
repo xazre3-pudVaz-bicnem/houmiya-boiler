@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 const localBusinessJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
+  '@id': 'https://www.houmiya-boiler.com/#business',
   name: '株式会社宝宮設備',
   description: '横浜市・川崎市・厚木市・海老名市の給湯器交換・販売専門店',
   telephone: '046-205-4558',

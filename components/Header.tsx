@@ -145,7 +145,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[13px] text-gray-700 hover:text-brand-700 px-3 py-4 font-medium transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-brand-600"
+                className="text-[13px] text-gray-700 hover:text-brand-700 px-3 py-4 font-semibold transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-brand-600"
               >
                 {link.label}
               </Link>
