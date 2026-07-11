@@ -91,19 +91,7 @@ export default async function YokohamaTypePage({ params }: Props) {
     '@type': 'Service',
     name: config.pageTitle,
     description: config.metaDescription,
-    provider: {
-      '@type': 'LocalBusiness',
-      name: '株式会社宝宮設備',
-      telephone: siteConfig.phone,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: '温水西1-4-39',
-        addressLocality: '厚木市',
-        addressRegion: '神奈川県',
-        postalCode: '243-0039',
-        addressCountry: 'JP',
-      },
-    },
+    provider: { '@id': 'https://www.houmiya-boiler.com/#business' },
     areaServed: { '@type': 'City', name: '横浜市' },
   }
 

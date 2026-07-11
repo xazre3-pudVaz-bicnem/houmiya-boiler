@@ -68,19 +68,7 @@ export default async function StationPage({
     '@type': 'Service',
     name: `${stationTitle} 給湯器交換・販売`,
     description: config.metaDescription,
-    provider: {
-      '@type': 'LocalBusiness',
-      name: '株式会社宝宮設備',
-      telephone: siteConfig.phone,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: '温水西1-4-39',
-        addressLocality: '厚木市',
-        addressRegion: '神奈川県',
-        postalCode: '243-0039',
-        addressCountry: 'JP',
-      },
-    },
+    provider: { '@id': 'https://www.houmiya-boiler.com/#business' },
     areaServed: { '@type': 'Place', name: `横浜市${config.wardName} ${config.name}駅周辺` },
   }
 
